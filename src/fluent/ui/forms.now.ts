@@ -307,6 +307,19 @@ Form({
     view: default_view,
     sections: [
         {
+            caption: 'Live execution',
+            content: [
+                {
+                    layout: 'two-column',
+                    leftElements: [
+                        { field: 'last_execution', type: 'table_field' },
+                        { field: 'last_result', type: 'table_field' },
+                    ],
+                    rightElements: [{ field: 'last_run_at', type: 'table_field' }],
+                },
+            ],
+        },
+        {
             caption: 'General',
             content: [
                 {
@@ -371,9 +384,6 @@ Form({
                     layout: 'two-column',
                     leftElements: [
                         { field: 'concurrent_execution_policy', type: 'table_field' },
-                        { field: 'last_execution', type: 'table_field' },
-                        { field: 'last_result', type: 'table_field' },
-                        { field: 'last_run_at', type: 'table_field' },
                     ],
                     rightElements: [
                         { field: 'next_execution_at', type: 'table_field' },

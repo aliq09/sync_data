@@ -26,6 +26,20 @@ SyncBridgeExecutionAjax.prototype = Object.extendsObject(global.AbstractAjaxProc
         return this._encode(this._view(result))
     },
 
+    getLiveProgress: function () {
+        var result = new SyncBridgeExecutionService().getLiveProgress({
+            configurationId: this._clean(this.getParameter('sysparm_config_id')),
+            dexId: this._clean(this.getParameter('sysparm_dex_id')),
+        })
+        return this._encode(result)
+    },
+
+    _clean: function (value) {
+        var text = value == null ? '' : value + ''
+        if (text === 'null' || text === 'undefined') return ''
+        return text
+    },
+
     _view: function (result) {
         result = result || {}
         var sample = []
