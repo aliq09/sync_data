@@ -115,6 +115,10 @@ declare global {
                         table: 'sys_ui_related_list'
                         id: '6a3ef6b3c7a140dfab56887a5699bb09'
                     }
+                    'fix-dex-snapshot-section': {
+                        table: 'sys_script_fix'
+                        id: '92a5895da553408f931fb924bcfc3480'
+                    }
                     'job-drain': {
                         table: 'sysauto_script'
                         id: 'fba81b6094ff49f5a13529d2c343c059'

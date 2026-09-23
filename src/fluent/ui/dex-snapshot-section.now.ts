@@ -11,6 +11,8 @@ import { Record } from '@servicenow/sdk/core'
  * link targets the existing Default-view form so an instance that already has
  * Header, Scope, Counts, Timeline, and Notes gains this section between
  * Timeline (position 3) and Notes (position 5).
+ * If that metadata update is skipped, the fix script Place DEX snapshot section
+ * inserts the same rows after the application files load.
  */
 
 const dexSnapshotSection = Record({
