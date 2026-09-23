@@ -8,6 +8,7 @@ import {
 
 /**
  * Transfer (TRN…) — one outbox payload under a Data Execution.
+ * Numbering is the table autoNumber (prefix TRN, 6 digits). Inserts leave `number` empty.
  * Dual-written from the physical outbox. The outbox remains the Case 1 queue.
  * correlation_id and stage are present for a later acknowledgement phase.
  * Case 1 writes only queued / sent / failed / dead / rejected from today's apply result.

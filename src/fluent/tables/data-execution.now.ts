@@ -12,7 +12,11 @@ import {
 /**
  * Data Execution (DEX…) — one run of a configuration.
  * config_snapshot is written once at start and not revised when the configuration changes.
- * State and Result stay separate. Phase 1 still closes from the current /apply contract.
+ * State and Result stay separate. Case 1 still closes from the current /apply contract.
+ *
+ * Numbering is the table autoNumber (prefix DEX, 6 digits). Inserts leave `number` empty
+ * so the platform assigns DEX000001. Do not script prefix + epoch milliseconds.
+ * acknowledged_at and acknowledged_count stay empty until a later acknowledgement phase.
  */
 export const x_33764_sbridge_data_execution = Table({
     name: 'x_33764_sbridge_data_execution',
@@ -30,6 +34,12 @@ export const x_33764_sbridge_data_execution = Table({
     },
     schema: {
         number: StringColumn({ label: 'Number', maxLength: 40, readOnly: true }),
+        name: StringColumn({
+            label: 'Name',
+            hint: 'Configuration name frozen when the execution started.',
+            maxLength: 200,
+            readOnly: true,
+        }),
         legacy_key: StringColumn({
             label: 'Shadow key',
             hint: 'Idempotency key, run:<sync run sys_id> for dual-write rows.',
@@ -99,8 +109,7 @@ export const x_33764_sbridge_data_execution = Table({
         failed_count: IntegerColumn({ label: 'Failed', default: 0 }),
         acknowledged_count: IntegerColumn({
             label: 'Acknowledged',
-            hint: 'Staged acknowledgement counts arrive in a later phase. Case 1 leaves this at 0.',
-            default: 0,
+            hint: 'Left empty until staged acknowledgement. Phase 2 does not write a count here.',
         }),
         started_at: DateTimeColumn({ label: 'Started at' }),
         source_read_completed_at: DateTimeColumn({ label: 'Source read completed at' }),
@@ -109,11 +118,14 @@ export const x_33764_sbridge_data_execution = Table({
         target_processing_completed_at: DateTimeColumn({ label: 'Target processing completed at' }),
         acknowledged_at: DateTimeColumn({
             label: 'Acknowledged at',
-            hint: 'Not set by Phase 1. Staged ACK is a later phase.',
+            hint: 'Left empty until staged acknowledgement. Shown blank on the timeline.',
         }),
         transfer_completed_at: DateTimeColumn({ label: 'Transfer completed at' }),
         execution_completed_at: DateTimeColumn({ label: 'Execution completed at' }),
-        duration_seconds: IntegerColumn({ label: 'Duration seconds', default: 0 }),
+        duration_seconds: IntegerColumn({
+            label: 'Duration seconds',
+            hint: 'Filled when the execution completes. Blank while it is still running.',
+        }),
         work_notes: GenericColumn({
             columnType: 'journal_input',
             label: 'Work notes',

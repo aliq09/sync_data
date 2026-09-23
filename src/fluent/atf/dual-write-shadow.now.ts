@@ -31,6 +31,11 @@ Test(
     assertEqual(new GlideRecord('x_33764_sbridge_transfer_audit').isValid(), true, 'transfer_audit');
     assertEqual(new GlideRecord('x_33764_sbridge_processing_error').isValid(), true, 'processing_error');
     assertEqual(new GlideRecord('x_33764_sbridge_record_result').isValid(), true, 'record_result');
+    var dex = new GlideRecord('x_33764_sbridge_data_execution');
+    assertEqual(dex.isValidField('name'), true, 'execution name snapshot');
+    assertEqual(dex.isValidField('acknowledged_at'), true, 'ack milestone column exists');
+    assertEqual(dex.isValidField('execution_state'), true, 'execution state');
+    assertEqual(dex.isValidField('execution_result'), true, 'execution result');
 })();`,
         })
     }
