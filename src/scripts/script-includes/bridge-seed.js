@@ -20,6 +20,11 @@ BridgeSeed.prototype = {
      * @returns {object} summary
      */
     seedPolicy: function (policyId, opts) {
+        try {
+            new BridgeDualWrite().linkPolicies()
+        } catch (e) {
+            gs.warn('[bridge] dual-write link failed (ignored): ' + e)
+        }
         opts = opts || {}
         var summary = {
             policy: policyId,
@@ -95,6 +100,11 @@ BridgeSeed.prototype = {
         }
         summary.run_id = runId
         summary.cursor = cursor
+        try {
+            new BridgeDualWrite().onRunOpened(runId)
+        } catch (e) {
+            gs.warn('[bridge] dual-write seed open failed (ignored): ' + e)
+        }
 
         var policy = {
             sys_id: policyGr.getUniqueValue(),
@@ -123,7 +133,7 @@ BridgeSeed.prototype = {
         while (gr.next()) {
             summary.scanned++
             lastId = gr.getUniqueValue()
-            if (this._enqueueSeed(gr, policy, localPeer, tableName)) summary.enqueued++
+            if (this._enqueueSeed(gr, policy, localPeer, tableName, runId)) summary.enqueued++
         }
 
         // persist cursor / close run
@@ -139,10 +149,15 @@ BridgeSeed.prototype = {
 
         summary.cursor = lastId
         if (!summary.scanned) summary.done = true
+        try {
+            new BridgeDualWrite().onSeedPage(runId, summary)
+        } catch (e) {
+            gs.warn('[bridge] dual-write seed page failed (ignored): ' + e)
+        }
         return summary
     },
 
-    _enqueueSeed: function (current, policy, localPeer, tableName) {
+    _enqueueSeed: function (current, policy, localPeer, tableName, runId) {
         // Reuse capture payload shaping; write outbox with mode=bulk_seed.
         var payload = this.capture._payload(current, policy, 'insert')
         payload.mode = policy.mode
@@ -159,7 +174,15 @@ BridgeSeed.prototype = {
         gr.setValue('state', 'pending')
         gr.setValue('attempts', 0)
         gr.setValue('mode', 'bulk_seed')
-        return !!gr.insert()
+        var id = gr.insert()
+        if (id && runId) {
+            try {
+                new BridgeDualWrite().onOutboxQueued(id, runId)
+            } catch (e) {
+                gs.warn('[bridge] dual-write seed enqueue failed (ignored): ' + e)
+            }
+        }
+        return !!id
     },
 
     type: 'BridgeSeed',

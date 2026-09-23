@@ -8,6 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
+| **App version** | 0.1.0 (Phase 1 dual-write) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -36,15 +37,21 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 | BridgeDivergence / compare API / OAuth peer pack | Stubbed / deferred |
 | ATF | Minimal stubs (SI load + intent; not green until fixtures) |
 
+## Phase 1 navigator and dual-write
+
+Operator navigation is Overview, Data Movement (Configurations, Data Executions), Monitoring (Transfers, Failed Transfers, Audit), and Administration (Instances, Connections, Mappings, Settings). Developer / Diagnostics is role-gated (`x_33764_sbridge.diagnostics`) and holds sync policies, sync runs, the payload inspector (outbound queue), technical logs, legacy receipt rows, lab test records, and API diagnostics.
+
+Case 1 is unchanged: capture still writes the outbox, drain still POSTs `/api/x_33764_sbridge/sync/apply` with the connection-alias Basic Auth path, and `/seed` plus `/ensure_capture` stay as they are. `x_33764_sbridge.dual_write` defaults to true and best-effort shadows Data Execution, Transfer, and Transfer Audit (plus processing errors and record results) from those same hooks. A shadow failure is logged and does not fail drain or apply. The peer table is relabeled Instance in place. There is no staged acknowledgement rewrite in this release.
+
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
 2. **Integration user** — create a named account; set `x_33764_sbridge.integration_user` to its `user_name`. Blank = capture off (fail closed).
-3. **Peers** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote peer. Keep remote `active=true` only when ready.
-4. **Credentials** — set peer `connection_alias` or OAuth profile (never commit secrets).
-5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving an outbound policy auto-ensures a capture Business Rule.
-6. **Seed** — `POST /api/x_33764_sbridge/sync/seed` with `{ "policy": "<sys_id>" }` as the integration user. Repeat with `run_id` until `done: true`. Does **not** update source rows.
-7. **Monitor** — Runs / Outbox / DLQ modules; watch `last_error` on peer and lag on runs.
+3. **Instances** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote instance. Keep remote `active=true` only when ready. The physical table is still `x_33764_sbridge_peer`.
+4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
+5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.
+6. **Seed** — `POST /api/x_33764_sbridge/sync/seed` with `{ "policy": "<sys_id>" }` as the integration user. Repeat with `run_id` until `done: true`. Does **not** update source rows. A Data Execution shadow is written when dual-write is on.
+7. **Monitor** — Data Executions, Transfers, Failed Transfers, and Audit. Legacy queue and technical logs are under Developer / Diagnostics. Watch `last_error` on the instance and lag on sync runs.
 
 ## Scripts
 

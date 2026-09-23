@@ -36,6 +36,12 @@ BridgeTransport.prototype = {
      * @returns {object} summary, also written to bridge_run
      */
     drain: function (peerId) {
+        // Phase 1 shadows. Best-effort and never part of the Case 1 result.
+        try {
+            new BridgeDualWrite().backfill()
+        } catch (e) {
+            gs.warn('[bridge] dual-write backfill failed (ignored): ' + e)
+        }
         var summary = { peer: peerId, processed: 0, failed: 0, skipped: false, reason: '' }
         try {
             var result = this._drain(peerId, summary)
@@ -102,6 +108,7 @@ BridgeTransport.prototype = {
         }
 
         var runId = this._openRun(peerId)
+        this._activeRunId = runId
         try {
             var rows = this._claim(peerId)
             if (rows.length) {
@@ -130,6 +137,7 @@ BridgeTransport.prototype = {
         } finally {
             // Always close the run, or the guard above locks this peer out.
             this._closeRun(runId, summary, peerId)
+            this._activeRunId = ''
         }
 
         return summary
@@ -445,6 +453,16 @@ BridgeTransport.prototype = {
                 gr.setValue('state', 'sent')
                 gr.update()
                 summary.processed++
+                var activeRun = this._activeRunId || ''
+                this._shadowDual('settle ' + row.sys_id, function (dw) {
+                    dw.onOutboxSettled(row.sys_id, activeRun, {
+                        status: result.status,
+                        error: result.error || '',
+                        httpStatus: 200,
+                        attempts: row.attempts,
+                        targetSysId: result.target_sys_id || '',
+                    })
+                })
             } else {
                 this._fail(gr, row, result.error || 'peer reported status ' + result.status, summary)
             }
@@ -464,21 +482,47 @@ BridgeTransport.prototype = {
         var maxAttempts = this.config.intProp(BridgeConfig.PROP.maxAttempts, 8)
 
         gr.setValue('attempts', attempts)
-        if (attempts >= maxAttempts) {
+        var dead = attempts >= maxAttempts
+        var dlqId = ''
+        if (dead) {
             gr.setValue('state', 'dead')
             gr.update()
-            this._dlq(gr, error)
+            dlqId = this._dlq(gr, error) || ''
         } else {
             gr.setValue('state', 'failed')
             gr.update()
         }
         summary.failed++
+        var activeRun = this._activeRunId || ''
+        var outboxId = row.sys_id
+        this._shadowDual('fail ' + outboxId, function (dw) {
+            dw.onOutboxSettled(outboxId, activeRun, {
+                status: 'failed',
+                error: error,
+                dead: dead,
+                dlqId: dlqId,
+                attempts: attempts,
+                httpStatus: this._httpFromError(error),
+            })
+        })
     },
 
     _kill: function (gr, error) {
         gr.setValue('state', 'dead')
         gr.update()
-        this._dlq(gr, error)
+        var dlqId = this._dlq(gr, error) || ''
+        var outboxId = gr.getUniqueValue()
+        var activeRun = this._activeRunId || ''
+        var attempts = parseInt(gr.getValue('attempts'), 10) || 0
+        this._shadowDual('kill ' + outboxId, function (dw) {
+            dw.onOutboxSettled(outboxId, activeRun, {
+                status: 'failed',
+                error: error,
+                dead: true,
+                dlqId: dlqId,
+                attempts: attempts,
+            })
+        })
     },
 
     /**
@@ -501,7 +545,7 @@ BridgeTransport.prototype = {
             // Keep the newest reason without adding a row.
             existing.setValue('error', String(error).substr(0, 4000))
             existing.update()
-            return
+            return existing.getUniqueValue()
         }
 
         var gr = new GlideRecord(BridgeConfig.TABLE.dlq)
@@ -510,7 +554,7 @@ BridgeTransport.prototype = {
         gr.setValue('error', String(error).substr(0, 4000))
         gr.setValue('payload', outboxGr.getValue('payload'))
         gr.setValue('resolved', false)
-        gr.insert()
+        return gr.insert()
     },
 
     /**
@@ -572,7 +616,11 @@ BridgeTransport.prototype = {
         gr.setValue('type', 'drain')
         gr.setValue('peer', peerId)
         gr.setValue('started', new GlideDateTime().getValue())
-        return gr.insert()
+        var id = gr.insert()
+        this._shadowDual('open run', function (dw) {
+            dw.onRunOpened(id)
+        })
+        return id
     },
 
     _closeRun: function (runId, summary, peerId) {
@@ -597,6 +645,9 @@ BridgeTransport.prototype = {
         }
 
         gr.update()
+        this._shadowDual('close run', function (dw) {
+            dw.onRunClosed(runId, summary)
+        })
     },
 
     /**
@@ -635,6 +686,25 @@ BridgeTransport.prototype = {
         if (!gr.get(peerId)) return
         gr.setValue('last_error', String(error).substr(0, 4000))
         gr.update()
+    },
+
+    /**
+     * Phase 1 dual-write. Never changes drain control flow.
+     * @param {string} label
+     * @param {function} fn receives BridgeDualWrite
+     */
+    _shadowDual: function (label, fn) {
+        try {
+            var dw = new BridgeDualWrite()
+            fn.call(this, dw)
+        } catch (e) {
+            gs.warn('[bridge] dual-write ' + label + ' failed (ignored): ' + e)
+        }
+    },
+
+    _httpFromError: function (error) {
+        var match = /^HTTP\s+(\d+)/.exec(String(error || ''))
+        return match ? parseInt(match[1], 10) : ''
     },
 
     type: 'BridgeTransport',

@@ -49,3 +49,12 @@ Property({
     value: 25,
     description: 'Alert when unresolved DLQ rows exceed this count.',
 })
+
+Property({
+    $id: Now.ID['prop-dual-write'],
+    name: 'x_33764_sbridge.dual_write',
+    type: 'boolean',
+    value: true,
+    description:
+        'Phase 1 best-effort shadows: Data Execution, Transfer, and Transfer Audit. Failures are logged only and never fail capture, drain, seed, or apply. Set false to pause shadows. Case 1 outbox /apply path stays primary.',
+})
