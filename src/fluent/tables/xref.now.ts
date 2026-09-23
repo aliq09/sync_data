@@ -7,19 +7,19 @@ import {
 
 export const x_33764_sbridge_xref = Table({
     name: 'x_33764_sbridge_xref',
-    label: 'Sync Bridge Xref',
+    label: 'Record mapping',
     allowWebServiceAccess: true,
     createAccessControls: true,
     userRole: 'x_33764_sbridge.operator',
     schema: {
         peer: ReferenceColumn({
-            label: 'Peer',
+            label: 'Remote peer',
             mandatory: true,
             referenceTable: 'x_33764_sbridge_peer',
         }),
         source_table: TableNameColumn({ label: 'Source table', mandatory: true }),
-        source_sys_id: StringColumn({ label: 'Source sys_id', mandatory: true, maxLength: 32 }),
-        target_sys_id: StringColumn({ label: 'Target sys_id', mandatory: true, maxLength: 32 }),
+        source_sys_id: StringColumn({ label: 'Source record', mandatory: true, maxLength: 32 }),
+        target_sys_id: StringColumn({ label: 'Target record', mandatory: true, maxLength: 32 }),
     },
     index: [
         {

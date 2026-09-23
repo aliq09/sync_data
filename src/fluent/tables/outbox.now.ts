@@ -9,18 +9,18 @@ import {
 
 export const x_33764_sbridge_outbox = Table({
     name: 'x_33764_sbridge_outbox',
-    label: 'Sync Bridge Outbox',
+    label: 'Outbound queue entry',
     allowWebServiceAccess: true,
     createAccessControls: true,
     userRole: 'x_33764_sbridge.operator',
     schema: {
         peer: ReferenceColumn({
-            label: 'Peer',
+            label: 'Remote peer',
             mandatory: true,
             referenceTable: 'x_33764_sbridge_peer',
         }),
         table: TableNameColumn({ label: 'Table', mandatory: true }),
-        source_sys_id: StringColumn({ label: 'Source sys_id', mandatory: true, maxLength: 32 }),
+        source_sys_id: StringColumn({ label: 'Source record sys_id', mandatory: true, maxLength: 32 }),
         op: StringColumn({
             label: 'Operation',
             mandatory: true,
@@ -42,9 +42,9 @@ export const x_33764_sbridge_outbox = Table({
                 dead: 'Dead',
             },
         }),
-        attempts: IntegerColumn({ label: 'Attempts', default: 0 }),
+        attempts: IntegerColumn({ label: 'Send attempts', default: 0 }),
         mode: StringColumn({
-            label: 'Mode',
+            label: 'Capture mode',
             default: 'change',
             choices: {
                 change: 'Change feed',
