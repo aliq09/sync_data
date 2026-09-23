@@ -13,6 +13,15 @@ UiAction({
     roles: ['x_33764_sbridge.reader'],
     form: {
         showButton: true,
+        showContextMenu: false,
+        showLink: false,
+    },
+    list: {
+        showButton: false,
+        showBannerButton: false,
+        showContextMenu: false,
+        showListChoice: false,
+        showLink: false,
     },
     script: `(function () {
     var dex = new GlideRecord('x_33764_sbridge_data_execution');

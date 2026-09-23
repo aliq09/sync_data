@@ -29,7 +29,10 @@ Test(
     assertEqual(typeof svc.retry, 'function', 'retry');
     assertEqual(typeof svc.reconcile, 'function', 'reconcile stub');
     assertEqual(typeof svc.executeFromFlow, 'function', 'flow hook');
-    assertEqual(typeof svc.pause, 'undefined', 'pause is not part of 0.3.0');
+    assertEqual(typeof svc.pause, 'undefined', 'pause is not part of this release');
+    assertEqual(typeof SyncBridgeExecutionAjax, 'function', 'form dialog ajax');
+    assertEqual(typeof SyncBridgeExecutionAjax.prototype.preview, 'function', 'ajax preview');
+    assertEqual(typeof SyncBridgeExecutionAjax.prototype.executeNow, 'function', 'ajax execute');
     assertEqual(new GlideRecord('x_33764_sbridge_execution_schedule').isValid(), true, 'execution schedule table');
     var dex = new GlideRecord('x_33764_sbridge_data_execution');
     assertEqual(dex.isValidField('execution_mode'), true, 'execution mode');
