@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+<g:evaluate>
+var configId = (RP.getParameterValue('sysparm_config') || '') + '';
+var result = new SyncBridgeExecutionService().preview(configId, { sampleLimit: 50, trigger_type: 'manual' });
+var lines = [];
+var sample = result.sample || [];
+for (var i = 0; i < sample.length; i++) {
+    var row = sample[i];
+    lines.push((row.source_sys_id || '') + ' | ' + (row.name || '') + ' | ' + (row.existing_target || 'None') + ' | ' + (row.proposed_action || ''));
+}
+jelly.config_id = configId;
+jelly.message = result.message || '';
+jelly.config_name = result.configuration_name || '';
+jelly.matched = result.matched || 0;
+jelly.sample_text = lines.join('\n');
+</g:evaluate>
+<div style="padding:16px;max-width:960px;">
+  <h1>Preview records</h1>
+  <p><strong>$[config_name]</strong></p>
+  <p>Matched $[matched]. No target rows were changed.</p>
+  <p>$[message]</p>
+  <p>Source record | Name | Existing target | Proposed action</p>
+  <pre>$[sample_text]</pre>
+  <p><a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Back to configuration</a></p>
+</div>
+</j:jelly>

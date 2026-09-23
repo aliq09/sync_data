@@ -1,0 +1,7 @@
+var sch = new GlideRecord('x_33764_sbridge_execution_schedule')
+sch.addQuery('active', true)
+sch.addNotNullQuery('next_execution')
+sch.addQuery('next_execution', '<=', new GlideDateTime().getValue())
+sch.setLimit(1)
+sch.query()
+answer = sch.hasNext()

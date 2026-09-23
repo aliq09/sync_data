@@ -7,7 +7,7 @@
  *
  * Idempotency keys:
  *   configuration  policy sys_id
- *   execution      run:<sync run sys_id>
+ *   execution      run:<sync run sys_id> for Case 1 shadows, ctrl:<dex sys_id> for controller rows
  *   transfer       outbox:<outbox sys_id>
  *   audit          outbox:<id>  or  receipt:<id>  or  apply:<peer>:<source>:<seq>:<status>
  *   error          dlq:<dlq sys_id>
@@ -73,6 +73,32 @@ BridgeDualWrite.prototype = {
     onRunOpened: function (runId) {
         this._guard('onRunOpened', function () {
             this._shadowRunById(runId, 'open', null)
+        })
+    },
+
+    /**
+     * Link a controller-created DEX (legacy_key ctrl:) to the seed run.
+     * Does not insert a second run: shadow.
+     */
+    attachControllerRun: function (executionId, runId) {
+        this._guard('attachControllerRun', function () {
+            if (!executionId || !runId) return
+            var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+            if (!dex.get(executionId)) return
+            if (!this._isControllerDex(dex)) return
+            if (!dex.getValue('run')) dex.setValue('run', runId)
+            var state = dex.getValue('execution_state') || ''
+            if (state === 'draft' || state === 'queued' || state === 'validating' || state === 'preparing') {
+                this._transitionState(dex, 'reading_source', 'Execution controller started reading the source through BridgeSeed.')
+            }
+            dex.update()
+        })
+    },
+
+    /** Recount transfers and close a controller execution once the drain has settled. */
+    completeControllerIfReady: function (executionId) {
+        this._guard('completeControllerIfReady', function () {
+            this._rollupExecution(executionId)
         })
     },
 
@@ -279,17 +305,23 @@ BridgeDualWrite.prototype = {
         if (!run.get(runId)) return
 
         var key = 'run:' + runId
-        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
-        dex.addQuery('legacy_key', key)
-        dex.setLimit(1)
-        dex.query()
-        var isNew = !dex.next()
-        if (isNew) {
-            // newRecord() applies defaults without forcing number to ''. Do not set number.
-            dex.newRecord()
-            dex.setValue('legacy_key', key)
-            dex.setValue('run', runId)
+        var dex = this._controllerDexForRun(runId)
+        var isNew = false
+        if (!dex) {
+            dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+            dex.addQuery('legacy_key', key)
+            dex.setLimit(1)
+            dex.query()
+            isNew = !dex.next()
+            if (isNew) {
+                // newRecord() applies defaults without forcing number to ''. Do not set number.
+                dex.newRecord()
+                dex.setValue('legacy_key', key)
+                dex.setValue('run', runId)
+            }
         }
+        // Drain close still writes the run: shadow. It must not finish a controller DEX.
+        if (!isNew && this._isControllerDex(dex) && phase === 'close') return
 
         var type = run.getValue('type') || ''
         var policyId = run.getValue('seed_policy') || ''
@@ -314,7 +346,37 @@ BridgeDualWrite.prototype = {
             }
         }
 
-        if (phase === 'seed') {
+        if (phase === 'seed' && this._isControllerDex(dex)) {
+            var enqueuedCtrl = parseInt(run.getValue('processed'), 10) || 0
+            dex.setValue('selected_count', enqueuedCtrl)
+            if (summary && summary.done) {
+                if (!dex.getValue('source_read_completed_at')) {
+                    dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
+                }
+                if (enqueuedCtrl === 0) {
+                    dex.setValue('execution_result', 'successful')
+                    if (!dex.getValue('execution_completed_at')) {
+                        dex.setValue('execution_completed_at', new GlideDateTime().getValue())
+                    }
+                    this._transitionState(
+                        dex,
+                        'completed',
+                        'Source read matched no rows. Nothing was queued. Target data was not changed. Acknowledgement stays empty.'
+                    )
+                    this._setDuration(dex)
+                } else {
+                    this._transitionState(
+                        dex,
+                        'sending',
+                        'Source read finished. ' +
+                            enqueuedCtrl +
+                            ' row(s) are in the outbox. The existing drain sends them. Acknowledgement stays empty.'
+                    )
+                }
+            } else {
+                this._transitionState(dex, 'reading_source', 'Reading source rows for this execution.')
+            }
+        } else if (phase === 'seed') {
             var enqueued = parseInt(run.getValue('processed'), 10) || 0
             dex.setValue('selected_count', enqueued)
             if (summary && summary.done) {
@@ -378,6 +440,10 @@ BridgeDualWrite.prototype = {
             this._ensurePlatformNumber(dex)
             dex.insert()
         } else dex.update()
+        var closedState = dex.getValue('execution_state') || ''
+        if (this._isControllerDex(dex) && (closedState === 'completed' || closedState === 'cancelled')) {
+            this._touchConfigFromDex(dex)
+        }
     },
 
     _stampDexName: function (dex, configId) {
@@ -392,6 +458,7 @@ BridgeDualWrite.prototype = {
         var labels = {
             draft: 'Draft',
             queued: 'Queued',
+            validating: 'Validating',
             preparing: 'Preparing',
             reading_source: 'Reading Source',
             sending: 'Sending',
@@ -513,9 +580,10 @@ BridgeDualWrite.prototype = {
     _shadowOutboxRow: function (outboxGr, runId, outcome) {
         var outboxId = outboxGr.getUniqueValue()
         var mapped = this._mapOutcome(outboxGr, outcome)
-        var dexId = runId ? this._dexIdForRun(runId) : ''
         var localId = this.config.localPeerId() || ''
         var payloadText = outboxGr.getValue('payload') || ''
+        var dexId = this._executionFromPayload(payloadText)
+        if (!dexId && runId) dexId = this._dexIdForRun(runId)
         var policyId = this._policyFromPayload(payloadText)
         if (dexId && policyId) this._attachConfigOnce(dexId, policyId)
 
@@ -601,6 +669,7 @@ BridgeDualWrite.prototype = {
         if (!dex.get(dexId)) return
         var state = dex.getValue('execution_state') || 'draft'
         var closed = state === 'completed' || state === 'cancelled'
+        var controller = this._isControllerDex(dex)
         var byStage = this._countGrouped(BridgeConfig.TABLE.transfer, dexId, 'stage')
         var sent = (byStage.sent || 0) + (byStage.rejected || 0)
         var failed = (byStage.failed || 0) + (byStage.dead || 0)
@@ -610,13 +679,21 @@ BridgeDualWrite.prototype = {
         }
         var outcomes = this._countActionResult(dexId)
         var changed = false
-        if (!closed) {
+        if (!closed && !controller) {
             changed = this._setCount(dex, 'selected_count', selected) || changed
             changed = this._setCount(dex, 'sent_count', sent) || changed
             changed = this._setCount(dex, 'failed_count', failed) || changed
             if (sent > 0 && (state === 'draft' || state === 'queued' || state === 'preparing')) {
                 if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
             }
+        }
+        if (!closed && controller) {
+            changed = this._setCount(dex, 'sent_count', byStage.sent || 0) || changed
+            changed = this._setCount(dex, 'failed_count', byStage.dead || 0) || changed
+            if ((byStage.sent || 0) > 0 && (state === 'queued' || state === 'reading_source' || state === 'preparing' || state === 'validating')) {
+                if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
+            }
+            if (this._maybeCompleteController(dex, byStage)) changed = true
         }
         changed = this._setCount(dex, 'inserted_count', outcomes.inserted) || changed
         changed = this._setCount(dex, 'updated_count', outcomes.updated) || changed
@@ -626,6 +703,8 @@ BridgeDualWrite.prototype = {
             changed = true
         }
         if (changed) dex.update()
+        var endState = dex.getValue('execution_state') || ''
+        if (controller && (endState === 'completed' || endState === 'cancelled')) this._touchConfigFromDex(dex)
     },
 
     _setCount: function (dex, field, value) {
@@ -811,7 +890,103 @@ BridgeDualWrite.prototype = {
 
     _dexIdForRun: function (runId) {
         if (!runId) return ''
+        var controller = this._controllerDexForRun(runId)
+        if (controller) return controller.getUniqueValue()
         return this._findId(BridgeConfig.TABLE.dataExecution, 'legacy_key', 'run:' + runId)
+    },
+
+    _isControllerDex: function (dex) {
+        if (!dex) return false
+        return (dex.getValue('legacy_key') || '').indexOf('ctrl:') === 0
+    },
+
+    _controllerDexForRun: function (runId) {
+        if (!runId) return null
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.isValid()) return null
+        dex.addQuery('run', runId)
+        dex.addQuery('legacy_key', 'STARTSWITH', 'ctrl:')
+        dex.setLimit(1)
+        dex.query()
+        if (!dex.next()) return null
+        return dex
+    },
+
+    _executionFromPayload: function (payloadText) {
+        if (!payloadText) return ''
+        try {
+            var parsed = JSON.parse(payloadText)
+            var id = parsed && parsed.execution ? parsed.execution : ''
+            if (!id) return ''
+            var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+            if (!dex.get(id)) return ''
+            if (!this._isControllerDex(dex)) return ''
+            return id
+        } catch (e) {
+            return ''
+        }
+    },
+
+    /**
+     * Close a controller execution after seed has finished and every transfer is terminal.
+     * Does not write acknowledgement fields or the transfer validated stage.
+     */
+    _maybeCompleteController: function (dex, byStage) {
+        if (!this._isControllerDex(dex)) return false
+        var mode = dex.getValue('execution_mode') || ''
+        if (mode === 'dry_run' || mode === 'reconciliation') return false
+        var state = dex.getValue('execution_state') || ''
+        if (state === 'completed' || state === 'cancelled') return false
+        if (!dex.getValue('source_read_completed_at')) return false
+        byStage = byStage || {}
+        var selected = parseInt(dex.getValue('selected_count'), 10) || 0
+        var open = (byStage.queued || 0) + (byStage.failed || 0)
+        var sent = byStage.sent || 0
+        var dead = byStage.dead || 0
+        var rejected = byStage.rejected || 0
+        if (selected > 0 && (open > 0 || sent + dead + rejected < selected)) return false
+        var result = 'successful'
+        if (dead > 0 && sent > 0) result = 'partially_completed'
+        else if (dead > 0) result = 'failed'
+        else if (rejected > 0) result = 'successful_with_warnings'
+        dex.setValue('execution_result', result)
+        dex.setValue('failed_count', dead)
+        var now = new GlideDateTime().getValue()
+        if (!dex.getValue('transfer_completed_at') && selected > 0) dex.setValue('transfer_completed_at', now)
+        if (!dex.getValue('execution_completed_at')) dex.setValue('execution_completed_at', now)
+        this._transitionState(
+            dex,
+            'completed',
+            'Drain finished for this execution. Result: ' +
+                this._resultLabel(result) +
+                '. Acknowledgement stays empty.'
+        )
+        this._setDuration(dex)
+        return true
+    },
+
+    _touchConfigFromDex: function (dex) {
+        if (!dex) return
+        var configId = dex.getValue('configuration')
+        if (!configId) return
+        var cfg = new GlideRecord(BridgeConfig.TABLE.movementConfig)
+        if (!cfg.isValid() || !cfg.get(configId) || !cfg.isValidField('last_execution')) return
+        cfg.setValue('last_execution', dex.getUniqueValue())
+        var stamp = dex.getValue('execution_completed_at') || dex.getValue('started_at') || ''
+        if (stamp && cfg.isValidField('last_run_at')) cfg.setValue('last_run_at', stamp)
+        var result = dex.getValue('execution_result') || ''
+        if (result && cfg.isValidField('last_result')) cfg.setValue('last_result', result)
+        cfg.setWorkflow(false)
+        cfg.update()
+        var scheduleId = dex.getValue('schedule')
+        if (!scheduleId || !result) return
+        var sch = new GlideRecord(BridgeConfig.TABLE.executionSchedule)
+        if (!sch.isValid() || !sch.get(scheduleId)) return
+        if (sch.getValue('previous_execution') !== dex.getUniqueValue() && sch.getValue('previous_execution')) return
+        sch.setValue('previous_execution', dex.getUniqueValue())
+        sch.setValue('previous_result', result)
+        sch.setWorkflow(false)
+        sch.update()
     },
 
     _receipt: function (peerId, sourceSysId) {

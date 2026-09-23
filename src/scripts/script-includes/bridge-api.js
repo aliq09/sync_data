@@ -89,6 +89,36 @@ BridgeApi.prototype = {
         return this._ok(response, summary)
     },
 
+    /**
+     * POST /executions — hook into the execution controller.
+     * Body: { configuration, mode?: execute|dry_run, trigger_reference? }
+     * Does not call BridgeTransport.
+     */
+    executions: function (request, response) {
+        var body = this._body(request, response)
+        if (!body) return
+
+        var guard = this._authorise(response)
+        if (!guard) return
+
+        if (!body.configuration) {
+            return this._fail(response, 400, 'configuration (sys_id) is required')
+        }
+
+        var mode = body.mode === 'dry_run' ? 'dry_run' : 'execute'
+        var opts = {
+            trigger_type: 'api',
+            trigger_reference: body.trigger_reference || 'rest:/executions',
+        }
+        var svc = new SyncBridgeExecutionService()
+        var out = mode === 'dry_run' ? svc.dryRun(body.configuration, opts) : svc.execute(body.configuration, opts)
+        if (!out || !out.ok) {
+            var code = out && out.code === 'prevent' ? 409 : 400
+            return this._fail(response, code, (out && out.message) || 'execution was not started')
+        }
+        return this._ok(response, out)
+    },
+
     /** POST /ensure_capture — create capture BR for a policy table if missing. */
     ensureCapture: function (request, response) {
         var body = this._body(request, response)
