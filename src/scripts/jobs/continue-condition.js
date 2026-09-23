@@ -1,0 +1,6 @@
+var gr = new GlideRecord('x_33764_sbridge_data_execution')
+gr.addQuery('legacy_key', 'STARTSWITH', 'ctrl:')
+gr.addQuery('execution_state', 'IN', 'queued,validating,preparing,reading_source,sending')
+gr.setLimit(1)
+gr.query()
+answer = gr.hasNext()

@@ -113,3 +113,14 @@ Record({
         order_by: 'sys_created_on',
     },
 })
+
+Record({
+    $id: Now.ID['mvcfg-rel-schedules'],
+    table: 'sys_ui_related_list_entry',
+    data: {
+        list_id: configRelated,
+        position: 1,
+        related_list: 'x_33764_sbridge_execution_schedule.configuration',
+        order_by: 'number',
+    },
+})

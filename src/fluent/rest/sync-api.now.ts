@@ -29,6 +29,16 @@ RestApi({
             script: Now.include('../../scripts/rest/seed.js'),
         },
         {
+            $id: Now.ID['route-executions'],
+            name: 'Executions',
+            method: 'POST',
+            path: '/executions',
+            active: true,
+            authentication: true,
+            authorization: true,
+            script: Now.include('../../scripts/rest/executions.js'),
+        },
+        {
             $id: Now.ID['route-ensure-capture'],
             name: 'Ensure capture',
             method: 'POST',

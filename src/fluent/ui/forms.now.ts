@@ -365,6 +365,25 @@ Form({
             ],
         },
         {
+            caption: 'Execution',
+            content: [
+                {
+                    layout: 'two-column',
+                    leftElements: [
+                        { field: 'concurrent_execution_policy', type: 'table_field' },
+                        { field: 'last_execution', type: 'table_field' },
+                        { field: 'last_result', type: 'table_field' },
+                        { field: 'last_run_at', type: 'table_field' },
+                    ],
+                    rightElements: [
+                        { field: 'next_execution_at', type: 'table_field' },
+                        { field: 'last_validation_status', type: 'table_field' },
+                        { field: 'last_validated_at', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+        {
             caption: 'Activity',
             content: [
                 {
@@ -393,11 +412,15 @@ Form({
                         { field: 'number', type: 'table_field' },
                         { field: 'configuration', type: 'table_field' },
                         { field: 'execution_state', type: 'table_field' },
+                        { field: 'execution_mode', type: 'table_field' },
+                        { field: 'trigger_type', type: 'table_field' },
                     ],
                     rightElements: [
                         { field: 'name', type: 'table_field' },
                         { field: 'execution_result', type: 'table_field' },
                         { field: 'initiated_by', type: 'table_field' },
+                        { field: 'triggered_by', type: 'table_field' },
+                        { field: 'trigger_reference', type: 'table_field' },
                     ],
                 },
             ],
@@ -448,6 +471,8 @@ Form({
                 {
                     layout: 'one-column',
                     elements: [
+                        { field: 'queued_at', type: 'table_field' },
+                        { field: 'schedule', type: 'table_field' },
                         { field: 'started_at', type: 'table_field' },
                         { field: 'source_read_completed_at', type: 'table_field' },
                         { field: 'transfer_sent_at', type: 'table_field' },
@@ -649,6 +674,62 @@ Form({
                         { field: 'action', type: 'table_field' },
                         { field: 'result', type: 'table_field' },
                         { field: 'error', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+    ],
+})
+
+Form({
+    table: 'x_33764_sbridge_execution_schedule',
+    view: default_view,
+    sections: [
+        {
+            caption: 'Schedule',
+            content: [
+                {
+                    layout: 'two-column',
+                    leftElements: [
+                        { field: 'number', type: 'table_field' },
+                        { field: 'name', type: 'table_field' },
+                        { field: 'active', type: 'table_field' },
+                        { field: 'configuration', type: 'table_field' },
+                    ],
+                    rightElements: [
+                        { field: 'frequency', type: 'table_field' },
+                        { field: 'run_time', type: 'table_field' },
+                        { field: 'timezone', type: 'table_field' },
+                        { field: 'day_of_week', type: 'table_field' },
+                        { field: 'day_of_month', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+        {
+            caption: 'Run',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'next_execution', type: 'table_field' },
+                        { field: 'previous_execution', type: 'table_field' },
+                        { field: 'previous_result', type: 'table_field' },
+                        { field: 'overlap_policy', type: 'table_field' },
+                        { field: 'platform_job', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+        {
+            caption: 'Activity',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'work_notes', type: 'table_field' },
+                        { field: 'comments', type: 'table_field' },
+                        { type: 'formatter', formatterRef: 'Activities_Filtered' },
                     ],
                 },
             ],

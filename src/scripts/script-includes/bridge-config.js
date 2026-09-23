@@ -34,6 +34,7 @@ BridgeConfig.TABLE = {
     transferAudit: 'x_33764_sbridge_transfer_audit',
     processingError: 'x_33764_sbridge_processing_error',
     recordResult: 'x_33764_sbridge_record_result',
+    executionSchedule: 'x_33764_sbridge_execution_schedule',
 }
 
 BridgeConfig.prototype = {

@@ -51,7 +51,16 @@ List({
 List({
     table: 'x_33764_sbridge_movement_config',
     view: default_view,
-    columns: ['name', 'active', 'direction', 'source_table', 'target_table', 'source_instance', 'target_instance', 'policy'],
+    columns: [
+        'name',
+        'active',
+        'direction',
+        'source_table',
+        'target_table',
+        'last_result',
+        'next_execution_at',
+        'last_validation_status',
+    ],
 })
 
 List({
@@ -62,6 +71,8 @@ List({
         'configuration',
         'execution_state',
         'execution_result',
+        'execution_mode',
+        'trigger_type',
         'selected_count',
         'failed_count',
         'started_at',
@@ -111,4 +122,10 @@ List({
     table: 'x_33764_sbridge_record_result',
     view: default_view,
     columns: ['source_table', 'source_sys_id', 'action', 'result', 'target_sys_id', 'execution'],
+})
+
+List({
+    table: 'x_33764_sbridge_execution_schedule',
+    view: default_view,
+    columns: ['number', 'name', 'active', 'configuration', 'frequency', 'timezone', 'next_execution', 'previous_result'],
 })

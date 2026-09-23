@@ -17,6 +17,7 @@ BridgeSeed.prototype = {
      * @param {object} [opts]
      * @param {number} [opts.batchSize]
      * @param {string} [opts.runId] resume an open bulk_seed run
+     * @param {string} [opts.executionId] controller DEX to attach. Case 1 callers omit this.
      * @returns {object} summary
      */
     seedPolicy: function (policyId, opts) {
@@ -84,6 +85,12 @@ BridgeSeed.prototype = {
         if (batchSize > 1000) batchSize = 1000
 
         var runId = opts.runId || ''
+        var executionId = opts.executionId || ''
+        if (executionId && this._executionCancelled(executionId)) {
+            summary.reason = 'execution cancelled'
+            summary.done = true
+            return summary
+        }
         var cursor = ''
         var runGr = new GlideRecord(BridgeConfig.TABLE.run)
         if (runId && runGr.get(runId)) {
@@ -100,8 +107,10 @@ BridgeSeed.prototype = {
         }
         summary.run_id = runId
         summary.cursor = cursor
+        if (executionId) this._stampRunOnExecution(executionId, runId)
         try {
-            new BridgeDualWrite().onRunOpened(runId)
+            if (executionId) new BridgeDualWrite().attachControllerRun(executionId, runId)
+            else new BridgeDualWrite().onRunOpened(runId)
         } catch (e) {
             gs.warn('[bridge] dual-write seed open failed (ignored): ' + e)
         }
@@ -133,7 +142,7 @@ BridgeSeed.prototype = {
         while (gr.next()) {
             summary.scanned++
             lastId = gr.getUniqueValue()
-            if (this._enqueueSeed(gr, policy, localPeer, tableName, runId)) summary.enqueued++
+            if (this._enqueueSeed(gr, policy, localPeer, tableName, runId, executionId)) summary.enqueued++
         }
 
         // persist cursor / close run
@@ -157,11 +166,29 @@ BridgeSeed.prototype = {
         return summary
     },
 
-    _enqueueSeed: function (current, policy, localPeer, tableName, runId) {
+    _executionCancelled: function (executionId) {
+        var dex = new GlideRecord('x_33764_sbridge_data_execution')
+        if (!dex.get(executionId)) return false
+        return dex.getValue('execution_state') === 'cancelled'
+    },
+
+    _stampRunOnExecution: function (executionId, runId) {
+        if (!executionId || !runId) return
+        var dex = new GlideRecord('x_33764_sbridge_data_execution')
+        if (!dex.get(executionId)) return
+        if (dex.getValue('run')) return
+        dex.setValue('run', runId)
+        dex.setWorkflow(false)
+        dex.update()
+    },
+
+    _enqueueSeed: function (current, policy, localPeer, tableName, runId, executionId) {
         // Reuse capture payload shaping; write outbox with mode=bulk_seed.
+        // execution is a controller link. It is not a target field (apply reads payload.values).
         var payload = this.capture._payload(current, policy, 'insert')
         payload.mode = policy.mode
         payload.bulk = true
+        if (executionId) payload.execution = executionId
 
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.initialize()

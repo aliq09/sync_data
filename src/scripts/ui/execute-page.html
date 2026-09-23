@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+<g:evaluate>
+var configId = (RP.getParameterValue('sysparm_config') || '') + '';
+var result = new SyncBridgeExecutionService().preview(configId, { sampleLimit: 20, trigger_type: 'manual', allowInvalid: true });
+jelly.config_id = configId;
+jelly.message = result.message || '';
+jelly.config_name = result.configuration_name || '';
+jelly.source_label = result.source_label || '';
+jelly.target_label = result.target_label || '';
+jelly.filter = result.filter || '(none)';
+jelly.operation = result.operation || '';
+jelly.reference_handling = result.reference_handling || '';
+jelly.matched = result.matched || 0;
+jelly.would_update = result.would_update_in_sample || 0;
+jelly.invalid = result.status == 'invalid';
+</g:evaluate>
+<div style="padding:16px;max-width:720px;">
+  <h1>Execute data movement</h1>
+  <p><strong>$[config_name]</strong></p>
+  <p>Source: $[source_label]</p>
+  <p>Target: $[target_label]</p>
+  <p>Filter: $[filter]</p>
+  <p>Estimated records: $[matched]</p>
+  <p>Operation: $[operation]</p>
+  <p>Reference handling: $[reference_handling]</p>
+  <p>$[message]</p>
+  <j:if test="${jelly.would_update > 0}">
+    <p><strong>Warning:</strong> $[would_update] sample row(s) already map to a target and may be updated.</p>
+  </j:if>
+  <j:if test="${jelly.invalid}">
+    <p>This configuration did not pass validation. Fix the findings before executing.</p>
+    <p><a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Back to configuration</a></p>
+  </j:if>
+  <j:if test="${!jelly.invalid}">
+    <g:ui_form>
+      <input type="hidden" name="config_id" value="$[config_id]"/>
+      <input type="hidden" id="sbridge_intent" name="intent" value="execute"/>
+      <p>Execute queues a data execution and returns immediately. The existing drain sends the outbox. Dry run does not change target business data.</p>
+      <button type="submit" onclick="return sbridgeChoose('execute');">Execute</button>
+      <button type="submit" onclick="return sbridgeChoose('dry_run');">Dry run</button>
+      <a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Cancel</a>
+    </g:ui_form>
+  </j:if>
+</div>
+</j:jelly>

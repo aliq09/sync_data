@@ -57,6 +57,21 @@ Record({
 })
 
 Record({
+    $id: Now.ID['mod-schedules'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Schedules',
+        hint: 'When a configuration should run (SCH)',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_execution_schedule',
+        roles: ['x_33764_sbridge.admin'],
+        active: true,
+        order: 115,
+    },
+})
+
+Record({
     $id: Now.ID['mod-executions'],
     table: 'sys_app_module',
     data: {
@@ -311,7 +326,7 @@ Record({
     table: 'sys_app_module',
     data: {
         title: 'API diagnostics',
-        hint: 'Scripted REST API for /apply, /seed, and /ensure_capture',
+        hint: 'Scripted REST API for /apply, /seed, /executions, and /ensure_capture',
         application: menu,
         link_type: 'LIST',
         name: 'sys_ws_definition',

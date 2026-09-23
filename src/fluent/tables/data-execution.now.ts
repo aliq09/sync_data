@@ -78,12 +78,51 @@ export const x_33764_sbridge_data_execution = Table({
         target_table: TableNameColumn({ label: 'Target table' }),
         filter_snapshot: StringColumn({ label: 'Filter snapshot', maxLength: 4000, readOnly: true }),
         initiated_by: StringColumn({ label: 'Initiated by', maxLength: 100 }),
+        execution_mode: StringColumn({
+            label: 'Execution mode',
+            hint: 'Set by the execution controller. Empty on Case 1 run shadows.',
+            readOnly: true,
+            choices: {
+                dry_run: 'Dry run',
+                execute: 'Execute',
+                reconciliation: 'Reconciliation',
+                retry: 'Retry',
+                recovery: 'Recovery',
+            },
+        }),
+        trigger_type: StringColumn({
+            label: 'Trigger type',
+            readOnly: true,
+            choices: {
+                manual: 'Manual',
+                scheduled: 'Scheduled',
+                api: 'API',
+                flow: 'Flow',
+                retry: 'Retry',
+                recovery: 'Recovery',
+                system: 'System',
+            },
+        }),
+        triggered_by: StringColumn({ label: 'Triggered by', maxLength: 160, readOnly: true }),
+        trigger_reference: StringColumn({
+            label: 'Trigger reference',
+            hint: 'Schedule number, API id, or parent data execution.',
+            maxLength: 160,
+            readOnly: true,
+        }),
+        queued_at: DateTimeColumn({ label: 'Queued at', readOnly: true }),
+        schedule: ReferenceColumn({
+            label: 'Schedule',
+            referenceTable: 'x_33764_sbridge_execution_schedule',
+            readOnly: true,
+        }),
         execution_state: StringColumn({
             label: 'State',
             default: 'draft',
             choices: {
                 draft: 'Draft',
                 queued: 'Queued',
+                validating: 'Validating',
                 preparing: 'Preparing',
                 reading_source: 'Reading Source',
                 sending: 'Sending',
@@ -155,5 +194,6 @@ export const x_33764_sbridge_data_execution = Table({
         { name: 'idx_dex_run', unique: false, element: 'run' },
         { name: 'idx_dex_key', unique: false, element: 'legacy_key' },
         { name: 'idx_dex_state', unique: false, element: 'execution_state' },
+        { name: 'idx_dex_config', unique: false, element: 'configuration' },
     ],
 })

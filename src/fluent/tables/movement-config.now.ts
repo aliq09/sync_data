@@ -7,6 +7,7 @@ import {
     FieldListColumn,
     TableNameColumn,
     ReferenceColumn,
+    DateTimeColumn,
     GenericColumn,
 } from '@servicenow/sdk/core'
 
@@ -90,9 +91,53 @@ export const x_33764_sbridge_movement_config = Table({
         batch_size: IntegerColumn({ label: 'Batch size', default: 250 }),
         policy: ReferenceColumn({
             label: 'Sync policy',
-            hint: 'Case 1 policy this configuration shadows. Capture still uses the policy.',
+            hint: 'Case 1 policy this configuration shadows. Capture still uses the policy. Execute resolves this policy for BridgeSeed.',
             referenceTable: 'x_33764_sbridge_policy',
         }),
+        concurrent_execution_policy: StringColumn({
+            label: 'Concurrent execution',
+            hint: 'Prevent blocks a second run while one execution for this configuration is still open. Queue and Allow are partial in 0.3.0.',
+            default: 'prevent',
+            choices: {
+                prevent: 'Prevent',
+                queue: 'Queue',
+                allow: 'Allow',
+            },
+        }),
+        last_execution: ReferenceColumn({
+            label: 'Last execution',
+            referenceTable: 'x_33764_sbridge_data_execution',
+            readOnly: true,
+        }),
+        last_result: StringColumn({
+            label: 'Last result',
+            readOnly: true,
+            choices: {
+                successful: 'Successful',
+                successful_with_warnings: 'Successful with Warnings',
+                partially_completed: 'Partially Completed',
+                failed: 'Failed',
+                cancelled: 'Cancelled',
+            },
+        }),
+        last_run_at: DateTimeColumn({ label: 'Last run', readOnly: true }),
+        next_execution_at: DateTimeColumn({
+            label: 'Next execution',
+            hint: 'Earliest next run across active execution schedules.',
+            readOnly: true,
+        }),
+        last_validation_status: StringColumn({
+            label: 'Last validation',
+            default: 'never',
+            readOnly: true,
+            choices: {
+                never: 'Never',
+                valid: 'Valid',
+                valid_with_warnings: 'Valid with warnings',
+                invalid: 'Invalid',
+            },
+        }),
+        last_validated_at: DateTimeColumn({ label: 'Last validated', readOnly: true }),
         work_notes: GenericColumn({
             columnType: 'journal_input',
             label: 'Work notes',
