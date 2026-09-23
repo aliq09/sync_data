@@ -115,11 +115,6 @@ declare global {
                         table: 'sys_ui_related_list'
                         id: '6a3ef6b3c7a140dfab56887a5699bb09'
                     }
-                    'dex-snapshot-note': {
-                        table: 'sys_ui_annotation'
-                        id: '629896aabcdb407f979c0c7d60fe8653'
-                        deleted: true
-                    }
                     'job-drain': {
                         table: 'sysauto_script'
                         id: 'fba81b6094ff49f5a13529d2c343c059'
@@ -4037,21 +4032,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_section'
-                        id: '4568c2f0e3754850bc8f46babb3f7030'
-                        key: {
-                            name: 'x_33764_sbridge_data_execution'
-                            caption: 'Configuration Snapshot'
-                            view: {
-                                id: 'Default view'
-                                key: {
-                                    name: 'NULL'
-                                }
-                            }
-                            sys_domain: 'global'
-                        }
-                    },
-                    {
                         table: 'sys_ui_element'
                         id: '456e495c512c4252a3bdc812ad80c562'
                         key: {
@@ -4316,6 +4296,27 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_record_result'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '4c27e767676c4bb08c8820010017669f'
+                        key: {
+                            sys_ui_form: 'a39c161c38d7471dbf6001749a463750'
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -5580,6 +5581,21 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_section'
+                        id: '5edf9b4f473a422198044825a384682b'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            caption: 'Configuration Snapshot'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '5ef0b07c890345e3afb870a6164958dd'
                         key: {
@@ -6267,29 +6283,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_element'
-                        id: '6ab52db9b50447efbb71bee6a2f0d693'
-                        deleted: true
-                        key: {
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: '629896aabcdb407f979c0c7d60fe8653'
-                            position: '0'
-                        }
-                    },
-                    {
                         table: 'sys_choice'
                         id: '6ad8cf0540d14e73ace76dfa02f3bf37'
                         key: {
@@ -6336,39 +6329,6 @@ declare global {
                         id: '6b1d00c5ac1748e69826b3c315813714'
                         key: {
                             name: 'x_33764_sbridge.operator'
-                        }
-                    },
-                    {
-                        table: 'sys_ui_form_section'
-                        id: '6b29bd857b6742669ea3a59f60430bae'
-                        key: {
-                            sys_ui_form: {
-                                id: 'a39c161c38d7471dbf6001749a463750'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
                         }
                     },
                     {
@@ -6644,28 +6604,6 @@ declare global {
                             element: 'NULL'
                             relationship: 'NULL'
                             parent: 'NULL'
-                        }
-                    },
-                    {
-                        table: 'sys_ui_element'
-                        id: '70080dc050184f3b800217123e107847'
-                        key: {
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'config_snapshot'
-                            position: '0'
                         }
                     },
                     {
@@ -8012,40 +7950,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_form_section'
-                        id: '8694a1ef2b254f08a716de8faf19e8a5'
-                        deleted: true
-                        key: {
-                            sys_ui_form: {
-                                id: 'a39c161c38d7471dbf6001749a463750'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            sys_ui_section: {
-                                id: 'ba01ee71317a425596b2688d5c0ac986'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                        }
-                    },
-                    {
                         table: 'sys_index'
                         id: '86e3ab3d834e4a539d45a91a13e2c6be'
                         key: {
@@ -8961,51 +8865,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_element'
-                        id: '94a01a552b854c77bd4890e6d6f5f69c'
-                        key: {
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'run'
-                            position: '1'
-                        }
-                    },
-                    {
-                        table: 'sys_ui_element'
-                        id: '94d16752d301437db55a808b01c51680'
-                        deleted: true
-                        key: {
-                            sys_ui_section: {
-                                id: 'ba01ee71317a425596b2688d5c0ac986'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'config_snapshot'
-                            position: '0'
-                        }
-                    },
-                    {
                         table: 'sys_ui_section'
                         id: '94d6858123274a569aa7cd77bf09f5a3'
                         key: {
@@ -9176,29 +9035,6 @@ declare global {
                                 }
                             }
                             element: 'ref_map'
-                            position: '1'
-                        }
-                    },
-                    {
-                        table: 'sys_ui_element'
-                        id: '9a14daa826fa4d1eb06beeb1564f9482'
-                        deleted: true
-                        key: {
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'config_snapshot'
                             position: '1'
                         }
                     },
@@ -10887,22 +10723,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_section'
-                        id: 'ba01ee71317a425596b2688d5c0ac986'
-                        deleted: true
-                        key: {
-                            name: 'x_33764_sbridge_data_execution'
-                            caption: 'Configuration snapshot'
-                            view: {
-                                id: 'Default view'
-                                key: {
-                                    name: 'NULL'
-                                }
-                            }
-                            sys_domain: 'global'
-                        }
-                    },
-                    {
                         table: 'sys_documentation'
                         id: 'ba3ecafe64a2471cad0e38b0e38d4957'
                         key: {
@@ -11549,6 +11369,28 @@ declare global {
                             value: 'failed'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'c338bd1a7d664c3c9f80b4662e686f75'
+                        key: {
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'config_snapshot'
+                            position: '0'
                         }
                     },
                     {
@@ -12944,29 +12786,6 @@ declare global {
                                 }
                             }
                             element: 'role'
-                        }
-                    },
-                    {
-                        table: 'sys_ui_element'
-                        id: 'd87bf0d631a44cfdbf56c4a71bdb9501'
-                        deleted: true
-                        key: {
-                            sys_ui_section: {
-                                id: '4568c2f0e3754850bc8f46babb3f7030'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration Snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'run'
-                            position: '2'
                         }
                     },
                     {
@@ -15105,6 +14924,28 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'fd40f7eb7c724d1fa2646218253bea75'
+                        key: {
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'run'
+                            position: '1'
                         }
                     },
                     {

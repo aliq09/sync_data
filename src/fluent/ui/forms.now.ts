@@ -462,18 +462,11 @@ Form({
             ],
         },
         {
-            caption: 'Configuration Snapshot',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [
-                        { field: 'config_snapshot', type: 'table_field' },
-                        { field: 'run', type: 'table_field' },
-                    ],
-                },
-            ],
-        },
-        {
+            // Configuration Snapshot is not declared here. Form() and an explicit
+            // Record() for the same caption coalesce to one record and fail the build.
+            // The section, config_snapshot, run, and the Default-view link are
+            // explicit records in dex-snapshot-section.now.ts. now.postbuild.mjs
+            // inserts that link into this form's section file at position 4.
             caption: 'Notes',
             content: [
                 {
