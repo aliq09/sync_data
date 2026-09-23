@@ -467,12 +467,6 @@ Form({
                 {
                     layout: 'one-column',
                     elements: [
-                        {
-                            type: 'annotation',
-                            annotationId: Now.ID['dex-snapshot-note'],
-                            text: 'Frozen when the execution started. Later configuration edits do not change this JSON. Acknowledgement time and count stay empty until a later phase.',
-                            isPlainText: true,
-                        },
                         { field: 'config_snapshot', type: 'table_field' },
                         { field: 'run', type: 'table_field' },
                     ],

@@ -374,9 +374,10 @@ BridgeDualWrite.prototype = {
             }
         }
 
-        // number stays unset here. Blank or nil is filled by the before-insert rule.
-        if (isNew) dex.insert()
-        else dex.update()
+        if (isNew) {
+            this._ensurePlatformNumber(dex)
+            dex.insert()
+        } else dex.update()
     },
 
     _stampDexName: function (dex, configId) {
@@ -915,9 +916,57 @@ BridgeDualWrite.prototype = {
             if (this._assign(gr, field, values[field])) changed = true
         }
         if (!changed) return gr.getUniqueValue()
-        if (isNew) return gr.insert() || ''
+        if (isNew) {
+            this._ensurePlatformNumber(gr)
+            return gr.insert() || ''
+        }
         gr.update()
         return gr.getUniqueValue()
+    },
+
+    /**
+     * Fill DEX###### / TRN###### before insert when number is still nil.
+     * The before-insert rule does the same and no-ops if this already set a value.
+     * getNextObjNumberPadded consumes sys_number. Epoch milliseconds are never used.
+     */
+    _ensurePlatformNumber: function (gr) {
+        if (!gr || !gr.isValidField('number')) return
+        var table = gr.getTableName()
+        if (table !== BridgeConfig.TABLE.dataExecution && table !== BridgeConfig.TABLE.transfer) return
+        if (gr.getValue('number')) return
+        var assigned = ''
+        try {
+            assigned = new GlideNumberManager(table).getNextObjNumberPadded()
+        } catch (e1) {
+            gs.warn('[bridge] GlideNumberManager failed for ' + table + ': ' + e1)
+        }
+        if (!assigned) {
+            try {
+                assigned = new NumberManager(table).getNextObjNumberPadded()
+            } catch (e2) {
+                gs.warn('[bridge] NumberManager failed for ' + table + ': ' + e2)
+            }
+        }
+        if (!assigned) assigned = this._nextFromSysNumber(table)
+        if (assigned) gr.setValue('number', assigned)
+    },
+
+    _nextFromSysNumber: function (tableName) {
+        var row = new GlideRecord('sys_number')
+        if (!row.isValid()) return ''
+        row.addQuery('category', tableName)
+        row.setLimit(1)
+        row.query()
+        if (!row.next()) return ''
+        var prefix = row.getValue('prefix') || ''
+        var digits = parseInt(row.getValue('maximum_digits'), 10) || 6
+        var n = parseInt(row.getValue('number'), 10)
+        if (isNaN(n) || n < 1) n = 1
+        var padded = String(n)
+        while (padded.length < digits) padded = '0' + padded
+        row.setValue('number', String(n + 1))
+        if (!row.update()) return ''
+        return prefix + padded
     },
 
     _assign: function (gr, field, value) {

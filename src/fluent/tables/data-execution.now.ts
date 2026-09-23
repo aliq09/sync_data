@@ -63,7 +63,7 @@ export const x_33764_sbridge_data_execution = Table({
         }),
         config_snapshot: JsonColumn({
             label: 'Configuration snapshot',
-            hint: 'Frozen at start. Later configuration edits do not rewrite this JSON.',
+            hint: 'Frozen at start. Shown read-only in the Configuration Snapshot form section.',
             readOnly: true,
         }),
         source_instance: ReferenceColumn({
