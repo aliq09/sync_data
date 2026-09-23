@@ -15,7 +15,8 @@
  *
  * config_snapshot is written once and never replaced.
  * Correlation ID is a local stub (SB- + outbox sys_id). It is not added to the apply payload.
- * DEX/TRN numbers are left empty on insert so table autoNumber assigns DEX000001 / TRN000001.
+ * DEX/TRN inserts use newRecord() and never set number. The before-insert rule (or the
+ * number column default) assigns DEX###### / TRN###### from sys_number. Epoch numbers are not written.
  * acknowledged_at / acknowledged_count / target receipt milestones stay empty — no staged ACK.
  */
 var BridgeDualWrite = Class.create()
@@ -284,7 +285,8 @@ BridgeDualWrite.prototype = {
         dex.query()
         var isNew = !dex.next()
         if (isNew) {
-            dex.initialize()
+            // newRecord() applies defaults without forcing number to ''. Do not set number.
+            dex.newRecord()
             dex.setValue('legacy_key', key)
             dex.setValue('run', runId)
         }
@@ -372,7 +374,7 @@ BridgeDualWrite.prototype = {
             }
         }
 
-        // Leave number empty. Table autoNumber assigns DEX + 6 digits. Do not write an epoch.
+        // number stays unset here. Blank or nil is filled by the before-insert rule.
         if (isNew) dex.insert()
         else dex.update()
     },
@@ -893,9 +895,9 @@ BridgeDualWrite.prototype = {
         gr.query()
         var isNew = !gr.next()
         if (isNew) {
-            gr.initialize()
+            // newRecord() for TRN (and any other shadow). Never write number; the before-insert rule pads it.
+            gr.newRecord()
             gr.setValue('legacy_key', key)
-            // DEX/TRN autoNumber runs only when number is still empty.
         }
         var changed = isNew
         for (var field in values) {

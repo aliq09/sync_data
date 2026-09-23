@@ -14,8 +14,9 @@ import {
  * config_snapshot is written once at start and not revised when the configuration changes.
  * State and Result stay separate. Case 1 still closes from the current /apply contract.
  *
- * Numbering is the table autoNumber (prefix DEX, 6 digits). Inserts leave `number` empty
- * so the platform assigns DEX000001. Do not script prefix + epoch milliseconds.
+ * Numbering is autoNumber (prefix DEX, 6 digits) plus the number column default
+ * javascript:getNextObjNumberPadded(). A before-insert rule assigns the same counter
+ * when the field is still nil. Never prefix + epoch milliseconds.
  * acknowledged_at and acknowledged_count stay empty until a later acknowledgement phase.
  */
 export const x_33764_sbridge_data_execution = Table({
@@ -33,7 +34,12 @@ export const x_33764_sbridge_data_execution = Table({
         numberOfDigits: 6,
     },
     schema: {
-        number: StringColumn({ label: 'Number', maxLength: 40, readOnly: true }),
+        number: StringColumn({
+            label: 'Number',
+            maxLength: 40,
+            readOnly: true,
+            default: 'javascript:getNextObjNumberPadded();',
+        }),
         name: StringColumn({
             label: 'Name',
             hint: 'Configuration name frozen when the execution started.',

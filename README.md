@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.2.0 (Phase 2 Data Execution record page) |
+| **App version** | 0.2.1 (Phase 2 Data Execution record page) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -43,13 +43,13 @@ Operator navigation is Overview, Data Movement (Configurations, Data Executions)
 
 Case 1 is unchanged: capture still writes the outbox, drain still POSTs `/api/x_33764_sbridge/sync/apply` with the connection-alias Basic Auth path, and `/seed` plus `/ensure_capture` stay as they are. `x_33764_sbridge.dual_write` defaults to true and best-effort shadows Data Execution, Transfer, and Transfer Audit (plus processing errors and record results) from those same hooks. A shadow failure is logged and does not fail drain or apply. The peer table is relabeled Instance in place. There is no staged acknowledgement rewrite in this release.
 
-## Phase 2 — Data Execution record page (0.2.0)
+## Phase 2 — Data Execution record page (0.2.1)
 
 Opening a Data Execution in the classic UI shows, in order: **Header**, **Scope**, **Counts**, **Timeline**, **Configuration Snapshot** (read-only), and **Notes** with the Activities formatter. The Default view related lists are Transfers, Record Results, Transfer Audits, Processing Errors, and Record Mappings (mappings for this execution's source table and target instance). The Data Executions list shows number, configuration, state, result, selected, failed, started, and completed.
 
-New Data Execution and Transfer rows leave `number` empty on insert. The table number attribute assigns `DEX000001` / `TRN000001`. The before-insert rule that wrote `DEX` plus epoch milliseconds (`DEX1790…`) is inactive and no longer assigns a number. Existing epoch-style numbers are not rewritten.
+New Data Execution and Transfer rows get `DEX######` / `TRN######` from the platform counter (`sys_number`, 6 digits). The number column default is `javascript:getNextObjNumberPadded()`. Shadow inserts call `newRecord()` and do not set `number`. A before-insert rule assigns with `GlideNumberManager.getNextObjNumberPadded()` only when the field is still nil, so an empty string from `initialize()` cannot leave the number blank. Epoch-style values (`DEX1790…`) are not written. Existing epoch numbers are left as historical.
 
-Dual-write still does not change Case 1 movement. It fills state, result, the timestamps Case 1 already knows (started, transfer sent, execution completed), selected/sent/failed plus insert/update/skip counts from the apply result, and a system work note when state changes. `acknowledged_at` and `acknowledged_count` stay empty for a later phase. A UI Builder workspace is not part of 0.2.0 (Phase 2b).
+Dual-write still does not change Case 1 movement. It fills state, result, the timestamps Case 1 already knows (started, transfer sent, execution completed), selected/sent/failed plus insert/update/skip counts from the apply result, and a system work note when state changes. `acknowledged_at` and `acknowledged_count` stay empty for a later phase. A UI Builder workspace is not part of this release (Phase 2b).
 
 Configurations keep a **Data Executions** related list and a **View latest execution** form button.
 

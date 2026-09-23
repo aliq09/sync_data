@@ -1,10 +1,10 @@
 import { BusinessRule } from '@servicenow/sdk/core'
 
 /**
- * Retired. Data Execution and Transfer numbers come from table autoNumber
- * (sys_number: DEX/TRN + 6 digits) when the field is empty on insert.
- * These rules stay installed but inactive so an upgrade overwrites the old
- * script that wrote prefix + epoch milliseconds (DEX1790…).
+ * Assign DEX###### / TRN###### from the table sys_number counter when number is nil.
+ * Active on purpose: scripted shadow inserts do not pick up auto-number unless this
+ * runs (or the column default javascript:getNextObjNumberPadded() already filled it).
+ * Does not write prefix + epoch milliseconds.
  */
 BusinessRule({
     $id: Now.ID['br-dex-number'],
@@ -13,7 +13,7 @@ BusinessRule({
     when: 'before',
     action: ['insert'],
     order: 50,
-    active: false,
+    active: true,
     script: Now.include('../../scripts/jobs/assign-number.js'),
 })
 
@@ -24,6 +24,6 @@ BusinessRule({
     when: 'before',
     action: ['insert'],
     order: 50,
-    active: false,
+    active: true,
     script: Now.include('../../scripts/jobs/assign-number.js'),
 })
