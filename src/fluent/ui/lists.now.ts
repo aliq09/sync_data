@@ -63,7 +63,6 @@ List({
         'execution_state',
         'execution_result',
         'selected_count',
-        'sent_count',
         'failed_count',
         'started_at',
         'execution_completed_at',

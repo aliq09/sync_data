@@ -377,21 +377,6 @@ Form({
                 },
             ],
         },
-        {
-            caption: 'Executions',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [
-                        {
-                            type: 'list',
-                            listType: '12M',
-                            listRef: 'x_33764_sbridge_data_execution.configuration',
-                        },
-                    ],
-                },
-            ],
-        },
     ],
 })
 
@@ -400,7 +385,7 @@ Form({
     view: default_view,
     sections: [
         {
-            caption: 'Execution',
+            caption: 'Header',
             content: [
                 {
                     layout: 'two-column',
@@ -408,13 +393,11 @@ Form({
                         { field: 'number', type: 'table_field' },
                         { field: 'configuration', type: 'table_field' },
                         { field: 'execution_state', type: 'table_field' },
-                        { field: 'initiated_by', type: 'table_field' },
                     ],
                     rightElements: [
-                        { field: 'run', type: 'table_field' },
+                        { field: 'name', type: 'table_field' },
                         { field: 'execution_result', type: 'table_field' },
-                        { field: 'duration_seconds', type: 'table_field' },
-                        { field: 'started_at', type: 'table_field' },
+                        { field: 'initiated_by', type: 'table_field' },
                     ],
                 },
             ],
@@ -460,35 +443,31 @@ Form({
             ],
         },
         {
-            caption: 'Milestones',
-            content: [
-                {
-                    layout: 'two-column',
-                    leftElements: [
-                        { field: 'source_read_completed_at', type: 'table_field' },
-                        { field: 'target_received_at', type: 'table_field' },
-                        { field: 'acknowledged_at', type: 'table_field' },
-                        { field: 'execution_completed_at', type: 'table_field' },
-                    ],
-                    rightElements: [
-                        { field: 'transfer_sent_at', type: 'table_field' },
-                        { field: 'target_processing_completed_at', type: 'table_field' },
-                        { field: 'transfer_completed_at', type: 'table_field' },
-                    ],
-                },
-            ],
-        },
-        {
-            caption: 'Configuration snapshot',
+            caption: 'Timeline',
             content: [
                 {
                     layout: 'one-column',
-                    elements: [{ field: 'config_snapshot', type: 'table_field' }],
+                    elements: [
+                        { field: 'started_at', type: 'table_field' },
+                        { field: 'source_read_completed_at', type: 'table_field' },
+                        { field: 'transfer_sent_at', type: 'table_field' },
+                        { field: 'target_received_at', type: 'table_field' },
+                        { field: 'target_processing_completed_at', type: 'table_field' },
+                        { field: 'acknowledged_at', type: 'table_field' },
+                        { field: 'transfer_completed_at', type: 'table_field' },
+                        { field: 'execution_completed_at', type: 'table_field' },
+                        { field: 'duration_seconds', type: 'table_field' },
+                    ],
                 },
             ],
         },
         {
-            caption: 'Activity',
+            // Configuration Snapshot is not declared here. Form() and an explicit
+            // Record() for the same caption coalesce to one record and fail the build.
+            // The section, config_snapshot, run, and the Default-view link are
+            // explicit records in dex-snapshot-section.now.ts. now.postbuild.mjs
+            // inserts that link into this form's section file at position 4.
+            caption: 'Notes',
             content: [
                 {
                     layout: 'one-column',
@@ -496,48 +475,6 @@ Form({
                         { field: 'work_notes', type: 'table_field' },
                         { field: 'comments', type: 'table_field' },
                         { type: 'formatter', formatterRef: 'Activities_Filtered' },
-                    ],
-                },
-            ],
-        },
-        {
-            caption: 'Transfers',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [{ type: 'list', listType: '12M', listRef: 'x_33764_sbridge_transfer.execution' }],
-                },
-            ],
-        },
-        {
-            caption: 'Audit',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [
-                        { type: 'list', listType: '12M', listRef: 'x_33764_sbridge_transfer_audit.execution' },
-                    ],
-                },
-            ],
-        },
-        {
-            caption: 'Errors',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [
-                        { type: 'list', listType: '12M', listRef: 'x_33764_sbridge_processing_error.execution' },
-                    ],
-                },
-            ],
-        },
-        {
-            caption: 'Record results',
-            content: [
-                {
-                    layout: 'one-column',
-                    elements: [
-                        { type: 'list', listType: '12M', listRef: 'x_33764_sbridge_record_result.execution' },
                     ],
                 },
             ],

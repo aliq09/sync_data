@@ -36,6 +36,7 @@ declare global {
                     'br-dex-number': {
                         table: 'sys_script'
                         id: 'ab994e35f10a44c6922ea26e22c75581'
+                        deleted: false
                     }
                     'br-policy-ensure-capture': {
                         table: 'sys_script'
@@ -48,6 +49,7 @@ declare global {
                     'br-trn-number': {
                         table: 'sys_script'
                         id: '8c81d5c664de438e912870a618bc97b4'
+                        deleted: false
                     }
                     BridgeApi: {
                         table: 'sys_script_include'
@@ -84,6 +86,38 @@ declare global {
                     BridgeTransport: {
                         table: 'sys_script_include'
                         id: '3672051d7deb4445ac9cda193f55d3ab'
+                    }
+                    'dex-rel-audit': {
+                        table: 'sys_ui_related_list_entry'
+                        id: '2f0f01644cb9484ca7b2355f9bc44a93'
+                    }
+                    'dex-rel-errors': {
+                        table: 'sys_ui_related_list_entry'
+                        id: 'c3ae0ba463294a1997edf8eee80546b5'
+                    }
+                    'dex-rel-mappings': {
+                        table: 'sys_relationship'
+                        id: 'ce74c5123a424289b7b71ede5b70fe29'
+                    }
+                    'dex-rel-mappings-entry': {
+                        table: 'sys_ui_related_list_entry'
+                        id: '8685de4f393e4268a13946070d7b2502'
+                    }
+                    'dex-rel-record-results': {
+                        table: 'sys_ui_related_list_entry'
+                        id: 'ab974c0c4b0945738871f5f6246ace01'
+                    }
+                    'dex-rel-transfers': {
+                        table: 'sys_ui_related_list_entry'
+                        id: '2844f9c6715a4282a037978e255ef331'
+                    }
+                    'dex-related-list': {
+                        table: 'sys_ui_related_list'
+                        id: '6a3ef6b3c7a140dfab56887a5699bb09'
+                    }
+                    'fix-dex-snapshot-section': {
+                        table: 'sys_script_fix'
+                        id: '92a5895da553408f931fb924bcfc3480'
                     }
                     'job-drain': {
                         table: 'sysauto_script'
@@ -173,6 +207,14 @@ declare global {
                         table: 'sys_app_module'
                         id: '64c7c038ecc14ceaae156e80ff5cc391'
                     }
+                    'mvcfg-rel-executions': {
+                        table: 'sys_ui_related_list_entry'
+                        id: 'b6dc9dc45f1d478eb14097df8d0bc6d0'
+                    }
+                    'mvcfg-related-list': {
+                        table: 'sys_ui_related_list'
+                        id: '0f92adc40be94db9bc0bb8b9363806ab'
+                    }
                     package_json: {
                         table: 'sys_module'
                         id: '1c478f472a3b442099982ee58f01bd3c'
@@ -224,6 +266,10 @@ declare global {
                     'sync-bridge-menu': {
                         table: 'sys_app_application'
                         id: 'a41d13e7cffe417ea29af547fafbaba8'
+                    }
+                    'ua-view-latest-execution': {
+                        table: 'sys_ui_action'
+                        id: '174d7879a38944f18ebcc9aa75ababc4'
                     }
                 }
                 composite: [
@@ -453,6 +499,21 @@ declare global {
                     },
                     {
                         table: 'sys_ui_section'
+                        id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            caption: 'Timeline'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
                         id: '0308f4436bbc49358a74dfd16c6ff764'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
@@ -501,6 +562,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '03ff577b4e634de984af4410aea117a7'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '08d71da8cd134a4fbbeaed05a3d9799b'
@@ -598,6 +660,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '0594a675cae14536ab486dd68cf8745b'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -637,6 +700,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '062868e0cc194e4d84f3baf13a6f07c5'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'f278da717e8240ada234446c8d847389'
@@ -798,6 +862,7 @@ declare global {
                     {
                         table: 'sys_ui_section'
                         id: '08d71da8cd134a4fbbeaed05a3d9799b'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Activity'
@@ -852,6 +917,20 @@ declare global {
                             }
                             element: 'apply_mode'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '08fe56bcd8024f74b4c17f76d6a8c362'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'name'
                         }
                     },
                     {
@@ -1239,6 +1318,7 @@ declare global {
                     {
                         table: 'sys_ui_section'
                         id: '12e33aa8dba9408f9db5f7f6031e171d'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Transfers'
@@ -1438,6 +1518,7 @@ declare global {
                     {
                         table: 'sys_ui_list_element'
                         id: '18ae1b363baa4b7c85cfb7db5c482d42'
+                        deleted: true
                         key: {
                             list_id: {
                                 id: '4f74daac87514b558134534ca25e81e8'
@@ -1491,6 +1572,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '18f224040c2e44609fddece60e10e905'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -1706,6 +1788,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '1c914cf0cb624a46b2f3a6a4f0f23981'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -1731,6 +1814,20 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'started_at'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '1d7574c8d78146859566a24885bbaf57'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'execution_result'
                         }
                     },
                     {
@@ -1792,6 +1889,20 @@ declare global {
                             }
                             element: 'target_sys_id'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '1e4a8fc4f5ab44f49624ed2d814730ff'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'target_processing_completed_at'
                         }
                     },
                     {
@@ -1991,6 +2102,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '232782c1068c4763a85b5ac41b34a928'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'execution_state'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '235455370b334e68836b25eb3b1bdc58'
                         key: {
@@ -2052,6 +2177,20 @@ declare global {
                             name: 'x_33764_sbridge_policy'
                             element: 'owner_peer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '24d5cb9d21eb4cc7a1d9d06b5a5234c8'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'configuration'
                         }
                     },
                     {
@@ -2122,6 +2261,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_receipt'
                             element: 'peer'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '26d28d87a22d41f589e5c077b8d3efef'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'acknowledged_at'
+                            position: '5'
                         }
                     },
                     {
@@ -2348,6 +2509,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_action_role'
+                        id: '2afb79c8b7b54c16bf4799f9355a0bf2'
+                        key: {
+                            sys_ui_action: '174d7879a38944f18ebcc9aa75ababc4'
+                            sys_user_role: {
+                                id: 'f5f25fcb4c514e85a2e8485639714bae'
+                                key: {
+                                    name: 'x_33764_sbridge.reader'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '2bc50a5ae3d1494db9144bb4f02f57aa'
                         key: {
@@ -2395,6 +2569,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'base_url'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '2cbc3fc60ce74a6582eeaf2635bf49e8'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'name'
+                            position: '5'
                         }
                     },
                     {
@@ -2682,6 +2878,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '3112525bdbb24ebfab2b8013a77aad70'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '5649ba761b174efe8ee0598682777559'
@@ -2702,6 +2899,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '319d7efe8d764ed29bc699121de6e266'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'received_count'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '3237943f1fe944f59c9451b7c9e567a3'
                         key: {
@@ -2719,6 +2930,34 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '32a30ae5bb9849229ef81025dad6f7cc'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'initiated_by'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '32d7f25558de4fd585c8fb86c85996e0'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'config_snapshot'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list'
                         id: '32fbd4c48bcd4c45b065a0f850883762'
                         key: {
@@ -2733,6 +2972,14 @@ declare global {
                             element: 'NULL'
                             relationship: 'NULL'
                             parent: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy'
+                        id: '33344230880144c982d530dfb1b5cca6'
+                        key: {
+                            table: 'x_33764_sbridge_transfer_audit'
+                            short_description: 'Hide empty staged acknowledgement fields'
                         }
                     },
                     {
@@ -2960,6 +3207,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '36a0d82de3794f3ea5df8eb30b907919'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -3040,6 +3288,20 @@ declare global {
                             value: 'drain'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '372e5f9002894880b2273bb8488b20aa'
+                        key: {
+                            ui_policy: {
+                                id: '33344230880144c982d530dfb1b5cca6'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Hide empty staged acknowledgement fields'
+                                }
+                            }
+                            field: 'acknowledged_at'
                         }
                     },
                     {
@@ -3200,6 +3462,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '3a52376e76df48c0a5e505c1af4d9bf8'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.end_split'
+                            position: '8'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '3b53a82640ba4b30bba00996321410f4'
                         key: {
@@ -3230,6 +3514,28 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '3ba04b73f3f34f9da56631b738b81496'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'execution_result'
+                            position: '6'
                         }
                     },
                     {
@@ -3456,6 +3762,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '41649541fa3b42499a928576fda960c1'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '12e33aa8dba9408f9db5f7f6031e171d'
@@ -3486,6 +3793,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '4231fd1063b0441e9b103570f8628efa'
+                        key: {
+                            sys_ui_section: {
+                                id: '922b8eccea4a474db47344115b2dab69'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Notes'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'work_notes'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '42384837aa2b416f9f6ed4043e662d1d'
                         key: {
                             sys_ui_section: {
@@ -3504,6 +3833,14 @@ declare global {
                             }
                             element: 'updated_count'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy'
+                        id: '424eab7705ce4b618dc35142a61f6edd'
+                        key: {
+                            table: 'x_33764_sbridge_data_execution'
+                            short_description: 'Lock a data execution after it leaves Draft'
                         }
                     },
                     {
@@ -3527,6 +3864,20 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_run'
                             col_name_string: 'peer,type'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '430391f3f6dc45bfa0ec0d21a5b7fe2b'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'number'
                         }
                     },
                     {
@@ -3588,6 +3939,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '4438a55640bc42359360e4a51751081b'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'failed_count'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '4492c32897cd4234953e9af1b6e750cf'
                         key: {
@@ -3601,6 +3966,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'acknowledged_at'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '44ad1717357b4f12823b0826a3d985b4'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'initiated_by'
+                            position: '7'
                         }
                     },
                     {
@@ -3649,8 +4036,31 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '456e495c512c4252a3bdc812ad80c562'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'duration_seconds'
+                            position: '8'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '45792b67565d4fd2b236b5676ea7954b'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Milestones'
@@ -3676,7 +4086,30 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '468381c81611486085960845e4c94f96'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'transfer_completed_at'
+                            position: '6'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '4713eadab85e4984a37d867715a5927b'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -3699,6 +4132,7 @@ declare global {
                     {
                         table: 'sys_ui_section'
                         id: '471cbffcd9dd4335ab14a50b1a328809'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Errors'
@@ -3840,6 +4274,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '4b51ee5e8e794248822ec26ef83e5b14'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -3868,6 +4303,27 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_form_section'
+                        id: '4c27e767676c4bb08c8820010017669f'
+                        key: {
+                            sys_ui_form: 'a39c161c38d7471dbf6001749a463750'
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '4c791bc0389e470485d96ea6efe747ab'
                         key: {
@@ -3888,6 +4344,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '4c95880de5754348824442a1ebe3393e'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -3910,6 +4367,7 @@ declare global {
                     {
                         table: 'sys_ui_section'
                         id: '4cd96c278874491fbe195d09cb4a4311'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             caption: 'Executions'
@@ -4060,6 +4518,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'record_count'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '50e2cf28aebe4a38ad02f2185a2b5417'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'execution_state'
+                            position: '3'
                         }
                     },
                     {
@@ -4394,6 +4874,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '5577506df39b43c784e8ee56009a3bff'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'duration_seconds'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '558562fb98ee45fc9929f2f94d4cda42'
                         key: {
@@ -4441,8 +4935,23 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '562f0b331a51493c8fc9a90185d64257'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'updated_count'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '5649ba761b174efe8ee0598682777559'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Record results'
@@ -4641,6 +5150,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '597275aae4d44be8aa7b931f86b8c21e'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -4774,11 +5284,39 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '5a26239f31a94b9b9b6db9eddc4f2edd'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'transfer_completed_at'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '5a29a392941c414cb63496f2ced432c5'
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'last_successful_drain'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '5a7d97a540e74e68bd78addf8d3245ec'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'filter_snapshot'
                         }
                     },
                     {
@@ -4877,6 +5415,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '5bb23c8292414f2bb5c6159b570209fb'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -5021,6 +5560,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '5e1cd83cbacf49a6be0e10242340ff50'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'source_read_completed_at'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '5eada9b293924bde9e22b5db2c30876b'
                         key: {
@@ -5029,6 +5582,21 @@ declare global {
                             value: 'inbound'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: '5edf9b4f473a422198044825a384682b'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            caption: 'Configuration Snapshot'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -5103,6 +5671,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '5fd46a6a953141f0adb3a8d22edbfa77'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '471cbffcd9dd4335ab14a50b1a328809'
@@ -5189,6 +5758,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '62c9f021227b435eabffba0a0bdaddcb'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -5215,6 +5785,20 @@ declare global {
                             name: 'x_33764_sbridge_transfer'
                             element: 'error'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '62e6249b6a44498cb715b0fcb46e550d'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'skipped_count'
                         }
                     },
                     {
@@ -5469,6 +6053,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '681f6c57c4594ed7a21c582de74e4f8c'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -5491,6 +6076,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '682fe833ad9c46acbb894ce42a38f495'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: '57a6014a2f2642af95982d720ba45497'
@@ -5625,6 +6211,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '6965eb9e610b4014aa3b068acc8f6088'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'selected_count'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '69d91d878e8045d897e52bb13120078b'
                         key: {
@@ -5704,6 +6304,28 @@ declare global {
                             name: 'x_33764_sbridge_outbox'
                             element: 'mode'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '6af96145ddd4475383ce1dffa57b16de'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_processing_completed_at'
+                            position: '4'
                         }
                     },
                     {
@@ -5927,6 +6549,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '6ea38069734b4256985349faaa7037ff'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'target_received_at'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '6f9d90a925984cd58f6ff6390d361b0e'
                         key: {
@@ -5937,6 +6573,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '6faa3383c2b243cc813dc3e77c95e78b'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -6059,6 +6696,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '71dbf40619e741a78b0648a95dd2d437'
+                        key: {
+                            ui_policy: {
+                                id: '33344230880144c982d530dfb1b5cca6'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Hide empty staged acknowledgement fields'
+                                }
+                            }
+                            field: 'remote_audit_id'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '71ff930ea13148358c19e893e675d89c'
                         key: {
@@ -6077,6 +6728,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '7389ade502834711b49bc88e5022f71f'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -6256,6 +6908,39 @@ declare global {
                                 key: {
                                     name: 'x_33764_sbridge_dlq'
                                     caption: 'Detail'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '763d59e451424750b8b6672e24600aaf'
+                        key: {
+                            sys_ui_form: {
+                                id: 'a39c161c38d7471dbf6001749a463750'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
                                     view: {
                                         id: 'Default view'
                                         key: {
@@ -6586,6 +7271,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '7a9356ae3e0b452495409eefdf9bcc49'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'started_at'
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '7a9da15ee03e4efb9f60dfe62705aad9'
                         key: {
@@ -6604,6 +7303,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '7aec9124c8ff4eedb5cf39b9b136eafa'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -6761,6 +7461,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '7cea33574efc467db7e48c6c0a1c228e'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -6852,6 +7553,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '7d7a3c14785042d89e99fd5a5e68b446'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '08d71da8cd134a4fbbeaed05a3d9799b'
@@ -6935,6 +7637,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '802908993055490ab10f822b419737bc'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_received_at'
+                            position: '3'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '803eadb3f84545f0a7a23f26a133bcdc'
                         key: {
@@ -6982,6 +7706,15 @@ declare global {
                             }
                             element: 'resolved'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '814ff5965b534dc58a4a4b867c357703'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'name'
+                            language: 'en'
                         }
                     },
                     {
@@ -7191,6 +7924,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '862edb70414f4bff82085614acaf9212'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.begin_split'
+                            position: '0'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '864fdf461ca546ce933b8b11ab26a4b5'
                         key: {
@@ -7199,44 +7954,25 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_form_section'
-                        id: '8694a1ef2b254f08a716de8faf19e8a5'
-                        key: {
-                            sys_ui_form: {
-                                id: 'a39c161c38d7471dbf6001749a463750'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            sys_ui_section: {
-                                id: 'ba01ee71317a425596b2688d5c0ac986'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                        }
-                    },
-                    {
                         table: 'sys_index'
                         id: '86e3ab3d834e4a539d45a91a13e2c6be'
                         key: {
                             logical_table_name: 'x_33764_sbridge_record_result'
                             col_name_string: 'legacy_key'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '8737ff6a81f245788023ed2f45413b48'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'target_instance'
                         }
                     },
                     {
@@ -7258,8 +7994,31 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '87a7a0a5c17748cd9a2c7bea0dac642b'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'number'
+                            position: '1'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '87d075f15894499880392e2047d40565'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Execution'
@@ -7297,6 +8056,7 @@ declare global {
                     {
                         table: 'sys_ui_form_section'
                         id: '8851c06e8a5c4fe8817733154ba28e74'
+                        deleted: true
                         key: {
                             sys_ui_form: {
                                 id: 'a39c161c38d7471dbf6001749a463750'
@@ -7334,6 +8094,20 @@ declare global {
                             name: 'x_33764_sbridge_policy'
                             element: 'capture_ready'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '88b4c165ff0a4815837a6b51a834ba95'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'transfer_sent_at'
                         }
                     },
                     {
@@ -7461,6 +8235,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '8ba6174550f6448e8ad6a1095dcbf9eb'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -7578,6 +8353,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '8db96f69637e4238bf6e448afe5a883c'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'acknowledged_count'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '8e2022fcfd42473796fe38bace058bc9'
                         key: {
@@ -7586,6 +8375,28 @@ declare global {
                             value: 'resolve'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '8e22eece2aae41c48c5170ce3669647f'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'started_at'
+                            position: '0'
                         }
                     },
                     {
@@ -7651,6 +8462,20 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_result'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '8f4f1238c69e42f0a30a5222b8d51305'
+                        key: {
+                            ui_policy: {
+                                id: '33344230880144c982d530dfb1b5cca6'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Hide empty staged acknowledgement fields'
+                                }
+                            }
+                            field: 'ack_stage'
                         }
                     },
                     {
@@ -7875,6 +8700,21 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_section'
+                        id: '922b8eccea4a474db47344115b2dab69'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            caption: 'Notes'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '931ac5dc05b848d49ea383815554be9c'
                         key: {
@@ -7892,6 +8732,42 @@ declare global {
                             id: '018c4d343d5547fe82d8f436bc678abc'
                             table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
                             field: 'script'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '9347e02044a242debe42f0ee05076aaa'
+                        key: {
+                            sys_ui_section: {
+                                id: '922b8eccea4a474db47344115b2dab69'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Notes'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'activity.xml'
+                            position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '93494a1c4d2a4da4b3501ebc3e0e45d4'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'execution_completed_at'
                         }
                     },
                     {
@@ -7993,28 +8869,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_element'
-                        id: '94d16752d301437db55a808b01c51680'
-                        key: {
-                            sys_ui_section: {
-                                id: 'ba01ee71317a425596b2688d5c0ac986'
-                                key: {
-                                    name: 'x_33764_sbridge_data_execution'
-                                    caption: 'Configuration snapshot'
-                                    view: {
-                                        id: 'Default view'
-                                        key: {
-                                            name: 'NULL'
-                                        }
-                                    }
-                                    sys_domain: 'global'
-                                }
-                            }
-                            element: 'config_snapshot'
-                            position: '0'
-                        }
-                    },
-                    {
                         table: 'sys_ui_section'
                         id: '94d6858123274a569aa7cd77bf09f5a3'
                         key: {
@@ -8101,6 +8955,20 @@ declare global {
                             name: 'x_33764_sbridge_run'
                             element: 'processed'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '96d6df1a278b4083ab6cc5210d543e53'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'sent_count'
                         }
                     },
                     {
@@ -8339,6 +9207,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '9bed20ee0be84665b282f4889a1b1fc2'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '4cd96c278874491fbe195d09cb4a4311'
@@ -8420,6 +9289,28 @@ declare global {
                             name: 'x_33764_sbridge_policy'
                             element: 'active'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '9e03fd237a7b45ca980bfb50bdb08cfa'
+                        key: {
+                            sys_ui_section: {
+                                id: '922b8eccea4a474db47344115b2dab69'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Notes'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'comments'
+                            position: '1'
                         }
                     },
                     {
@@ -8588,6 +9479,39 @@ declare global {
                     },
                     {
                         table: 'sys_ui_form_section'
+                        id: 'a08d523155bb40b49b9648accfc927b4'
+                        key: {
+                            sys_ui_form: {
+                                id: 'a39c161c38d7471dbf6001749a463750'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
                         id: 'a0ffc7a1def04c6c90392331b7fba391'
                         key: {
                             sys_ui_form: {
@@ -8679,6 +9603,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'a1e8443cb7ac4b2bb553f7b6215a7fa7'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -8705,6 +9630,61 @@ declare global {
                             name: 'x_33764_sbridge_processing_error'
                             element: 'execution'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: 'a25c837926504870a03001e1dad7673a'
+                        key: {
+                            sys_ui_form: {
+                                id: 'a39c161c38d7471dbf6001749a463750'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: '922b8eccea4a474db47344115b2dab69'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Notes'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'a2778eb1d6cd4d068ea9fdb551e95a5c'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'source_read_completed_at'
+                            position: '1'
                         }
                     },
                     {
@@ -8847,6 +9827,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'a5016e31b2014aefb2b45e86b5686ec1'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -9141,6 +10122,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'ae5041da5b9e4711bc78067ca39ea9dd'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -9326,6 +10308,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'b1ecb4f93f5945aabc55fdfe9c78aaa3'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -9354,6 +10337,28 @@ declare global {
                             value: 'rejected'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'b26ad867296649fc93243c16c43d8669'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.split'
+                            position: '4'
                         }
                     },
                     {
@@ -9595,6 +10600,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'b6c844f54e2646118c57f7abddc4e96f'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '08d71da8cd134a4fbbeaed05a3d9799b'
@@ -9721,21 +10727,6 @@ declare global {
                         }
                     },
                     {
-                        table: 'sys_ui_section'
-                        id: 'ba01ee71317a425596b2688d5c0ac986'
-                        key: {
-                            name: 'x_33764_sbridge_data_execution'
-                            caption: 'Configuration snapshot'
-                            view: {
-                                id: 'Default view'
-                                key: {
-                                    name: 'NULL'
-                                }
-                            }
-                            sys_domain: 'global'
-                        }
-                    },
-                    {
                         table: 'sys_documentation'
                         id: 'ba3ecafe64a2471cad0e38b0e38d4957'
                         key: {
@@ -9756,6 +10747,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'ba60b213eaa14e778c307b3d02316e17'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -10158,6 +11150,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: 'c05b9fce4ad6425fa2094b1accc6cc23'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'inserted_count'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'c0d2d0f4e70b4ff78aa6affd2ccb99a7'
                         key: {
@@ -10193,6 +11199,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'c0f4bb95d0a24b1688d65c4d26da76b1'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -10369,6 +11376,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'c338bd1a7d664c3c9f80b4662e686f75'
+                        key: {
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'config_snapshot'
+                            position: '0'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'c3852c3c5ef44b7c8842147fe137d075'
                         key: {
@@ -10391,6 +11420,20 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'number'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: 'c4125f29ac824bdd86e085767be795c6'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'target_table'
                         }
                     },
                     {
@@ -11186,6 +12229,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'cd419260d5d7405c9eab9e164f21258b'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f370e505d8da4a2bb9f783a1badbf058'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Header'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'configuration'
+                            position: '2'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'cd802b7095f94f989e14862efe675de8'
                         key: {
@@ -11378,12 +12443,48 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'd0923c6d02e54f30b8a29bbd804c277f'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'transfer_sent_at'
+                            position: '2'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'd10504c36bb34bb49e9d29081c886cb3'
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'last_error'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: 'd160763662e34e6798079f0878bc797b'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'source_table'
                         }
                     },
                     {
@@ -11580,6 +12681,20 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_peer'
                             col_name_string: 'active'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: 'd57db9641a23423db3b595778d01a02f'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'source_instance'
                         }
                     },
                     {
@@ -11987,6 +13102,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'dda34d45b2014ffaaf8973c1bae0e683'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -12284,6 +13400,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'e299ac07548b43e9b26e2f85b1506a74'
+                        key: {
+                            sys_ui_section: {
+                                id: '0303e439c56c4e3dbf00ee1abc4b86db'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Timeline'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'execution_completed_at'
+                            position: '7'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'e299e42d513d4175b2757fd1aabd0955'
                         key: {
@@ -12399,6 +13537,20 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: 'e53d139edba8413d9624a4116c93e7ef'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'acknowledged_at'
                         }
                     },
                     {
@@ -12669,6 +13821,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'ea08fe56a82746acbf7ce4979c39f028'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'name'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'ea34b77a94c3463d8808e921f1ecb274'
                         key: {
@@ -12705,6 +13865,20 @@ declare global {
                             name: 'x_33764_sbridge_transfer'
                             element: 'legacy_key'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: 'eb2d77b20cad42fabedd1f2de8349ffd'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'run'
                         }
                     },
                     {
@@ -13003,6 +14177,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f117e41716d842dea0157f0817148ca6'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -13087,6 +14262,7 @@ declare global {
                     {
                         table: 'sys_ui_section'
                         id: 'f278da717e8240ada234446c8d847389'
+                        deleted: true
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             caption: 'Audit'
@@ -13110,6 +14286,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f2b3d936c46746cb92a9e6dcd7c901e5'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -13135,6 +14312,21 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_receipt'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: 'f370e505d8da4a2bb9f783a1badbf058'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            caption: 'Header'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -13286,6 +14478,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f55fc22fba304823a70abb01cae1dad3'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '87d075f15894499880392e2047d40565'
@@ -13632,6 +14825,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'fc20e7c1dc474e10bb958d2f1112c8fe'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '45792b67565d4fd2b236b5676ea7954b'
@@ -13734,6 +14928,28 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'fd40f7eb7c724d1fa2646218253bea75'
+                        key: {
+                            sys_ui_section: {
+                                id: '5edf9b4f473a422198044825a384682b'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'run'
+                            position: '1'
                         }
                     },
                     {

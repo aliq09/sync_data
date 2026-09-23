@@ -8,6 +8,8 @@ import {
 
 /**
  * Transfer (TRN…) — one outbox payload under a Data Execution.
+ * Numbering is autoNumber (prefix TRN, 6 digits) plus the number column default
+ * javascript:getNextObjNumberPadded(). The before-insert rule assigns when the field is still nil.
  * Dual-written from the physical outbox. The outbox remains the Case 1 queue.
  * correlation_id and stage are present for a later acknowledgement phase.
  * Case 1 writes only queued / sent / failed / dead / rejected from today's apply result.
@@ -25,7 +27,12 @@ export const x_33764_sbridge_transfer = Table({
         numberOfDigits: 6,
     },
     schema: {
-        number: StringColumn({ label: 'Number', maxLength: 40, readOnly: true }),
+        number: StringColumn({
+            label: 'Number',
+            maxLength: 40,
+            readOnly: true,
+            default: 'javascript:getNextObjNumberPadded();',
+        }),
         legacy_key: StringColumn({
             label: 'Shadow key',
             hint: 'Idempotency key, outbox:<outbox sys_id>.',

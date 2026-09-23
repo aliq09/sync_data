@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.1.1 (Phase 1 dual-write, Case 1 capture/auth fixes) |
+| **App version** | 0.2.2 (Phase 2 Data Execution record page) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -42,6 +42,18 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 Operator navigation is Overview, Data Movement (Configurations, Data Executions), Monitoring (Transfers, Failed Transfers, Audit), and Administration (Instances, Connections, Mappings, Settings). Developer / Diagnostics is role-gated (`x_33764_sbridge.diagnostics`) and holds sync policies, sync runs, the payload inspector (outbound queue), technical logs, legacy receipt rows, lab test records, and API diagnostics.
 
 Case 1 is unchanged: capture still writes the outbox, drain still POSTs `/api/x_33764_sbridge/sync/apply` with the connection-alias Basic Auth path, and `/seed` plus `/ensure_capture` stay as they are. `x_33764_sbridge.dual_write` defaults to true and best-effort shadows Data Execution, Transfer, and Transfer Audit (plus processing errors and record results) from those same hooks. A shadow failure is logged and does not fail drain or apply. The peer table is relabeled Instance in place. There is no staged acknowledgement rewrite in this release.
+
+## Phase 2 — Data Execution record page (0.2.2)
+
+Opening a Data Execution in the classic UI shows, in order: **Header**, **Scope**, **Counts**, **Timeline**, **Configuration Snapshot** (read-only), and **Notes** with the Activities formatter. The Default view related lists are Transfers, Record Results, Transfer Audits, Processing Errors, and Record Mappings (mappings for this execution's source table and target instance). The Data Executions list shows number, configuration, state, result, selected, failed, started, and completed.
+
+New Data Execution and Transfer rows get `DEX######` / `TRN######` when `GlideRecord.insert()` runs. The number column default is `javascript:getNextObjNumberPadded()`. Shadow inserts call `newRecord()` and do not write an empty `number`. If the field is still nil, dual-write and the before-insert rule call `GlideNumberManager.getNextObjNumberPadded()` (then `NumberManager`, then an update of this app’s `sys_number` row) so the counter cannot stay stuck at 1. Epoch-style values (`DEX1790…`) are not written. Existing epoch numbers are left as historical.
+
+The Default form section **Configuration Snapshot** contains read-only `config_snapshot` (and the Case 1 sync run). 0.2.1 declared that section only through `Form()`. Both PDIs applied the other five sections (Notes already at position 5) and left no snapshot section and no `config_snapshot` element. 0.2.2 does not rely on that `Form()` entry. It writes the section, the two elements, and the Default-view link as their own records (section id `5edf9b4f473a422198044825a384682b`, position 4), drops the author-elective delete for the Phase 1 caption `Configuration snapshot`, and runs fix script **Place DEX snapshot section** after the application files load. That script inserts the same section, `config_snapshot`, `run`, and the form link when the metadata update did not leave them on the instance.
+
+Dual-write still does not change Case 1 movement. It fills state, result, the timestamps Case 1 already knows (started, transfer sent, execution completed), selected/sent/failed plus insert/update/skip counts from the apply result, and a system work note when state changes. `acknowledged_at` and `acknowledged_count` stay empty for a later phase. A UI Builder workspace is not part of this release (Phase 2b).
+
+Configurations keep a **Data Executions** related list and a **View latest execution** form button.
 
 ## Operator runbook (stub)
 

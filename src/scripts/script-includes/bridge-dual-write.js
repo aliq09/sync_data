@@ -15,7 +15,9 @@
  *
  * config_snapshot is written once and never replaced.
  * Correlation ID is a local stub (SB- + outbox sys_id). It is not added to the apply payload.
- * ack_stage / acknowledged_at are left empty — no staged ACK in this phase.
+ * DEX/TRN inserts use newRecord() and never set number. The before-insert rule (or the
+ * number column default) assigns DEX###### / TRN###### from sys_number. Epoch numbers are not written.
+ * acknowledged_at / acknowledged_count / target receipt milestones stay empty — no staged ACK.
  */
 var BridgeDualWrite = Class.create()
 
@@ -283,7 +285,8 @@ BridgeDualWrite.prototype = {
         dex.query()
         var isNew = !dex.next()
         if (isNew) {
-            dex.initialize()
+            // newRecord() applies defaults without forcing number to ''. Do not set number.
+            dex.newRecord()
             dex.setValue('legacy_key', key)
             dex.setValue('run', runId)
         }
@@ -301,13 +304,14 @@ BridgeDualWrite.prototype = {
         if (!dex.getValue('started_at')) {
             dex.setValue('started_at', run.getValue('started') || new GlideDateTime().getValue())
         }
+        this._stampDexName(dex, configId)
 
-        var note = ''
         if (phase === 'open') {
             var openState = type === 'bulk_seed' ? 'reading_source' : type === 'drain' ? 'sending' : 'preparing'
-            var current = dex.getValue('execution_state') || ''
-            if (!current || current === 'draft' || current === 'queued') dex.setValue('execution_state', openState)
-            if (isNew) note = 'Sync Bridge: opened ' + (type || 'run') + ' shadow for sync run ' + runId + '.'
+            var current = dex.getValue('execution_state') || 'draft'
+            if (current === 'draft' || current === 'queued') {
+                this._transitionState(dex, openState, (type || 'run') + ' started for sync run ' + runId + '.')
+            }
         }
 
         if (phase === 'seed') {
@@ -315,17 +319,20 @@ BridgeDualWrite.prototype = {
             dex.setValue('selected_count', enqueued)
             if (summary && summary.done) {
                 if (!dex.getValue('execution_completed_at')) {
-                    dex.setValue('execution_state', 'completed')
                     dex.setValue('execution_result', 'successful')
                     dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
                     dex.setValue('execution_completed_at', new GlideDateTime().getValue())
-                    note =
-                        'Sync Bridge: bulk seed finished. ' +
-                        enqueued +
-                        ' row(s) enqueued. Case 1 send still happens on drain.'
+                    this._transitionState(
+                        dex,
+                        'completed',
+                        'Bulk seed finished. ' +
+                            enqueued +
+                            ' row(s) enqueued. Case 1 send still happens on drain. Acknowledgement stays empty.'
+                    )
+                    this._setDuration(dex)
                 }
-            } else if (dex.getValue('execution_state') !== 'completed') {
-                dex.setValue('execution_state', 'reading_source')
+            } else {
+                this._transitionState(dex, 'reading_source', 'Reading source rows for bulk seed.')
             }
         }
 
@@ -335,32 +342,93 @@ BridgeDualWrite.prototype = {
             if (summary && typeof summary.processed === 'number') processed = summary.processed
             if (summary && typeof summary.failed === 'number') failed = summary.failed
             var skipped = !!(summary && summary.skipped)
+            var result = this._result(processed, failed, skipped)
             dex.setValue('selected_count', processed + failed)
             dex.setValue('sent_count', processed)
             dex.setValue('failed_count', failed)
+            dex.setValue('execution_result', result)
             if (processed > 0 && !dex.getValue('transfer_sent_at')) {
                 dex.setValue('transfer_sent_at', new GlideDateTime().getValue())
             }
-            dex.setValue('execution_state', skipped ? 'cancelled' : 'completed')
-            dex.setValue('execution_result', this._result(processed, failed, skipped))
+            var terminal = skipped ? 'cancelled' : 'completed'
             if (!dex.getValue('execution_completed_at')) {
-                dex.setValue('execution_completed_at', run.getValue('ended') || new GlideDateTime().getValue())
+                var ended = run.getValue('ended') || new GlideDateTime().getValue()
+                dex.setValue('execution_completed_at', ended)
                 if (!dex.getValue('transfer_completed_at') && !skipped) {
-                    dex.setValue('transfer_completed_at', dex.getValue('execution_completed_at'))
+                    dex.setValue('transfer_completed_at', ended)
                 }
-                note =
-                    'Sync Bridge: drain shadow closed. sent=' +
-                    processed +
-                    ' failed=' +
-                    failed +
-                    '. Phase 1 follows the current /apply contract (no staged ACK).'
+                this._transitionState(
+                    dex,
+                    terminal,
+                    'Result: ' +
+                        this._resultLabel(result) +
+                        '. Sent ' +
+                        processed +
+                        ', failed ' +
+                        failed +
+                        '. Case 1 /apply contract; acknowledgement milestones stay empty.'
+                )
+                this._setDuration(dex)
+            } else {
+                dex.setValue('execution_state', terminal)
             }
-            this._setDuration(dex)
         }
 
-        if (note) dex.work_notes = note
-        if (isNew) dex.insert()
-        else dex.update()
+        if (isNew) {
+            this._ensurePlatformNumber(dex)
+            dex.insert()
+        } else dex.update()
+    },
+
+    _stampDexName: function (dex, configId) {
+        if (!dex || dex.getValue('name') || !configId) return
+        var cfg = new GlideRecord(BridgeConfig.TABLE.movementConfig)
+        if (!cfg.get(configId)) return
+        var label = cfg.getValue('name') || ''
+        if (label) dex.setValue('name', String(label).substr(0, 200))
+    },
+
+    _stateLabel: function (state) {
+        var labels = {
+            draft: 'Draft',
+            queued: 'Queued',
+            preparing: 'Preparing',
+            reading_source: 'Reading Source',
+            sending: 'Sending',
+            awaiting_receipt: 'Awaiting Receipt',
+            received: 'Received',
+            processing_target: 'Processing Target',
+            awaiting_acknowledgement: 'Awaiting Acknowledgement',
+            finalising: 'Finalising',
+            completed: 'Completed',
+            cancelled: 'Cancelled',
+        }
+        return labels[state] || state || 'Draft'
+    },
+
+    _resultLabel: function (result) {
+        var labels = {
+            successful: 'Successful',
+            successful_with_warnings: 'Successful with Warnings',
+            partially_completed: 'Partially Completed',
+            failed: 'Failed',
+            cancelled: 'Cancelled',
+        }
+        return labels[result] || result || ''
+    },
+
+    /**
+     * Write a short system work note only when the lifecycle state actually changes.
+     * @returns {boolean} true when the state changed
+     */
+    _transitionState: function (dex, nextState, detail) {
+        var current = dex.getValue('execution_state') || 'draft'
+        if (!nextState || current === nextState) return false
+        dex.setValue('execution_state', nextState)
+        var note = 'Sync Bridge: state ' + this._stateLabel(current) + ' → ' + this._stateLabel(nextState) + '.'
+        if (detail) note += ' ' + detail
+        dex.work_notes = note
+        return true
     },
 
     _fillDexRouting: function (dex, run, policyId, configId) {
@@ -518,6 +586,94 @@ BridgeDualWrite.prototype = {
             if (mapped.dlqId) errorValues.dlq = mapped.dlqId
             this._upsertByKey(BridgeConfig.TABLE.processingError, errorKey, errorValues)
         }
+
+        if (dexId) this._rollupExecution(dexId)
+    },
+
+    /**
+     * Counts and the sent timestamp from transfers and record results already written.
+     * Does not set received_count, acknowledged_count, or acknowledgement timestamps.
+     * Closed executions keep the run-summary selected/sent/failed figures.
+     */
+    _rollupExecution: function (dexId) {
+        if (!dexId) return
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.get(dexId)) return
+        var state = dex.getValue('execution_state') || 'draft'
+        var closed = state === 'completed' || state === 'cancelled'
+        var byStage = this._countGrouped(BridgeConfig.TABLE.transfer, dexId, 'stage')
+        var sent = (byStage.sent || 0) + (byStage.rejected || 0)
+        var failed = (byStage.failed || 0) + (byStage.dead || 0)
+        var selected = 0
+        for (var stage in byStage) {
+            if (Object.prototype.hasOwnProperty.call(byStage, stage)) selected += byStage[stage]
+        }
+        var outcomes = this._countActionResult(dexId)
+        var changed = false
+        if (!closed) {
+            changed = this._setCount(dex, 'selected_count', selected) || changed
+            changed = this._setCount(dex, 'sent_count', sent) || changed
+            changed = this._setCount(dex, 'failed_count', failed) || changed
+            if (sent > 0 && (state === 'draft' || state === 'queued' || state === 'preparing')) {
+                if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
+            }
+        }
+        changed = this._setCount(dex, 'inserted_count', outcomes.inserted) || changed
+        changed = this._setCount(dex, 'updated_count', outcomes.updated) || changed
+        changed = this._setCount(dex, 'skipped_count', outcomes.skipped) || changed
+        if (sent > 0 && !dex.getValue('transfer_sent_at')) {
+            dex.setValue('transfer_sent_at', new GlideDateTime().getValue())
+            changed = true
+        }
+        if (changed) dex.update()
+    },
+
+    _setCount: function (dex, field, value) {
+        var current = parseInt(dex.getValue(field), 10) || 0
+        var next = value || 0
+        if (current === next) return false
+        dex.setValue(field, next)
+        return true
+    },
+
+    _countGrouped: function (table, dexId, field) {
+        var totals = {}
+        try {
+            var ga = new GlideAggregate(table)
+            ga.addQuery('execution', dexId)
+            ga.addAggregate('COUNT')
+            ga.groupBy(field)
+            ga.query()
+            while (ga.next()) {
+                totals[ga.getValue(field) || ''] = parseInt(ga.getAggregate('COUNT'), 10) || 0
+            }
+        } catch (e) {
+            gs.warn('[bridge] dual-write count ' + table + ' failed (ignored): ' + e)
+        }
+        return totals
+    },
+
+    _countActionResult: function (dexId) {
+        var out = { inserted: 0, updated: 0, skipped: 0 }
+        try {
+            var ga = new GlideAggregate(BridgeConfig.TABLE.recordResult)
+            ga.addQuery('execution', dexId)
+            ga.addAggregate('COUNT')
+            ga.groupBy('action')
+            ga.groupBy('result')
+            ga.query()
+            while (ga.next()) {
+                var action = ga.getValue('action') || ''
+                var result = ga.getValue('result') || ''
+                var n = parseInt(ga.getAggregate('COUNT'), 10) || 0
+                if (result === 'skipped') out.skipped += n
+                else if (result === 'applied' && action === 'insert') out.inserted += n
+                else if (result === 'applied' && (action === 'update' || action === 'upsert')) out.updated += n
+            }
+        } catch (e) {
+            gs.warn('[bridge] dual-write result rollup failed (ignored): ' + e)
+        }
+        return out
     },
 
     _mapOutcome: function (outboxGr, outcome) {
@@ -623,8 +779,12 @@ BridgeDualWrite.prototype = {
     _attachConfigOnce: function (dexId, policyId) {
         var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
         if (!dex.get(dexId)) return
-        if (dex.getValue('configuration') || dex.getValue('config_snapshot')) {
-            if (dex.getValue('configuration')) return
+        if (dex.getValue('configuration')) {
+            if (!dex.getValue('name')) {
+                this._stampDexName(dex, dex.getValue('configuration'))
+                if (dex.getValue('name')) dex.update()
+            }
+            return
         }
         var configId = this._configIdForPolicy(policyId)
         if (!configId) return
@@ -637,6 +797,7 @@ BridgeDualWrite.prototype = {
             if (!dex.getValue('target_table')) dex.setValue('target_table', cfg.getValue('target_table') || '')
             if (!dex.getValue('filter_snapshot')) dex.setValue('filter_snapshot', cfg.getValue('filter') || '')
         }
+        this._stampDexName(dex, configId)
         // Snapshot stays as written at start. Do not replace it when we learn the policy.
         dex.update()
     },
@@ -735,7 +896,8 @@ BridgeDualWrite.prototype = {
         gr.query()
         var isNew = !gr.next()
         if (isNew) {
-            gr.initialize()
+            // newRecord() for TRN (and any other shadow). Never write number; the before-insert rule pads it.
+            gr.newRecord()
             gr.setValue('legacy_key', key)
         }
         var changed = isNew
@@ -754,12 +916,61 @@ BridgeDualWrite.prototype = {
             if (this._assign(gr, field, values[field])) changed = true
         }
         if (!changed) return gr.getUniqueValue()
-        if (isNew) return gr.insert() || ''
+        if (isNew) {
+            this._ensurePlatformNumber(gr)
+            return gr.insert() || ''
+        }
         gr.update()
         return gr.getUniqueValue()
     },
 
+    /**
+     * Fill DEX###### / TRN###### before insert when number is still nil.
+     * The before-insert rule does the same and no-ops if this already set a value.
+     * getNextObjNumberPadded consumes sys_number. Epoch milliseconds are never used.
+     */
+    _ensurePlatformNumber: function (gr) {
+        if (!gr || !gr.isValidField('number')) return
+        var table = gr.getTableName()
+        if (table !== BridgeConfig.TABLE.dataExecution && table !== BridgeConfig.TABLE.transfer) return
+        if (gr.getValue('number')) return
+        var assigned = ''
+        try {
+            assigned = new GlideNumberManager(table).getNextObjNumberPadded()
+        } catch (e1) {
+            gs.warn('[bridge] GlideNumberManager failed for ' + table + ': ' + e1)
+        }
+        if (!assigned) {
+            try {
+                assigned = new NumberManager(table).getNextObjNumberPadded()
+            } catch (e2) {
+                gs.warn('[bridge] NumberManager failed for ' + table + ': ' + e2)
+            }
+        }
+        if (!assigned) assigned = this._nextFromSysNumber(table)
+        if (assigned) gr.setValue('number', assigned)
+    },
+
+    _nextFromSysNumber: function (tableName) {
+        var row = new GlideRecord('sys_number')
+        if (!row.isValid()) return ''
+        row.addQuery('category', tableName)
+        row.setLimit(1)
+        row.query()
+        if (!row.next()) return ''
+        var prefix = row.getValue('prefix') || ''
+        var digits = parseInt(row.getValue('maximum_digits'), 10) || 6
+        var n = parseInt(row.getValue('number'), 10)
+        if (isNaN(n) || n < 1) n = 1
+        var padded = String(n)
+        while (padded.length < digits) padded = '0' + padded
+        row.setValue('number', String(n + 1))
+        if (!row.update()) return ''
+        return prefix + padded
+    },
+
     _assign: function (gr, field, value) {
+        if (field === 'number') return false
         if (value === undefined || value === null || value === '') return false
         if (!gr.isValidField(field)) return false
         var current = gr.getValue(field)
