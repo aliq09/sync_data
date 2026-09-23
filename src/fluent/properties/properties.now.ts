@@ -29,9 +29,9 @@ Property({
     $id: Now.ID['prop-integration-user'],
     name: 'x_33764_sbridge.integration_user',
     type: 'string',
-    value: '',
+    value: 'sbridge.worker',
     description:
-        'user_name of the apply-worker account. Blank disables capture (fail closed).',
+        'user_name of the apply-worker account. Shipped default is sbridge.worker so install does not wipe a working lab. Blank still fail-closes capture at runtime if an admin clears it.',
 })
 
 Property({

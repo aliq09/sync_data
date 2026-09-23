@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.1.0 (Phase 1 dual-write) |
+| **App version** | 0.1.1 (Phase 1 dual-write, Case 1 capture/auth fixes) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -46,7 +46,7 @@ Case 1 is unchanged: capture still writes the outbox, drain still POSTs `/api/x_
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
-2. **Integration user** — create a named account; set `x_33764_sbridge.integration_user` to its `user_name`. Blank = capture off (fail closed).
+2. **Integration user** — the shipped default is `sbridge.worker`. Blank still fail-closes capture at runtime if an admin clears the property.
 3. **Instances** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote instance. Keep remote `active=true` only when ready. The physical table is still `x_33764_sbridge_peer`.
 4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
 5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.

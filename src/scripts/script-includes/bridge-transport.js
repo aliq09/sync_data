@@ -272,9 +272,13 @@ BridgeTransport.prototype = {
     /**
      * Attach the peer's credential from its Connection & Credential alias (§6.2).
      *
-     * OAuth client credentials, resolved through `sn_cc.ConnectionInfoProvider` — the
-     * platform's own API for this — so the secret lives in the credential store and
-     * never in this codebase, a system property, or one of the app's own tables.
+     * Credentials are resolved through `sn_cc.ConnectionInfoProvider` — the platform's
+     * own API for this — so the secret lives in the credential store and never in this
+     * codebase, a system property, or one of the app's own tables.
+     *
+     * When the alias's credential carries Basic Auth attributes (`user_name` /
+     * `password`), the request uses `RESTMessageV2.setBasicAuth`. Otherwise OAuth
+     * client credentials are attached as before (§6.2).
      *
      * Throws rather than sending unauthenticated. An unauthenticated POST would come
      * back 401, be recorded as a transport failure, and retry until the attempt cap
@@ -288,12 +292,51 @@ BridgeTransport.prototype = {
      */
     _authorise: function (request, peer) {
         // 1. An explicitly configured Connection & Credential alias always wins (§6.2).
+        //    Lab peers may use Basic Auth on that alias (username/password credential);
+        //    production peers keep OAuth client credentials. Prefer Basic when the
+        //    resolved credential actually carries user_name + password so a mis-typed
+        //    oauth profile is not forced onto a basic alias.
         if (peer.connection_alias) {
             var info = new sn_cc.ConnectionInfoProvider().getConnectionInfo(peer.connection_alias)
             if (!info) {
                 throw 'connection alias ' + peer.connection_alias + ' resolved to no connection info'
             }
-            var attributes = info.getAttributes() || {}
+
+            var basicUser = ''
+            var basicPass = ''
+            try {
+                basicUser =
+                    info.getCredentialAttribute('user_name') ||
+                    info.getCredentialAttribute('username') ||
+                    ''
+                basicPass = info.getCredentialAttribute('password') || ''
+            } catch (ignoredAttr) {
+                // Credential type may not expose these attributes (e.g. OAuth-only).
+            }
+            if ((!basicUser || !basicPass) && info.getCredential) {
+                try {
+                    var stdCred = info.getCredential()
+                    if (stdCred) {
+                        if (!basicUser && stdCred.getUsername) basicUser = stdCred.getUsername() || ''
+                        if (!basicPass && stdCred.getPassword) basicPass = stdCred.getPassword() || ''
+                    }
+                } catch (ignoredCred) {
+                    // Same: OAuth credentials have no username/password getters that help.
+                }
+            }
+            if (basicUser && basicPass) {
+                request.setBasicAuth(basicUser, basicPass)
+                return
+            }
+
+            // Basic ConnectionInfo may not implement getAttributes. A missing method must
+            // not throw; fall through to the OAuth profile path only when it is present.
+            var attributes = {}
+            try {
+                if (info.getAttributes) attributes = info.getAttributes() || {}
+            } catch (ignoredGetAttributes) {
+                attributes = {}
+            }
             request.setAuthenticationProfile(
                 'oauth2',
                 attributes.authentication_profile || peer.connection_alias
