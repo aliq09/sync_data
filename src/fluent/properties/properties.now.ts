@@ -29,9 +29,9 @@ Property({
     $id: Now.ID['prop-integration-user'],
     name: 'x_33764_sbridge.integration_user',
     type: 'string',
-    value: '',
+    value: 'sbridge.worker',
     description:
-        'user_name of the apply-worker account. Blank disables capture (fail closed).',
+        'user_name of the apply-worker account. Shipped default is sbridge.worker so install does not wipe a working lab. Blank still fail-closes capture at runtime if an admin clears it.',
 })
 
 Property({
@@ -48,4 +48,13 @@ Property({
     type: 'integer',
     value: 25,
     description: 'Alert when unresolved DLQ rows exceed this count.',
+})
+
+Property({
+    $id: Now.ID['prop-dual-write'],
+    name: 'x_33764_sbridge.dual_write',
+    type: 'boolean',
+    value: true,
+    description:
+        'Phase 1 best-effort shadows: Data Execution, Transfer, and Transfer Audit. Failures are logged only and never fail capture, drain, seed, or apply. Set false to pause shadows. Case 1 outbox /apply path stays primary.',
 })

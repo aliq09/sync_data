@@ -42,11 +42,13 @@ BridgeApply.prototype = {
                 var message = 'apply threw: ' + e
                 gs.error('[bridge] ' + message + ' (source ' + (item && item.source_sys_id) + ')')
                 this.deadLetter(item, message)
-                results.push({
+                var failed = {
                     source_sys_id: item ? item.source_sys_id : '',
                     status: 'failed',
                     error: message,
-                })
+                }
+                this._shadowApply(peerId, item, failed)
+                results.push(failed)
             }
         }
         return results
@@ -57,6 +59,12 @@ BridgeApply.prototype = {
      *   error?: string}} status is one of applied | skipped | rejected | failed
      */
     apply: function (peerId, item, maps) {
+        var out = this._applyItem(peerId, item, maps)
+        this._shadowApply(peerId, item, out)
+        return out
+    },
+
+    _applyItem: function (peerId, item, maps) {
         var out = { source_sys_id: item.source_sys_id, status: 'failed' }
 
         // An inbound policy is required. Without this check an authenticated peer
@@ -573,7 +581,22 @@ BridgeApply.prototype = {
         gr.setValue('error', String(error).substr(0, 4000))
         gr.setValue('payload', JSON.stringify(item || {}))
         gr.setValue('resolved', false)
-        gr.insert()
+        var id = gr.insert()
+        try {
+            new BridgeDualWrite().onTargetDlq(id, item, error)
+        } catch (e) {
+            gs.warn('[bridge] dual-write dlq shadow failed (ignored): ' + e)
+        }
+        return id
+    },
+
+    /** Phase 1 audit/result shadow. Never changes the apply result. */
+    _shadowApply: function (peerId, item, out) {
+        try {
+            new BridgeDualWrite().onApplyOutcome(peerId, item, out)
+        } catch (e) {
+            gs.warn('[bridge] dual-write apply shadow failed (ignored): ' + e)
+        }
     },
 
     type: 'BridgeApply',

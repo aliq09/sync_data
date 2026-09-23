@@ -16,6 +16,7 @@ BridgeConfig.PROP = {
     maxAttempts: 'x_33764_sbridge.drain_max_attempts',
     lagAlert: 'x_33764_sbridge.lag_alert_seconds',
     dlqAlert: 'x_33764_sbridge.dlq_alert_depth',
+    dualWrite: 'x_33764_sbridge.dual_write',
 }
 
 BridgeConfig.TABLE = {
@@ -27,6 +28,12 @@ BridgeConfig.TABLE = {
     dlq: 'x_33764_sbridge_dlq',
     divergence: 'x_33764_sbridge_divergence',
     run: 'x_33764_sbridge_run',
+    movementConfig: 'x_33764_sbridge_movement_config',
+    dataExecution: 'x_33764_sbridge_data_execution',
+    transfer: 'x_33764_sbridge_transfer',
+    transferAudit: 'x_33764_sbridge_transfer_audit',
+    processingError: 'x_33764_sbridge_processing_error',
+    recordResult: 'x_33764_sbridge_record_result',
 }
 
 BridgeConfig.prototype = {
@@ -48,6 +55,15 @@ BridgeConfig.prototype = {
     isEnabled: function () {
         var raw = String(gs.getProperty(BridgeConfig.PROP.enabled, 'true') || '').trim().toLowerCase()
         return raw !== 'false'
+    },
+
+    /**
+     * Phase 1 shadows. Default on. Only an explicit false/0 pauses them.
+     * Callers must still treat dual-write failures as non-fatal.
+     */
+    isDualWrite: function () {
+        var raw = String(gs.getProperty(BridgeConfig.PROP.dualWrite, 'true') || '').trim().toLowerCase()
+        return raw !== 'false' && raw !== '0'
     },
 
     integrationUser: function () {

@@ -1,22 +1,38 @@
 import { ApplicationMenu, Record } from '@servicenow/sdk/core'
-import { reader, operator, admin } from '../roles/roles.now'
+import { reader, operator, admin, diagnostics } from '../roles/roles.now'
 
 const menu = ApplicationMenu({
     $id: Now.ID['sync-bridge-menu'],
     title: 'Sync Bridge',
-    hint: 'Replicate records between ServiceNow instances',
+    hint: 'Move records between ServiceNow instances',
     description:
-        'Configure peer instances and sync policies. Monitor the outbound queue, sync runs, and failed deliveries.',
-    roles: [reader, operator, admin],
+        'Data movement configurations and executions. Monitor transfers, failures, and audit. Case 1 outbox drain stays available under Developer / Diagnostics.',
+    roles: [reader, operator, admin, diagnostics],
     active: true,
     order: 100,
+})
+
+Record({
+    $id: Now.ID['mod-overview'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Overview',
+        hint: 'In-flight data executions',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_data_execution',
+        filter: 'execution_state!=completed^execution_state!=cancelled',
+        roles: ['x_33764_sbridge.reader'],
+        active: true,
+        order: 10,
+    },
 })
 
 Record({
     $id: Now.ID['mod-sep-configuration'],
     table: 'sys_app_module',
     data: {
-        title: 'Configuration',
+        title: 'Data Movement',
         application: menu,
         link_type: 'SEPARATOR',
         roles: ['x_33764_sbridge.reader'],
@@ -26,14 +42,14 @@ Record({
 })
 
 Record({
-    $id: Now.ID['mod-peers'],
+    $id: Now.ID['mod-configurations'],
     table: 'sys_app_module',
     data: {
-        title: 'Peer instances',
-        hint: 'Local + remote instances this bridge talks to',
+        title: 'Configurations',
+        hint: 'What should move between instances',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_peer',
+        name: 'x_33764_sbridge_movement_config',
         roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 110,
@@ -41,14 +57,14 @@ Record({
 })
 
 Record({
-    $id: Now.ID['mod-policies'],
+    $id: Now.ID['mod-executions'],
     table: 'sys_app_module',
     data: {
-        title: 'Sync policies',
-        hint: 'Which tables sync, direction, fields, filter',
+        title: 'Data Executions',
+        hint: 'One execution of a configuration (DEX)',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_policy',
+        name: 'x_33764_sbridge_data_execution',
         roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 120,
@@ -59,55 +75,55 @@ Record({
     $id: Now.ID['mod-sep-operations'],
     table: 'sys_app_module',
     data: {
-        title: 'Operations',
+        title: 'Monitoring',
         application: menu,
         link_type: 'SEPARATOR',
-        roles: ['x_33764_sbridge.operator'],
+        roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 200,
     },
 })
 
 Record({
-    $id: Now.ID['mod-outbox'],
+    $id: Now.ID['mod-transfers'],
     table: 'sys_app_module',
     data: {
-        title: 'Outbound queue',
-        hint: 'Pending / sent change and seed payloads',
+        title: 'Transfers',
+        hint: 'Payloads under a data execution (TRN)',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_outbox',
-        roles: ['x_33764_sbridge.operator'],
+        name: 'x_33764_sbridge_transfer',
+        roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 210,
     },
 })
 
 Record({
-    $id: Now.ID['mod-runs'],
+    $id: Now.ID['mod-failed'],
     table: 'sys_app_module',
     data: {
-        title: 'Sync runs',
-        hint: 'Drain / bulk seed execution history',
+        title: 'Failed Transfers',
+        hint: 'Processing errors shadowed from dead-letter rows',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_run',
-        roles: ['x_33764_sbridge.reader'],
+        name: 'x_33764_sbridge_processing_error',
+        roles: ['x_33764_sbridge.operator'],
         active: true,
         order: 220,
     },
 })
 
 Record({
-    $id: Now.ID['mod-dlq'],
+    $id: Now.ID['mod-audit'],
     table: 'sys_app_module',
     data: {
-        title: 'Failed deliveries',
-        hint: 'Dead-lettered messages',
+        title: 'Audit',
+        hint: 'Send and receive evidence for a transfer',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_dlq',
-        roles: ['x_33764_sbridge.operator'],
+        name: 'x_33764_sbridge_transfer_audit',
+        roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 230,
     },
@@ -117,12 +133,42 @@ Record({
     $id: Now.ID['mod-sep-traceability'],
     table: 'sys_app_module',
     data: {
-        title: 'Traceability',
+        title: 'Administration',
         application: menu,
         link_type: 'SEPARATOR',
-        roles: ['x_33764_sbridge.operator'],
+        roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 300,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-peers'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Instances',
+        hint: 'Local and remote instances this bridge talks to',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_peer',
+        roles: ['x_33764_sbridge.reader'],
+        active: true,
+        order: 310,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-connections'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Connections',
+        hint: 'Connection and credential aliases. Secrets stay in the credential store.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'sys_alias',
+        roles: ['x_33764_sbridge.admin'],
+        active: true,
+        order: 320,
     },
 })
 
@@ -130,29 +176,30 @@ Record({
     $id: Now.ID['mod-xref'],
     table: 'sys_app_module',
     data: {
-        title: 'Record mappings',
-        hint: 'Source sys_id to target sys_id per peer',
+        title: 'Mappings',
+        hint: 'Source sys_id to target sys_id per instance',
         application: menu,
         link_type: 'LIST',
         name: 'x_33764_sbridge_xref',
-        roles: ['x_33764_sbridge.operator'],
+        roles: ['x_33764_sbridge.admin'],
         active: true,
-        order: 310,
+        order: 330,
     },
 })
 
 Record({
-    $id: Now.ID['mod-receipts'],
+    $id: Now.ID['mod-settings'],
     table: 'sys_app_module',
     data: {
-        title: 'Delivery receipts',
-        hint: 'Last applied sequence per source record',
+        title: 'Settings',
+        hint: 'Sync Bridge system properties, including dual_write',
         application: menu,
         link_type: 'LIST',
-        name: 'x_33764_sbridge_receipt',
-        roles: ['x_33764_sbridge.operator'],
+        name: 'sys_properties',
+        filter: 'nameSTARTSWITHx_33764_sbridge.',
+        roles: ['x_33764_sbridge.admin'],
         active: true,
-        order: 320,
+        order: 340,
     },
 })
 
@@ -160,12 +207,87 @@ Record({
     $id: Now.ID['mod-sep-lab'],
     table: 'sys_app_module',
     data: {
-        title: 'Lab',
+        title: 'Developer / Diagnostics',
         application: menu,
         link_type: 'SEPARATOR',
-        roles: ['x_33764_sbridge.operator'],
+        roles: ['x_33764_sbridge.diagnostics'],
         active: true,
-        order: 400,
+        order: 800,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-policies'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Sync policies',
+        hint: 'Legacy Case 1 policies. Capture still reads these rows.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_policy',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 810,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-runs'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Sync runs',
+        hint: 'Legacy drain and bulk seed runs',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_run',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 820,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-outbox'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Payload inspector',
+        hint: 'Case 1 outbound queue payloads. Drain behaviour is unchanged.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_outbox',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 830,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-dlq'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Technical logs',
+        hint: 'Legacy dead-letter rows. Operator failures are under Failed Transfers.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_dlq',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 840,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-receipts'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Legacy receipt rows',
+        hint: 'Case 1 delivery receipts. Operator evidence is under Audit.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_receipt',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 850,
     },
 })
 
@@ -178,8 +300,24 @@ Record({
         application: menu,
         link_type: 'LIST',
         name: 'x_33764_sbridge_test_record',
-        roles: ['x_33764_sbridge.operator'],
+        roles: ['x_33764_sbridge.diagnostics'],
         active: true,
-        order: 410,
+        order: 860,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-api-diagnostics'],
+    table: 'sys_app_module',
+    data: {
+        title: 'API diagnostics',
+        hint: 'Scripted REST API for /apply, /seed, and /ensure_capture',
+        application: menu,
+        link_type: 'LIST',
+        name: 'sys_ws_definition',
+        filter: 'service_id=sync',
+        roles: ['x_33764_sbridge.diagnostics'],
+        active: true,
+        order: 870,
     },
 })

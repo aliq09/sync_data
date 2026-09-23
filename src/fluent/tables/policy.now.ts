@@ -53,6 +53,11 @@ export const x_33764_sbridge_policy = Table({
         ref_map: JsonColumn({ label: 'Reference field map' }),
         target_map: JsonColumn({ label: 'Target field map' }),
         target_table: TableNameColumn({ label: 'Target table (if remapped)' }),
+        movement_config: ReferenceColumn({
+            label: 'Data movement configuration',
+            hint: 'Phase 1 shadow link. Capture and drain still use this sync policy.',
+            referenceTable: 'x_33764_sbridge_movement_config',
+        }),
     },
     index: [
         { name: 'idx_policy_table_dir', unique: false, element: ['table', 'direction'] },

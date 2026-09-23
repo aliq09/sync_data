@@ -9,7 +9,7 @@ import {
 
 export const x_33764_sbridge_peer = Table({
     name: 'x_33764_sbridge_peer',
-    label: 'Peer instance',
+    label: 'Instance',
     display: 'name',
     audit: true,
     allowWebServiceAccess: true,
@@ -20,11 +20,12 @@ export const x_33764_sbridge_peer = Table({
         base_url: UrlColumn({ label: 'Instance URL', mandatory: true }),
         active: BooleanColumn({ label: 'Active', default: false }),
         role: StringColumn({
-            label: 'Instance role',
+            label: 'Role',
+            hint: 'Local or remote instance. Choice values stay peer/local so Case 1 scripts keep working.',
             default: 'peer',
             choices: {
-                peer: 'Remote peer',
-                local: 'Local instance',
+                peer: 'Remote',
+                local: 'Local',
             },
         }),
         connection_alias: ReferenceColumn({
