@@ -12,6 +12,8 @@
  * fields (those stay Phase 3).
  *
  * Controller DEX rows use legacy_key ctrl:<sys_id>. Case 1 shadows stay run:<run>.
+ *
+ * getLiveProgress is a pure read. It does not write DEX columns, work notes, or a percent.
  */
 var SyncBridgeExecutionService = Class.create()
 
@@ -507,6 +509,22 @@ SyncBridgeExecutionService.prototype = {
         return { ok: true, active: want, message: want ? 'Configuration activated.' : 'Configuration deactivated.' }
     },
 
+    /**
+     * Pure read. Pass a configuration id (open controller execution, else last) or a DEX id.
+     * When both are set, the configuration view wins.
+     * @returns {object}
+     */
+    getLiveProgress: function (ref) {
+        if (!this._canReadProgress()) return this._emptyProgress('forbidden', 'Sync Bridge reader role is required.')
+        if (typeof SyncBridgeProgress === 'undefined') {
+            return this._emptyProgress('error', 'Live progress is not available.')
+        }
+        var parsed = this._progressRef(ref)
+        if (parsed.configurationId) return this._progressForConfiguration(parsed.configurationId)
+        if (parsed.dexId) return this._progressForDex(parsed.dexId)
+        return this._emptyProgress('not_found', 'Configuration or data execution is required.')
+    },
+
     _start: function (configurationId, options, mode) {
         options = options || {}
         options.execution_mode = mode
@@ -803,6 +821,189 @@ SyncBridgeExecutionService.prototype = {
         dex.query()
         if (!dex.next()) return null
         return dex
+    },
+
+    _progressForConfiguration: function (configurationId) {
+        var loaded = this._loadConfig(configurationId)
+        if (!loaded.ok) return this._emptyProgress('not_found', loaded.message || 'Configuration not found.')
+        var openDex = this._preferredOpenExecution(configurationId)
+        if (openDex) return this._livePayload(openDex, loaded.row, 'live')
+        var lastId = loaded.row.getValue('last_execution') || ''
+        if (lastId) {
+            var last = this._dex(lastId)
+            if (last) return this._livePayload(last, loaded.row, 'idle')
+        }
+        var idle = this._emptyProgress('', 'No execution yet')
+        idle.ok = true
+        idle.configuration_id = loaded.row.getUniqueValue()
+        idle.last_run_at = loaded.row.getValue('last_run_at') || ''
+        idle.execution_result = loaded.row.getValue('last_result') || ''
+        idle.concurrent_blocked = false
+        return idle
+    },
+
+    _progressForDex: function (dexId) {
+        var dex = this._dex(dexId)
+        if (!dex) return this._emptyProgress('not_found', 'Data execution not found.')
+        var cfg = null
+        var configurationId = dex.getValue('configuration') || ''
+        if (configurationId) {
+            var loaded = this._loadConfig(configurationId)
+            if (loaded.ok) cfg = loaded.row
+        }
+        return this._livePayload(dex, cfg, 'live')
+    },
+
+    _preferredOpenExecution: function (configurationId) {
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        dex.addQuery('configuration', configurationId)
+        dex.addQuery('execution_state', 'NOT IN', 'completed,cancelled')
+        dex.orderBy('queued_at')
+        dex.query()
+        var fallback = ''
+        var ctrl = ''
+        while (dex.next()) {
+            if (!fallback) fallback = dex.getUniqueValue()
+            var key = dex.getValue('legacy_key') || ''
+            if (!ctrl && key.indexOf('ctrl:') === 0) ctrl = dex.getUniqueValue()
+        }
+        var chosen = ctrl || fallback
+        if (!chosen) return null
+        return this._dex(chosen)
+    },
+
+    _livePayload: function (dex, cfg, mode) {
+        var snap = this._progressSnapshot(dex)
+        var computed = new SyncBridgeProgress().compute(snap)
+        var configId = cfg ? cfg.getUniqueValue() : dex.getValue('configuration') || ''
+        var policy = cfg ? this._concurrencyPolicy(cfg) : 'prevent'
+        var blocked = false
+        if (configId && policy === 'prevent') blocked = !!this._openExecution(configId)
+        var state = snap.execution_state
+        var terminal = state === 'completed' || state === 'cancelled'
+        var idle = mode === 'idle'
+        if (idle && state && !terminal) idle = false
+        var progress = new SyncBridgeProgress()
+        var resultLabel = progress.labelResult(snap.execution_result)
+        var idleMessage = 'No execution yet'
+        if (snap.number) {
+            var modeLabel = snap.execution_mode === 'dry_run' ? 'Dry run — ' : ''
+            idleMessage = resultLabel
+                ? 'Last execution ' + snap.number + ' — ' + modeLabel + resultLabel
+                : 'Last execution ' + snap.number
+        }
+        return {
+            ok: true,
+            dex_id: dex.getUniqueValue(),
+            number: snap.number,
+            execution_state: state,
+            execution_result: snap.execution_result,
+            execution_mode: snap.execution_mode,
+            percent: computed.percent,
+            stage_key: idle ? 'idle' : computed.stage_key,
+            message: idle ? idleMessage : computed.message,
+            selected_count: snap.selected_count,
+            sent_count: snap.sent_count,
+            inserted_count: snap.inserted_count,
+            updated_count: snap.updated_count,
+            skipped_count: snap.skipped_count,
+            failed_count: snap.failed_count,
+            ack_skipped: true,
+            concurrent_blocked: blocked,
+            open: idle ? false : !terminal,
+            indeterminate: idle ? false : !!computed.indeterminate,
+            last_run_at: cfg ? cfg.getValue('last_run_at') || '' : '',
+            configuration_id: configId,
+        }
+    },
+
+    _progressSnapshot: function (dex) {
+        var n = function (field) {
+            var value = parseInt(dex.getValue(field), 10)
+            if (isNaN(value) || value < 0) return 0
+            return value
+        }
+        return {
+            number: dex.getValue('number') || '',
+            execution_state: dex.getValue('execution_state') || '',
+            execution_result: dex.getValue('execution_result') || '',
+            execution_mode: dex.getValue('execution_mode') || '',
+            selected_count: n('selected_count'),
+            sent_count: n('sent_count'),
+            inserted_count: n('inserted_count'),
+            updated_count: n('updated_count'),
+            skipped_count: n('skipped_count'),
+            failed_count: n('failed_count'),
+            source_read_completed_at: dex.getValue('source_read_completed_at') || '',
+            transfer_sent_at: dex.getValue('transfer_sent_at') || '',
+            transfer_completed_at: dex.getValue('transfer_completed_at') || '',
+            target_received_at: dex.getValue('target_received_at') || '',
+            target_processing_completed_at: dex.getValue('target_processing_completed_at') || '',
+            execution_completed_at: dex.getValue('execution_completed_at') || '',
+            queued_at: dex.getValue('queued_at') || '',
+            started_at: dex.getValue('started_at') || '',
+        }
+    },
+
+    _progressRef: function (ref) {
+        var configurationId = ''
+        var dexId = ''
+        if (ref && typeof ref === 'object') {
+            configurationId = ref.configurationId || ref.configuration_id || ''
+            dexId = ref.dexId || ref.dex_id || ''
+        } else if (ref) {
+            var id = (ref + '').replace(/^\s+|\s+$/g, '')
+            if (id && id !== 'null' && id !== 'undefined') {
+                var cfg = new GlideRecord(BridgeConfig.TABLE.movementConfig)
+                if (cfg.get(id)) configurationId = id
+                else dexId = id
+            }
+        }
+        configurationId = this._cleanId(configurationId)
+        dexId = this._cleanId(dexId)
+        return { configurationId: configurationId, dexId: dexId }
+    },
+
+    _cleanId: function (value) {
+        var text = value == null ? '' : value + ''
+        text = text.replace(/^\s+|\s+$/g, '')
+        if (!text || text === 'null' || text === 'undefined') return ''
+        return text
+    },
+
+    _emptyProgress: function (code, message) {
+        return {
+            ok: false,
+            code: code || '',
+            message: message || '',
+            dex_id: '',
+            number: '',
+            execution_state: '',
+            execution_result: '',
+            execution_mode: '',
+            percent: 0,
+            stage_key: 'idle',
+            selected_count: 0,
+            sent_count: 0,
+            inserted_count: 0,
+            updated_count: 0,
+            skipped_count: 0,
+            failed_count: 0,
+            ack_skipped: true,
+            concurrent_blocked: false,
+            open: false,
+            indeterminate: false,
+            last_run_at: '',
+            configuration_id: '',
+        }
+    },
+
+    _canReadProgress: function () {
+        if (gs.hasRole('admin')) return true
+        if (gs.hasRole('x_33764_sbridge.reader')) return true
+        if (gs.hasRole('x_33764_sbridge.operator')) return true
+        if (gs.hasRole('x_33764_sbridge.admin')) return true
+        return false
     },
 
     _concurrencyPolicy: function (cfg) {

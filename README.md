@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.3.1 (Phase 5 execution controls on the configuration form) |
+| **App version** | 0.3.2 (live execution progress on the configuration form) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -64,6 +64,14 @@ Data Movement Configuration still defines what moves. **SyncBridgeExecutionServi
 Execute Now creates a `DEX######` row (`legacy_key` `ctrl:<sys_id>`) and returns. A continue job pages **BridgeSeed** for the configuration's linked policy. The existing outbox drain still sends. Dry run creates a real DEX and predicts insert, update, and skip counts without enqueueing and without writing transfer `validated` or acknowledgement fields. Concurrent policy defaults to **Prevent**. Queue waits for the current run; Allow starts anyway. Reconcile is a stub. There is no Pause.
 
 Schedules live on `x_33764_sbridge_execution_schedule` (`SCH######`) under Data Movement → Schedules. One platform job calls `executeScheduled` only. Case 1 capture → outbox → drain → `/apply` is unchanged, including the `run:<run sys_id>` dual-write path.
+
+## Live execution progress (0.3.2)
+
+The configuration form opens with a **Live execution** section (`last_execution`, `last_result`, `last_run_at`). A client script mounts a compact panel under the form header and polls `SyncBridgeExecutionAjax.getLiveProgress` about every 1.75 seconds while the tab is visible and the execution is not terminal. The percent is computed on the server from the data execution's state, counts, and milestone timestamps. It does not advance with the clock, and it does not add columns.
+
+Execute Now still confirms in the 0.3.1 dialog. After the data execution is queued, the form stays open so the panel can show that run. A short job may already be finished on the first poll; the panel shows the final summary immediately. Result stays separate from percent: a finished run with warnings is 100% and `successful_with_warnings`. Dry run uses the same panel, with transfer and target weight folded into reading. When nothing is running, the panel shows the last execution and stops polling.
+
+Acknowledgement is not a stage yet (`ack_skipped: true`, weight 0) until 0.4.0. While Prevent is the concurrent policy and a data execution is still open, **Execute Now** becomes **Execution in progress** and opens that record. Dry Run is disabled. The server Prevent check still decides whether a second run may start. There is no Pause and no UI Builder page.
 
 ## Operator runbook (stub)
 

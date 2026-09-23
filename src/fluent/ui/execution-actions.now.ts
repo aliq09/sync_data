@@ -71,10 +71,7 @@ if (typeof window == 'undefined') {
     var out = new SyncBridgeExecutionService().dryRun(current.getUniqueValue(), { trigger_type: 'manual' });
     if (out && out.ok && out.dex_id) {
         gs.addInfoMessage(out.message || ('Queued ' + out.number));
-        var dex = new GlideRecord('x_33764_sbridge_data_execution');
-        if (dex.get(out.dex_id)) {
-            action.setRedirectURL(dex);
-        }
+        action.setRedirectURL(current);
     } else {
         gs.addErrorMessage((out && out.message) || 'Dry run did not start.');
         if (out && out.dex_id) {

@@ -16,6 +16,22 @@ ClientScript({
 })
 
 ClientScript({
+    $id: Now.ID['cs-live-execution-progress'],
+    name: 'Live execution progress',
+    table: 'x_33764_sbridge_movement_config',
+    type: 'onLoad',
+    uiType: 'desktop',
+    global: true,
+    active: true,
+    order: 200,
+    isolateScript: false,
+    appliesExtended: false,
+    description:
+        'Polls SyncBridgeExecutionAjax.getLiveProgress under the form header. Stops on a terminal or idle snapshot. Does not invent percent from elapsed time.',
+    script: Now.include('../../scripts/ui/live-progress.client.js'),
+})
+
+ClientScript({
     $id: Now.ID['cs-hide-bottom-dex-buttons'],
     name: 'Hide duplicate bottom form buttons',
     table: 'x_33764_sbridge_data_execution',

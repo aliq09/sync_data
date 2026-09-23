@@ -100,14 +100,20 @@ function sbridgeExecuteConfirm(session) {
     ga.addParam('sysparm_config_id', session.configId)
     ga.getXMLAnswer(function (answer) {
         var out = sbridgeExecuteRead(answer)
-        if (out && sbridgeExecuteIsSysId(out.dex_id)) {
-            if (session.dialog && session.dialog.destroy) session.dialog.destroy()
-            if (out.ok) g_form.addInfoMessage(out.message || 'Queued ' + (out.number || 'data execution') + '.')
-            else g_form.addErrorMessage(out.message || 'Unable to start the execution.')
-            window.location.href = 'x_33764_sbridge_data_execution.do?sys_id=' + out.dex_id
+        if (session.dialog && session.dialog.destroy) session.dialog.destroy()
+        if (out && out.ok && sbridgeExecuteIsSysId(out.dex_id)) {
+            g_form.addInfoMessage(out.message || 'Queued ' + (out.number || 'data execution') + '.')
+            try {
+                g_form.setValue('last_execution', out.dex_id, out.number || out.dex_id)
+            } catch (ignoreSet) {}
+            if (typeof sbridgeLiveProgressKick === 'function') sbridgeLiveProgressKick()
             return
         }
-        if (session.dialog && session.dialog.destroy) session.dialog.destroy()
+        if (out && out.code === 'prevent') {
+            g_form.addErrorMessage(out.message || 'Unable to start another execution.')
+            if (typeof sbridgeLiveProgressKick === 'function') sbridgeLiveProgressKick()
+            return
+        }
         g_form.addErrorMessage((out && out.message) || 'Unable to start the execution.')
     })
 }
