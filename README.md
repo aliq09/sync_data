@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.3.0 (Phase 5 Execution Control) |
+| **App version** | 0.3.1 (Phase 5 execution controls on the configuration form) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -55,11 +55,13 @@ Dual-write still does not change Case 1 movement. It fills state, result, the ti
 
 Configurations keep a **Data Executions** related list and a **View latest execution** form button.
 
-## Phase 5 — Execution control (0.3.0)
+## Phase 5 — Execution control (0.3.1)
 
 Data Movement Configuration still defines what moves. **SyncBridgeExecutionService** decides when and how. Validate, Preview, Dry Run, Execute Now, Schedule, REST `POST /api/x_33764_sbridge/sync/executions`, and `executeFromFlow` all call that service. UI actions and the schedule job do not contain transfer loops and do not call `BridgeTransport`.
 
-Execute Now opens a confirmation page, creates a `DEX######` row (`legacy_key` `ctrl:<sys_id>`), and returns. A continue job pages **BridgeSeed** for the configuration's linked policy. The existing outbox drain still sends. Dry run creates a real DEX and predicts insert, update, and skip counts without enqueueing and without writing transfer `validated` or acknowledgement fields. Concurrent policy defaults to **Prevent**. Queue waits for the current run; Allow starts anyway. Reconcile is a stub. There is no Pause.
+**Preview Records** and **Execute Now** open a dialog on the configuration form (GlideAjax to `SyncBridgeExecutionAjax`, which calls the execution service). Close and Cancel leave that form open. Confirm queues a `DEX######` row and opens it. Schedule opens a new execution schedule with `configuration` set on the URL. The preview and execute UI pages remain as hardened fallbacks: Jelly evaluation is marked `jelly="true"`, preview renders `detail_html`, and Cancel/Close always returns to the configuration sys_id (or the configuration list when that id is missing).
+
+Execute Now creates a `DEX######` row (`legacy_key` `ctrl:<sys_id>`) and returns. A continue job pages **BridgeSeed** for the configuration's linked policy. The existing outbox drain still sends. Dry run creates a real DEX and predicts insert, update, and skip counts without enqueueing and without writing transfer `validated` or acknowledgement fields. Concurrent policy defaults to **Prevent**. Queue waits for the current run; Allow starts anyway. Reconcile is a stub. There is no Pause.
 
 Schedules live on `x_33764_sbridge_execution_schedule` (`SCH######`) under Data Movement → Schedules. One platform job calls `executeScheduled` only. Case 1 capture → outbox → drain → `/apply` is unchanged, including the `run:<run sys_id>` dual-write path.
 

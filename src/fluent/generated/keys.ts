@@ -111,6 +111,14 @@ declare global {
                         table: 'sys_script_include'
                         id: '3672051d7deb4445ac9cda193f55d3ab'
                     }
+                    'cs-hide-bottom-config-buttons': {
+                        table: 'sys_script_client'
+                        id: '7860c40669a344e2a35dece10e27d2de'
+                    }
+                    'cs-hide-bottom-dex-buttons': {
+                        table: 'sys_script_client'
+                        id: '4690a79b3b55447c9195efc5209e8068'
+                    }
                     'dex-rel-audit': {
                         table: 'sys_ui_related_list_entry'
                         id: '2f0f01644cb9484ca7b2355f9bc44a93'
@@ -310,6 +318,10 @@ declare global {
                     'sync-bridge-menu': {
                         table: 'sys_app_application'
                         id: 'a41d13e7cffe417ea29af547fafbaba8'
+                    }
+                    SyncBridgeExecutionAjax: {
+                        table: 'sys_script_include'
+                        id: 'b5a6fac4b816483a8ca8938638b454eb'
                     }
                     SyncBridgeExecutionService: {
                         table: 'sys_script_include'

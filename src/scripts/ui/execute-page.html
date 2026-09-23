@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
-<g:evaluate>
+<g:evaluate jelly="true">
 var configId = (RP.getParameterValue('sysparm_config') || '') + '';
-var result = new SyncBridgeExecutionService().preview(configId, { sampleLimit: 20, trigger_type: 'manual', allowInvalid: true });
+var result = {
+    message: '',
+    configuration_name: '',
+    source_label: '',
+    target_label: '',
+    filter: '',
+    operation: '',
+    reference_handling: '',
+    matched: 0,
+    would_update_in_sample: 0,
+    status: 'invalid'
+};
+try {
+    result = new SyncBridgeExecutionService().preview(configId, { sampleLimit: 20, trigger_type: 'manual', allowInvalid: true }) || result;
+} catch (e) {
+    result.message = 'Preview failed: ' + e;
+    result.status = 'invalid';
+}
 jelly.config_id = configId;
 jelly.message = result.message || '';
 jelly.config_name = result.configuration_name || '';
@@ -12,8 +29,9 @@ jelly.filter = result.filter || '(none)';
 jelly.operation = result.operation || '';
 jelly.reference_handling = result.reference_handling || '';
 jelly.matched = result.matched || 0;
-jelly.would_update = result.would_update_in_sample || 0;
-jelly.invalid = result.status == 'invalid';
+jelly.would_update = (result.would_update_in_sample || 0) + '';
+jelly.invalid = result.status == 'invalid' ? 'true' : 'false';
+jelly.has_config = configId ? 'true' : 'false';
 </g:evaluate>
 <div style="padding:16px;max-width:720px;">
   <h1>Execute data movement</h1>
@@ -25,22 +43,29 @@ jelly.invalid = result.status == 'invalid';
   <p>Operation: $[operation]</p>
   <p>Reference handling: $[reference_handling]</p>
   <p>$[message]</p>
-  <j:if test="${jelly.would_update > 0}">
+  <j:if test="${jelly.would_update != '0'}">
     <p><strong>Warning:</strong> $[would_update] sample row(s) already map to a target and may be updated.</p>
   </j:if>
-  <j:if test="${jelly.invalid}">
+  <j:if test="${jelly.invalid == 'true'}">
     <p>This configuration did not pass validation. Fix the findings before executing.</p>
-    <p><a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Back to configuration</a></p>
   </j:if>
-  <j:if test="${!jelly.invalid}">
-    <g:ui_form>
-      <input type="hidden" name="config_id" value="$[config_id]"/>
-      <input type="hidden" id="sbridge_intent" name="intent" value="execute"/>
-      <p>Execute queues a data execution and returns immediately. The existing drain sends the outbox. Dry run does not change target business data.</p>
-      <button type="submit" onclick="return sbridgeChoose('execute');">Execute</button>
-      <button type="submit" onclick="return sbridgeChoose('dry_run');">Dry run</button>
-      <a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Cancel</a>
-    </g:ui_form>
+  <j:if test="${jelly.has_config == 'true'}">
+    <j:if test="${jelly.invalid != 'true'}">
+      <g:ui_form>
+        <input type="hidden" name="config_id" value="$[config_id]"/>
+        <input type="hidden" id="sbridge_intent" name="intent" value="execute"/>
+        <p>Execute queues a data execution and returns immediately. The existing drain sends the outbox. Dry run does not change target business data.</p>
+        <button type="submit" onclick="return sbridgeChoose('execute');">Execute</button>
+        <button type="submit" onclick="return sbridgeChoose('dry_run');">Dry run</button>
+        <a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Cancel</a>
+      </g:ui_form>
+    </j:if>
+    <j:if test="${jelly.invalid == 'true'}">
+      <p><a href="x_33764_sbridge_movement_config.do?sys_id=$[config_id]">Cancel</a></p>
+    </j:if>
+  </j:if>
+  <j:if test="${jelly.has_config != 'true'}">
+    <p><a href="x_33764_sbridge_movement_config_list.do">Cancel</a></p>
   </j:if>
 </div>
 </j:jelly>

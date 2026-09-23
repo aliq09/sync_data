@@ -4,7 +4,8 @@ UiPage({
     $id: Now.ID['ui-preview-records'],
     category: 'general',
     endpoint: 'x_33764_sbridge_preview.do',
-    description: 'Preview source rows for a data movement configuration. No target writes.',
+    description:
+        'Fallback preview page. The form button opens a dialog instead. Jelly evaluation uses detail_html and always links back to the configuration.',
     html: Now.include('../../scripts/ui/preview-page.html'),
 })
 
@@ -12,7 +13,8 @@ UiPage({
     $id: Now.ID['ui-execute-confirm'],
     category: 'general',
     endpoint: 'x_33764_sbridge_execute.do',
-    description: 'Confirm Execute Now or a dry run. Processing calls the execution controller only.',
+    description:
+        'Fallback execute page. The form button confirms in a dialog and stays on the configuration when cancelled. This page keeps a real configuration sys_id on Cancel.',
     html: Now.include('../../scripts/ui/execute-page.html'),
     clientScript: Now.include('../../scripts/ui/execute-page.client.js'),
     processingScript: Now.include('../../scripts/ui/execute-page.server.js'),

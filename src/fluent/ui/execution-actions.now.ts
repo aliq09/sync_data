@@ -2,6 +2,13 @@ import { UiAction } from '@servicenow/sdk/core'
 
 const config = 'x_33764_sbridge_movement_config'
 const dex = 'x_33764_sbridge_data_execution'
+const listOff = {
+    showButton: false,
+    showBannerButton: false,
+    showContextMenu: false,
+    showListChoice: false,
+    showLink: false,
+}
 
 UiAction({
     $id: Now.ID['ua-validate-config'],
@@ -14,7 +21,8 @@ UiAction({
     order: 40,
     hint: 'Check this configuration without moving records',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().validate(current.getUniqueValue(), { trigger_type: 'manual' });
     if (out.status === 'invalid') gs.addErrorMessage(out.message || 'Configuration is invalid.');
@@ -34,10 +42,11 @@ UiAction({
     order: 30,
     hint: 'Count and sample source rows. Does not change the target.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
-    script: `(function () {
-    action.setRedirectURL('x_33764_sbridge_preview.do?sysparm_config=' + current.getUniqueValue());
-})();`,
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
+    isolateScript: false,
+    client: { isClient: true, onClick: 'sbridgePreviewRecords()' },
+    script: Now.include('../../scripts/ui/preview-action.client.js'),
 })
 
 UiAction({
@@ -51,7 +60,8 @@ UiAction({
     order: 20,
     hint: 'Create a dry-run data execution. Target business tables are not changed.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     client: { isClient: true, onClick: 'sbridgeConfirmDryRun()' },
     script: `function sbridgeConfirmDryRun() {
     if (!confirm('Dry run creates a data execution and predicts insert, update, and skip counts. Target business tables are not changed.')) return false;
@@ -88,10 +98,11 @@ UiAction({
     order: 10,
     hint: 'Confirm, then queue a data execution. Transfer uses the existing drain.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'primary' },
-    script: `(function () {
-    action.setRedirectURL('x_33764_sbridge_execute.do?sysparm_config=' + current.getUniqueValue());
-})();`,
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'primary' },
+    list: listOff,
+    isolateScript: false,
+    client: { isClient: true, onClick: 'sbridgeExecuteNow()' },
+    script: Now.include('../../scripts/ui/execute-action.client.js'),
 })
 
 UiAction({
@@ -105,9 +116,10 @@ UiAction({
     order: 50,
     hint: 'Create an execution schedule for this configuration',
     roles: ['x_33764_sbridge.admin'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
-    action.setRedirectURL('x_33764_sbridge_execution_schedule.do?sys_id=-1&sysparm_query=configuration=' + current.getUniqueValue());
+    action.setRedirectURL('x_33764_sbridge_execution_schedule.do?sys_id=-1&configuration=' + current.getUniqueValue());
 })();`,
 })
 
@@ -122,7 +134,8 @@ UiAction({
     order: 200,
     hint: 'Copy this configuration. The copy stays inactive.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().cloneConfiguration(current.getUniqueValue());
     if (!out || !out.ok || !out.configuration_id) {
@@ -147,7 +160,8 @@ UiAction({
     order: 210,
     condition: 'current.active == false',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().setActive(current.getUniqueValue(), true);
     gs.addInfoMessage((out && out.message) || 'Configuration activated.');
@@ -166,7 +180,8 @@ UiAction({
     order: 220,
     condition: 'current.active == true',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().setActive(current.getUniqueValue(), false);
     gs.addInfoMessage((out && out.message) || 'Configuration deactivated.');
@@ -187,7 +202,8 @@ UiAction({
         "current.execution_state == 'draft' || current.execution_state == 'queued' || current.execution_state == 'validating' || current.execution_state == 'preparing' || current.execution_state == 'reading_source'",
     hint: 'Stop further enqueue. Rows already in the outbox may still drain.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'destructive' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'destructive' },
+    list: listOff,
     client: { isClient: true, onClick: 'sbridgeConfirmCancel()' },
     script: `function sbridgeConfirmCancel() {
     if (!confirm('Cancel this execution? Further enqueue stops. Rows already in the outbox may still drain. This is not a rollback.')) return false;
@@ -213,7 +229,8 @@ UiAction({
     condition: "current.failed_count > 0 && current.execution_state == 'completed'",
     hint: 'Queue a new execution for this configuration. It re-reads the source. It does not extract only failed rows.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().retry(current.getUniqueValue());
     if (out && out.ok && out.dex_id) {
@@ -248,7 +265,8 @@ UiAction({
     condition: "current.execution_state == 'completed'",
     hint: 'Not available in 0.3.0. Does not change target data.',
     roles: ['x_33764_sbridge.operator'],
-    form: { showButton: true, style: 'unstyled' },
+    form: { showButton: true, showContextMenu: false, showLink: false, style: 'unstyled' },
+    list: listOff,
     script: `(function () {
     var out = new SyncBridgeExecutionService().reconcile(current.getUniqueValue());
     gs.addInfoMessage((out && out.message) || 'Reconcile is not available in this release.');
