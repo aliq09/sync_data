@@ -7,7 +7,7 @@ import {
 /** Lab table for ATF + manual seed/drain exercises. */
 export const x_33764_sbridge_test_record = Table({
     name: 'x_33764_sbridge_test_record',
-    label: 'Sync Bridge Test Record',
+    label: 'Lab test record',
     display: 'name',
     allowWebServiceAccess: true,
     createAccessControls: true,

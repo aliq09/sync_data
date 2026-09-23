@@ -8,13 +8,13 @@ import {
 
 export const x_33764_sbridge_run = Table({
     name: 'x_33764_sbridge_run',
-    label: 'Sync Bridge Run',
+    label: 'Sync run',
     allowWebServiceAccess: true,
     createAccessControls: true,
     userRole: 'x_33764_sbridge.reader',
     schema: {
         type: StringColumn({
-            label: 'Type',
+            label: 'Run type',
             mandatory: true,
             choices: {
                 drain: 'Drain',
@@ -23,7 +23,7 @@ export const x_33764_sbridge_run = Table({
             },
         }),
         peer: ReferenceColumn({
-            label: 'Peer',
+            label: 'Remote peer',
             referenceTable: 'x_33764_sbridge_peer',
         }),
         started: DateTimeColumn({ label: 'Started' }),

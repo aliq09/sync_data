@@ -9,7 +9,7 @@ import {
 
 export const x_33764_sbridge_peer = Table({
     name: 'x_33764_sbridge_peer',
-    label: 'Sync Bridge Peer',
+    label: 'Peer instance',
     display: 'name',
     audit: true,
     allowWebServiceAccess: true,
@@ -17,18 +17,19 @@ export const x_33764_sbridge_peer = Table({
     userRole: 'x_33764_sbridge.operator',
     schema: {
         name: StringColumn({ label: 'Name', mandatory: true, maxLength: 100 }),
-        base_url: UrlColumn({ label: 'Base URL', mandatory: true }),
+        base_url: UrlColumn({ label: 'Instance URL', mandatory: true }),
         active: BooleanColumn({ label: 'Active', default: false }),
         role: StringColumn({
-            label: 'Role',
+            label: 'Instance role',
             default: 'peer',
             choices: {
-                peer: 'Peer',
-                local: 'Local',
+                peer: 'Remote peer',
+                local: 'Local instance',
             },
         }),
         connection_alias: ReferenceColumn({
             label: 'Connection alias',
+            hint: 'Connection & Credential alias used for outbound auth',
             referenceTable: 'sys_alias',
         }),
         oauth_profile: ReferenceColumn({
