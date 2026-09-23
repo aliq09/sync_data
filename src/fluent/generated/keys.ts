@@ -118,6 +118,7 @@ declare global {
                     'dex-snapshot-note': {
                         table: 'sys_ui_annotation'
                         id: '629896aabcdb407f979c0c7d60fe8653'
+                        deleted: true
                     }
                     'job-drain': {
                         table: 'sysauto_script'
@@ -6268,6 +6269,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '6ab52db9b50447efbb71bee6a2f0d693'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '4568c2f0e3754850bc8f46babb3f7030'
@@ -6642,6 +6644,28 @@ declare global {
                             element: 'NULL'
                             relationship: 'NULL'
                             parent: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '70080dc050184f3b800217123e107847'
+                        key: {
+                            sys_ui_section: {
+                                id: '4568c2f0e3754850bc8f46babb3f7030'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'config_snapshot'
+                            position: '0'
                         }
                     },
                     {
@@ -8938,6 +8962,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '94a01a552b854c77bd4890e6d6f5f69c'
+                        key: {
+                            sys_ui_section: {
+                                id: '4568c2f0e3754850bc8f46babb3f7030'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Configuration Snapshot'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'run'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '94d16752d301437db55a808b01c51680'
                         deleted: true
                         key: {
@@ -9136,6 +9182,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '9a14daa826fa4d1eb06beeb1564f9482'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '4568c2f0e3754850bc8f46babb3f7030'
@@ -12902,6 +12949,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'd87bf0d631a44cfdbf56c4a71bdb9501'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '4568c2f0e3754850bc8f46babb3f7030'
