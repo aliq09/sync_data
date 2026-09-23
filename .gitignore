@@ -1,0 +1,17 @@
+.DS_Store
+.now/
+dist/
+node_modules/
+target/
+*.tsbuildinfo
+.jest_cache
+
+# secrets / local auth — never commit
+.env
+.env.*
+*.pem
+*.key
+.now/credentials*
+**/credentials.json
+box-secrets*
+**/box-secrets.json

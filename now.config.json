@@ -1,0 +1,7 @@
+{
+    "scope": "x_33764_sbridge",
+    "scopeId": "aacc292d46fe4d239965eb2fc04f2669",
+    "name": "Sync Bridge",
+    "tsconfigPath": "./src/server/tsconfig.json",
+    "serverModulesDir": "./src/server/modules"
+}
