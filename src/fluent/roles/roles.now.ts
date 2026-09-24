@@ -8,7 +8,7 @@ export const reader = Role({
 export const worker = Role({
     name: 'x_33764_sbridge.worker',
     description:
-        'Apply worker for metadata tables (sys_script, sc_cat_item, item_option_new). The integration user_name is sbridge.worker; this role is what the ACLs check. Included in operator so an existing operator integration user inherits it on upgrade.',
+        'Apply worker for sys_script, sc_cat_item, item_option_new, and sys_user_group. The integration user_name is sbridge.worker. Included in operator so an existing operator integration user inherits it on upgrade. The install fix script also assigns this role directly.',
 })
 
 export const operator = Role({

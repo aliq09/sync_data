@@ -401,8 +401,9 @@ BridgeApply.prototype = {
                 return this._insert(item, policy, values)
             }
             this._setValues(upd, values)
-            upd.update()
-            return { sys_id: upd.getUniqueValue(), operation: 'update' }
+            var updated = upd.update()
+            if (!updated) return { error: this._writeError('update', item.table, upd, existing) }
+            return { sys_id: updated, operation: 'update' }
         }
 
         return this._insert(item, policy, values)
@@ -436,8 +437,33 @@ BridgeApply.prototype = {
         }
 
         var inserted = gr.insert()
-        if (!inserted) return { error: 'insert into ' + item.table + ' returned no sys_id' }
+        if (!inserted) return { error: this._writeError('insert', item.table, gr) }
         return { sys_id: inserted, operation: 'insert' }
+    },
+
+    /**
+     * Scoped GlideRecord.insert/update returns null when an ACL, a cross-scope
+     * ceiling, or a business rule refuses the write. The platform message is
+     * the only way to tell those apart. Apply still runs as the integration
+     * user; this does not elevate.
+     */
+    _writeError: function (op, table, gr, sysId) {
+        var detail = ''
+        var can = ''
+        try {
+            detail = gr.getLastErrorMessage() || ''
+        } catch (ignore) {
+            detail = ''
+        }
+        try {
+            if (op === 'insert') can = gr.canCreate() ? 'canCreate=true' : 'canCreate=false'
+            else can = gr.canWrite() ? 'canWrite=true' : 'canWrite=false'
+        } catch (ignore2) {
+            can = ''
+        }
+        var where = op + ' into ' + table
+        if (sysId) where = op + ' of ' + table + ' ' + sysId
+        return where + ' returned no sys_id' + (can ? ' (' + can + ')' : '') + (detail ? ': ' + detail : '')
     },
 
     /**

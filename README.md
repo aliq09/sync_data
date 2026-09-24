@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.2 (empty Data Execution hygiene; includes 0.4.1 ACL and xref) |
+| **App version** | 0.4.3 (metadata apply; includes 0.4.2 empty Data Execution hygiene and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -85,19 +85,26 @@ While Prevent is the concurrent policy and a data execution is still open, **Exe
 
 Live progress uses acknowledgement weight **9** (reading 25, transfer 30, target 18) when the flag is on, and the 0.3.2 weights with `ack_skipped: true` when it is off. The configuration panel shows the ACK stage instead of “Acknowledgement not enabled”. Transfer Audit lists `message_type` (including Ack), `ack_stage`, `acknowledged_at`, and `remote_audit_id`. The Data Execution timeline already shows Acknowledged At.
 
-## Apply worker ACLs and reference remap (0.4.1)
+## Apply worker ACLs (0.4.3)
 
-Case 2 apply runs as the integration user (`sbridge.worker` by default), which holds `x_33764_sbridge.operator`. 0.4.0 could insert `cmdb_ci_computer` and `alm_hardware` and rejected `sys_script` and `sc_cat_item` with `insert into {table} returned no sys_id`.
+Apply runs as the integration user (`sbridge.worker` by default). `/apply` rejects any other caller. Do not run apply as admin to prove Cases 5, 6, 7, or 9.
 
-**Role.** `x_33764_sbridge.worker` is contained by `x_33764_sbridge.operator`, so the existing integration user inherits it when this version is installed. Record ACLs also list `x_33764_sbridge.operator` directly. Every metadata ACL script requires `gs.getUserName()` to equal `x_33764_sbridge.integration_user`, so other operator accounts do not gain these writes. Do not run apply as admin to prove the path.
+**Why 0.4.1 did not apply.** 0.4.1 added allow ACLs for `sys_script`, `sc_cat_item`, and `item_option_new`, each with a script that required `gs.getUserName()` to equal `x_33764_sbridge.integration_user`. That same comparison already runs in `BridgeApi`, and the E2E caller passed it (a mismatch is HTTP 403, not a failed outbox row). Inside an ACL script, `gs.getProperty` commonly returns the default blank value because reading `sys_properties` re-enters ACL evaluation, so `answer` was false and the allow rule never granted. Out-of-box rules then still required `admin` (`sys_script`), `catalog_admin` (`sc_cat_item`), or `itil` / `user_admin` (`sys_user_group`, which 0.4.1 did not cover). `item_option_new` has no equivalent out-of-box create rule, which is why Case 7 rows landed on 0.4.1 while Cases 5, 6, and 9 did not. A `*` field rule also does not override a more specific field rule, including `sys_script.script` and the `sys_metadata` columns the platform writes on insert (`sys_scope` and the rest).
 
-| Table | Operations | Fields |
+**Role.** `x_33764_sbridge.worker` is what the metadata ACLs check. `x_33764_sbridge.operator` contains it, and every rule lists both roles so an integration user who already has operator passes before inherited `sys_user_has_role` rows are rebuilt. The install fix script `Grant worker metadata access` also assigns `x_33764_sbridge.worker` directly to the user named by `x_33764_sbridge.integration_user`. There is no ACL script.
+
+| Table | Record operations | Field operations |
 |---|---|---|
-| `sys_script` | read, create, write | `*`, plus `script`, `condition`, `filter_condition`, `advanced` |
-| `sc_cat_item` | read, create, write | `*` |
-| `item_option_new` | read, create, write | `*`, plus `cat_item` |
+| `sys_script` | read, create, write | `*`, `script`, `condition`, `filter_condition`, `advanced`, action/when/collection fields, and `sys_metadata` columns (`sys_scope`, `sys_class_name`, `sys_package`, `sys_policy`, `sys_update_name`, `sys_name`) |
+| `sc_cat_item` | read, create, write | `*`, name/description/price/catalog/category/workflow/flow/roles, and the same `sys_metadata` columns |
+| `item_option_new` | read, create, write | `*`, `cat_item`, and the variable fields apply writes (`name`, `question_text`, `type`, `order`, `mandatory`, `reference`, `default_value`, `variable_set`, `active`, `description`) |
+| `sys_user_group` | read, create, write | `*`, plus `name`, `description`, `email`, `manager`, `parent`, `type`, `active`, `source`, `roles`, `default_assignee`, `include_members`, `cost_center`, `exclude_manager` |
 
-A `*` field rule does not override a more specific field rule, which is why `sys_script.script` is granted on its own.
+**Application access.** Record ACLs do not override a global table's Can read / Can create / Can update flags, and a cross-scope privilege cannot raise that ceiling. The same fix script sets those three flags (and Accessible from = All application scopes) on `sys_script`, `sc_cat_item`, `item_option_new`, and `sys_user_group`. It runs as the installing admin and does not impersonate the worker. If the install log says a flag was not saved, open that table in the Global application and check Can read, Can create, and Can update by hand. Delete stays off.
+
+**Cross-scope privileges.** Allowed read, write, and create privileges are shipped for those four tables so Enforcing runtime-access tracking does not refuse the call after the flags are on. Delete is not granted.
+
+A failed insert or update now appends `canCreate` / `canWrite` and `getLastErrorMessage()` to `insert into {table} returned no sys_id`, so the next outbox row shows an ACL denial separately from a cross-scope ceiling.
 
 **Record Mapping.** After each successful upsert, including CMDB mode, apply upserts `x_33764_sbridge_xref` (`peer` + `source_table` + `source_sys_id` → `target_sys_id`).
 
@@ -147,7 +154,7 @@ That is the same filter as **Orphan executions**. Clear the default `configurati
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
-2. **Integration user** — the shipped default is `sbridge.worker`, with roles `x_33764_sbridge.operator` (contains `x_33764_sbridge.worker`) and `x_33764_sbridge.reader`. Metadata ACLs allow that user to create and update `sys_script`, `sc_cat_item`, and `item_option_new`. Blank still fail-closes capture at runtime if an admin clears the property.
+2. **Integration user** — the shipped default is `sbridge.worker`, with roles `x_33764_sbridge.operator` (contains `x_33764_sbridge.worker`) and `x_33764_sbridge.reader`. Install also assigns `x_33764_sbridge.worker` directly when that user already exists. Metadata ACLs allow that role to create and update `sys_script`, `sc_cat_item`, `item_option_new`, and `sys_user_group`. Blank still fail-closes capture at runtime if an admin clears the property. Do not substitute admin for this user when proving apply.
 3. **Instances** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote instance. Keep remote `active=true` only when ready. The physical table is still `x_33764_sbridge_peer`.
 4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
 5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.
