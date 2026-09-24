@@ -3,23 +3,21 @@ import { operator, worker } from '../roles/roles.now'
 import './item-option-new-table'
 
 /**
- * Apply runs as the integration user (property x_33764_sbridge.integration_user,
- * shipped user_name sbridge.worker). 0.4.1 allow-rules also required an ACL
- * script that compared gs.getUserName() to that property. /apply already
- * enforces the same comparison in BridgeApi; the E2E caller passed it.
- * Inside an ACL script, gs.getProperty often returns the default blank
- * because reading sys_properties re-enters ACL evaluation, so answer was
- * false and the allow rule never granted. OOB rules then still required
- * admin (sys_script), catalog_admin (sc_cat_item), or itil/user_admin
- * (sys_user_group). item_option_new has no equivalent OOB create rule,
- * which is why Case 7 rows landed while Cases 5, 6, and 9 did not.
+ * Allow-If rules at the same point are OR (pass any one). Roles, the
+ * condition, and the script inside a single rule are AND. Deny-Unless
+ * rules run first, and every one of them must pass: another Allow-If does
+ * not override a failed Deny-Unless. That includes out-of-box create rules
+ * on sys_script (admin), sc_cat_item (catalog_admin), and sys_user_group
+ * (user_admin / itil), plus Zurich+ data-type Deny-Unless rules on script
+ * and condition_string (snc_required_script_writer_permission). Admin does
+ * not skip those data-type rules. 0.4.1's scoped allow rules were present
+ * on PDI2 and Cases 5 and 6 still failed, which matches a Deny-Unless still
+ * denying. item_option_new has no equivalent gate, which is why Case 7 landed.
  *
- * These rules are role-only. worker is contained by operator, and each
- * rule lists both so an integration user who already has operator passes
- * before inherited-role rows are rebuilt. A star field rule does not
- * override a more specific field rule, including sys_metadata columns the
- * platform writes on insert (sys_scope and the rest). Do not prove this
- * path by running apply as admin.
+ * These rules stay role-only so the scoped GlideRecord path succeeds when
+ * the instance has no Deny-Unless in the way. When it does, BridgeApply
+ * retries the four metadata tables through global.SyncBridgeMetadataWrite
+ * as the same integration user. That path does not grant admin.
  */
 Acl({
     $id: Now.ID['acl-worker-sys-script-read'],

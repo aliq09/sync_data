@@ -7,7 +7,9 @@ import { CrossScopePrivilege } from '@servicenow/sdk/core'
  * exceed the table's own Can read / Can create / Can update flags; the
  * install fix script turns those on for the four apply tables.
  *
- * One record per operation. Delete is not granted.
+ * One record per operation. Delete is not granted. The execute privilege
+ * covers the global script include the install fix script creates so
+ * Enforcing mode still allows the metadata-write fallback.
  */
 
 CrossScopePrivilege({
@@ -116,4 +118,13 @@ CrossScopePrivilege({
     targetName: 'sys_user_group',
     targetScope: 'global',
     targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-metadata-writer-execute'],
+    status: 'allowed',
+    operation: 'execute',
+    targetName: 'SyncBridgeMetadataWrite',
+    targetScope: 'global',
+    targetType: 'sys_script_include',
 })

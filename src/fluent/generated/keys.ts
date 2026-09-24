@@ -979,6 +979,10 @@ declare global {
                         table: 'sys_scope_privilege'
                         id: 'ea4e307d01a64b52a09b8f8d735bbe75'
                     }
+                    'csp-metadata-writer-execute': {
+                        table: 'sys_scope_privilege'
+                        id: 'dfc4a554e7154f38bd05d160f4f3c1a7'
+                    }
                     'csp-sc-cat-item-create': {
                         table: 'sys_scope_privilege'
                         id: '0972314e118246bda4c35ab6165379aa'

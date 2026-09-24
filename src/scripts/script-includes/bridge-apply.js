@@ -146,6 +146,7 @@ BridgeApply.prototype = {
 
         out.status = 'applied'
         out.target_sys_id = target.sys_id
+        if (target.privilege) out.privilege = target.privilege
         return out
     },
 
@@ -402,8 +403,10 @@ BridgeApply.prototype = {
             }
             this._setValues(upd, values)
             var updated = upd.update()
-            if (!updated) return { error: this._writeError('update', item.table, upd, existing) }
-            return { sys_id: updated, operation: 'update' }
+            if (updated) return { sys_id: updated, operation: 'update' }
+            var updateFallback = this._metadataFallback(item, values, 'update', existing, upd)
+            if (updateFallback) return updateFallback
+            return { error: this._writeError('update', item.table, upd, existing) }
         }
 
         return this._insert(item, policy, values)
@@ -437,15 +440,150 @@ BridgeApply.prototype = {
         }
 
         var inserted = gr.insert()
-        if (!inserted) return { error: this._writeError('insert', item.table, gr) }
-        return { sys_id: inserted, operation: 'insert' }
+        if (inserted) return { sys_id: inserted, operation: 'insert' }
+        var insertFallback = this._metadataFallback(item, values, 'insert', policy.preserve_sys_id ? item.source_sys_id : '', gr)
+        if (insertFallback) return insertFallback
+        return { error: this._writeError('insert', item.table, gr) }
+    },
+
+    /**
+     * Declared metadata tables. Scoped GlideRecord honors every matching ACL,
+     * including Deny-Unless rules that an extra Allow-If cannot override.
+     * The fallback writes the same row as the same user from global scope.
+     */
+    _isMetadataTable: function (table) {
+        return (
+            table === 'sys_script' ||
+            table === 'sc_cat_item' ||
+            table === 'item_option_new' ||
+            table === 'sys_user_group'
+        )
+    },
+
+    /**
+     * Retry only when the refusal looks like security. A validation abort
+     * that already has a message stays failed as the worker.
+     */
+    _securityRefusal: function (op, gr) {
+        var detail = ''
+        var allowed = true
+        try {
+            detail = gr.getLastErrorMessage() || ''
+        } catch (ignore) {
+            detail = ''
+        }
+        try {
+            allowed = op === 'insert' ? !!gr.canCreate() : !!gr.canWrite()
+        } catch (ignore2) {
+            allowed = true
+        }
+        if (!allowed) return true
+        if (!detail) return true
+        return /acl|security|not allowed|insufficient|denied|privilege|does not have|access to/i.test(detail)
+    },
+
+    /**
+     * @returns {object|null} a write result when this table is a metadata
+     * table and the failure looks like security; null to keep the original error
+     */
+    _metadataFallback: function (item, values, op, sysId, gr) {
+        if (!item || !this._isMetadataTable(item.table)) return null
+        if (!this._securityRefusal(op, gr)) return null
+        var result = this._callMetadataWriter(op, item.table, sysId, values)
+        if (result && result.sys_id) {
+            this._auditMetadataPrivilege(item, op, result.sys_id)
+            return { sys_id: result.sys_id, operation: op, privilege: 'global_metadata_writer' }
+        }
+        var first = this._writeError(op, item.table, gr, op === 'update' ? sysId : '')
+        var second = result && result.error ? result.error : 'metadata writer returned no sys_id'
+        return { error: first + '; metadata writer: ' + second }
+    },
+
+    _callMetadataWriter: function (op, table, sysId, values) {
+        var session = gs.getSession()
+        var token = gs.generateGUID()
+        var key = 'x_33764_sbridge.meta_write'
+        try {
+            session.putClientData(key, token)
+        } catch (ignore) {}
+        try {
+            session.putProperty(key, token)
+        } catch (ignore2) {}
+        try {
+            var writer = new global.SyncBridgeMetadataWrite()
+            var payload = '{}'
+            try {
+                payload = JSON.stringify(values || {})
+            } catch (jsonErr) {
+                return { error: 'metadata values could not be serialized: ' + jsonErr }
+            }
+            return writer.write(op, table, sysId || '', payload, token) || { error: 'metadata writer returned nothing' }
+        } catch (e) {
+            return { error: 'SyncBridgeMetadataWrite is not installed in global (' + e + ')' }
+        } finally {
+            try {
+                session.clearClientData(key)
+            } catch (ignore3) {}
+            try {
+                session.putProperty(key, '')
+            } catch (ignore4) {}
+        }
+    },
+
+    _auditMetadataPrivilege: function (item, op, targetSysId) {
+        var user = ''
+        try {
+            user = gs.getUserName() || ''
+        } catch (ignore) {
+            user = ''
+        }
+        var note =
+            'metadata privilege ' +
+            op +
+            ' ' +
+            (item.table || '') +
+            ' source ' +
+            (item.source_sys_id || '') +
+            ' target ' +
+            targetSysId +
+            ' as ' +
+            user +
+            ' via global.SyncBridgeMetadataWrite; admin was not granted'
+        gs.info('[bridge] ' + note)
+        try {
+            var key = 'privilege:' + (item.source_sys_id || '') + ':' + (item.seq || 0) + ':' + op
+            var gr = new GlideRecord(BridgeConfig.TABLE.transferAudit)
+            if (!gr.isValid()) return
+            gr.addQuery('legacy_key', key)
+            gr.setLimit(1)
+            gr.query()
+            var existingAudit = gr.next()
+            if (!existingAudit) {
+                gr.initialize()
+                gr.setValue('legacy_key', key)
+            }
+            gr.setValue('direction', 'inbound')
+            gr.setValue('message_type', 'receive')
+            gr.setValue('result', 'metadata_privilege')
+            gr.setValue('source_table', item.table || '')
+            gr.setValue('source_sys_id', item.source_sys_id || '')
+            gr.setValue('target_sys_id', targetSysId || '')
+            gr.setValue('sequence', item.seq || 0)
+            gr.setValue('record_count', 1)
+            if (item.correlation_id) gr.setValue('correlation_id', item.correlation_id)
+            gr.setValue('error', note.substring(0, 4000))
+            var id = existingAudit ? gr.update() : gr.insert()
+            if (!id) gs.warn('[bridge] metadata privilege audit was not saved ' + (gr.getLastErrorMessage() || ''))
+        } catch (e) {
+            gs.warn('[bridge] metadata privilege audit failed: ' + e)
+        }
     },
 
     /**
      * Scoped GlideRecord.insert/update returns null when an ACL, a cross-scope
      * ceiling, or a business rule refuses the write. The platform message is
-     * the only way to tell those apart. Apply still runs as the integration
-     * user; this does not elevate.
+     * the only way to tell those apart. Metadata tables retry through the
+     * global writer; every other table stays on this user with no privilege.
      */
     _writeError: function (op, table, gr, sysId) {
         var detail = ''
