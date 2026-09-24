@@ -1111,6 +1111,10 @@ declare global {
                         table: 'sys_scope_privilege'
                         id: '48b58d5435d24f54a8a2d5be7200a347'
                     }
+                    'csp-software-writer-execute': {
+                        table: 'sys_scope_privilege'
+                        id: 'a6c6f7d47c914961abb69faaf4eba7d3'
+                    }
                     'csp-sys-script-create': {
                         table: 'sys_scope_privilege'
                         id: '25b784b66c0c433cac881f22bdeb2cf6'
@@ -1182,6 +1186,10 @@ declare global {
                     'fix-publish-global-metadata-writer': {
                         table: 'sys_script_fix'
                         id: 'fd3f10757b3c4e798290a4b31465771d'
+                    }
+                    'fix-publish-global-software-writer': {
+                        table: 'sys_script_fix'
+                        id: '9844bda11f5f4408a780747471acbcfe'
                     }
                     'job-continue-executions': {
                         table: 'sysauto_script'

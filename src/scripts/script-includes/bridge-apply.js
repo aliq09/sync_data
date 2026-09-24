@@ -514,13 +514,16 @@ BridgeApply.prototype = {
         else gr.initialize()
         this._setValues(gr, values)
         if (this._isSoftwareItem(item, table)) {
-            // setValue only. 0.4.7 then did gr[field] = text and element.setValue().
-            // Both are unsupported on a scoped GlideRecord and ran AFTER setValue,
-            // so the hold read back empty for name as well as the references.
-            // The payload line in that error is the outbox, not the sealed value.
-            this._stampSoftwareFields(gr, values)
-            this._rememberSoftwareHold(item, gr)
-            if (!values.name || !values.installed_on) {
+            // Scoped setValue on cmdb_software_instance does not keep even the
+            // string name for this user: canCreate() is the ACL, and the
+            // element write is a cross-scope no-op. Do not insert that empty
+            // buffer. The alternate runs as the same user, outside this
+            // scoped GlideRecord, and does not grant admin.
+            var probe = this._probeSoftwareSet(gr, item, values)
+            var heldNow = item._bridge_held || {}
+            if (!heldNow.name || !heldNow.installed_on) {
+                var alt = this._writeSoftwareUnscoped(item, values, policy)
+                if (alt && alt.sys_id) return alt
                 var can = ''
                 try {
                     can = gr.canCreate() ? 'canCreate=true' : 'canCreate=false'
@@ -531,10 +534,11 @@ BridgeApply.prototype = {
                     error:
                         'insert into ' +
                         table +
-                        ' aborted before insert' +
+                        ' returned no sys_id' +
                         (can ? ' (' + can + ')' : '') +
                         ': ' +
-                        this._softwareAbortDetail(item, null, 'before'),
+                        probe +
+                        (alt && alt.error ? '; ' + alt.error : ''),
                 }
             }
         }
@@ -891,21 +895,278 @@ BridgeApply.prototype = {
 
     _stampSoftwareFields: function (gr, values) {
         if (!gr || !values) return
-        // Name first and last. Only GlideRecord.setValue — the scoped API.
-        // gr[field] = text and GlideElement.setValue are not supported in a
-        // scoped app; 0.4.7 called both after setValue and the next getValue
-        // was empty for name, installed_on, and software.
         if (values.name) this._stampField(gr, 'name', values.name)
         if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
         if (values.software) this._stampField(gr, 'software', values.software)
         if (values.name) this._stampField(gr, 'name', values.name)
-        if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
     },
 
     _stampField: function (gr, field, value) {
         if (!gr || !field || value === undefined || value === null || String(value) === '') return
         if (!gr.isValidField(field)) return
         gr.setValue(field, String(value))
+    },
+
+    /**
+     * One setValue per mandatory field on this GlideRecord, then getValue.
+     * The returned line always starts with hold-after-setValue so a truncated
+     * residual still shows the readback. setValue's return is undefined on
+     * this platform; canWrite is read only when getValue stayed empty, so a
+     * successful set is not followed by getElement.
+     */
+    _probeSoftwareSet: function (gr, item, values) {
+        var mark = ''
+        try {
+            mark = gs.generateGUID()
+            gr._sbridge_mark = mark
+        } catch (e) {
+            mark = ''
+        }
+        var fields = ['name', 'installed_on', 'software']
+        var bits = []
+        var i
+        item._bridge_held = { name: '', installed_on: '', software: '', probe: '' }
+        for (i = 0; i < fields.length; i++) {
+            var field = fields[i]
+            var valid = false
+            try {
+                valid = !!(gr && gr.isValidField(field))
+            } catch (ignore) {
+                valid = false
+            }
+            var ret = 'not-called'
+            var text = values && values[field] ? String(values[field]) : ''
+            if (valid && text) {
+                try {
+                    var returned = gr.setValue(field, text)
+                    ret = returned === undefined || returned === null ? 'undefined' : String(returned)
+                } catch (setErr) {
+                    ret = 'threw:' + setErr
+                }
+            }
+            var held = ''
+            try {
+                held = gr.getValue(field) || ''
+            } catch (getErr) {
+                held = ''
+            }
+            item._bridge_held[field] = held
+            var canWrite = ''
+            if (!held && valid) {
+                try {
+                    var element = gr.getElement(field)
+                    if (element && element.canWrite) canWrite = element.canWrite() ? 'true' : 'false'
+                } catch (cwErr) {
+                    canWrite = 'threw'
+                }
+            }
+            bits.push(
+                field +
+                    '=' +
+                    (held || '(empty)') +
+                    ' isValidField=' +
+                    (valid ? 'true' : 'false') +
+                    ' setValue=' +
+                    ret +
+                    (canWrite ? ' canWrite=' + canWrite : '')
+            )
+        }
+        var canCreate = '?'
+        try {
+            canCreate = gr.canCreate() ? 'true' : 'false'
+        } catch (ccErr) {
+            canCreate = 'threw'
+        }
+        var same = 'false'
+        try {
+            same = mark && gr._sbridge_mark === mark ? 'true' : 'false'
+        } catch (markErr) {
+            same = 'false'
+        }
+        var line =
+            'hold-after-setValue ' +
+            bits.join(' ') +
+            ' canCreate=' +
+            canCreate +
+            ' sameGr=' +
+            same +
+            (item._bridge_record_init ? ' init=' + item._bridge_record_init : '')
+        item._bridge_hold_after = line
+        item._bridge_held.probe = line
+        return line
+    },
+
+    /**
+     * Scoped GlideRecord left name and installed_on empty. Write the sealed
+     * fields as this same user from global scope, then via the Table API
+     * using the current session. Neither path grants admin. cmdb_sam_sw_install
+     * is not used.
+     */
+    _writeSoftwareUnscoped: function (item, values, policy) {
+        var body = this._softwareWriteBody(values)
+        if (!body.name || !body.installed_on) {
+            return { error: 'software alternate had no sealed name or installed_on' }
+        }
+        var globalResult = this._callSoftwareWriter(body, policy, item)
+        if (globalResult && globalResult.sys_id) {
+            gs.info(
+                '[bridge] software instance ' +
+                    globalResult.sys_id +
+                    ' via global.SyncBridgeSoftwareWrite as ' +
+                    (gs.getUserName() || '') +
+                    '; admin was not granted'
+            )
+            return { sys_id: globalResult.sys_id, operation: 'insert', privilege: 'global_software_writer' }
+        }
+        var tableResult = this._insertSoftwareViaTableApi(body)
+        if (tableResult && tableResult.sys_id) {
+            gs.info(
+                '[bridge] software instance ' +
+                    tableResult.sys_id +
+                    ' via table api as ' +
+                    (gs.getUserName() || '') +
+                    '; admin was not granted'
+            )
+            return { sys_id: tableResult.sys_id, operation: 'insert', privilege: 'table_api_software' }
+        }
+        var parts = []
+        if (globalResult && globalResult.error) parts.push('global writer: ' + globalResult.error)
+        if (tableResult && tableResult.error) parts.push('table api: ' + tableResult.error)
+        return { error: parts.join('; ') || 'software alternate returned no sys_id' }
+    },
+
+    _softwareWriteBody: function (values) {
+        var fields = ['name', 'installed_on', 'software', 'version', 'edition', 'publisher', 'display_name', 'prod_id']
+        var out = {}
+        values = values || {}
+        for (var i = 0; i < fields.length; i++) {
+            var field = fields[i]
+            if (values[field] === undefined || values[field] === null || String(values[field]) === '') continue
+            out[field] = String(values[field])
+        }
+        return out
+    },
+
+    _callSoftwareWriter: function (body, policy, item) {
+        var session = gs.getSession()
+        var token = gs.generateGUID()
+        var key = 'x_33764_sbridge.sw_write'
+        try {
+            session.putClientData(key, token)
+        } catch (ignore) {}
+        try {
+            session.putProperty(key, token)
+        } catch (ignore2) {}
+        try {
+            var writer = new global.SyncBridgeSoftwareWrite()
+            var payload = JSON.stringify(body || {})
+            var preserveId = ''
+            if (policy && policy.preserve_sys_id && item && item.source_sys_id) preserveId = String(item.source_sys_id)
+            return writer.insert(payload, token, preserveId) || { error: 'software writer returned nothing' }
+        } catch (e) {
+            return {
+                error:
+                    'SyncBridgeSoftwareWrite is not installed in global (' +
+                    e +
+                    '). Re-install and confirm the system log says software writer callable as global.SyncBridgeSoftwareWrite.',
+            }
+        } finally {
+            try {
+                session.clearClientData(key)
+            } catch (ignore3) {}
+            try {
+                session.putProperty(key, '')
+            } catch (ignore4) {}
+        }
+    },
+
+    _insertSoftwareViaTableApi: function (body) {
+        var base = ''
+        try {
+            base = (gs.getProperty('glide.servlet.uri') || '') + ''
+        } catch (ignore) {
+            base = ''
+        }
+        if (!base) return { error: 'table api skipped: glide.servlet.uri is empty' }
+        if (base.charAt(base.length - 1) !== '/') base += '/'
+        var endpoint = base + 'api/now/table/cmdb_software_instance?sysparm_exclude_ref_link=true'
+        try {
+            var rm = new sn_ws.RESTMessageV2()
+            rm.setEndpoint(endpoint)
+            rm.setHttpMethod('POST')
+            rm.setRequestHeader('Accept', 'application/json')
+            rm.setRequestHeader('Content-Type', 'application/json')
+            var token = ''
+            var sessionId = ''
+            try {
+                token = (gs.getSession().getSessionToken() || '') + ''
+            } catch (tokenErr) {
+                token = ''
+            }
+            try {
+                sessionId = (gs.getSessionID() || '') + ''
+            } catch (sidErr) {
+                sessionId = ''
+            }
+            if (token) rm.setRequestHeader('X-UserToken', token)
+            if (sessionId) rm.setRequestHeader('Cookie', 'glide_session_store=' + sessionId)
+            rm.setRequestBody(JSON.stringify(body))
+            rm.setHttpTimeout(20000)
+            var response = rm.execute()
+            var status = 0
+            try {
+                status = response.getStatusCode()
+            } catch (stErr) {
+                status = 0
+            }
+            var raw = ''
+            try {
+                raw = response.getBody() || ''
+            } catch (bodyErr) {
+                raw = ''
+            }
+            var parsed = {}
+            try {
+                parsed = raw ? JSON.parse(raw) : {}
+            } catch (parseErr) {
+                parsed = {}
+            }
+            var result = parsed.result || {}
+            var id = ''
+            if (result.sys_id && result.sys_id.value) id = String(result.sys_id.value)
+            else if (result.sys_id) id = String(result.sys_id)
+            var heldName = result.name && result.name.value ? result.name.value : result.name || ''
+            var heldOn =
+                result.installed_on && result.installed_on.value ? result.installed_on.value : result.installed_on || ''
+            if (status >= 200 && status < 300 && id) {
+                gs.info(
+                    '[bridge] software table api status=' +
+                        status +
+                        ' hold-after-setValue name=' +
+                        heldName +
+                        ' installed_on=' +
+                        heldOn
+                )
+                return { sys_id: id }
+            }
+            var message = ''
+            if (parsed.error) message = (parsed.error.message || '') + (parsed.error.detail ? ' ' + parsed.error.detail : '')
+            if (!message) message = raw ? String(raw).substring(0, 300) : 'empty body'
+            return {
+                error:
+                    'table api status=' +
+                    status +
+                    (token ? '' : ' (no session token)') +
+                    ' ' +
+                    message +
+                    '; hold-after-setValue name=' +
+                    (heldName || '(empty)') +
+                    ' installed_on=' +
+                    (heldOn || '(empty)'),
+            }
+        } catch (apiErr) {
+            return { error: 'table api threw: ' + apiErr }
+        }
     },
 
     _rememberSoftwareHold: function (item, gr) {
@@ -1409,6 +1670,7 @@ BridgeApply.prototype = {
         var held = item._bridge_held || {}
         var sealed = item._bridge_sealed || {}
         var parts = []
+        if (item._bridge_hold_after) parts.push(item._bridge_hold_after)
         parts.push(
             'payload name=' +
                 this._diag(payload.name) +

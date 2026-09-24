@@ -76,3 +76,22 @@ Record({
         script: Now.include('../../scripts/jobs/open-software-instance-access.js'),
     },
 })
+
+/**
+ * 0.4.8 did not add a fix script, so an instance that already opened
+ * application access will not run that record again. This publishes the
+ * global software-instance insert. It does not grant admin.
+ */
+Record({
+    $id: Now.ID['fix-publish-global-software-writer'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Publish global SyncBridgeSoftwareWrite',
+        description:
+            '0.4.9. Publish SyncBridgeSoftwareWrite into Global for cmdb_software_instance inserts as the integration user. Does not grant admin. Does not use UpdateManager2 or cmdb_sam_sw_install.',
+        before: false,
+        unloadable: true,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/publish-software-writer.js'),
+    },
+})

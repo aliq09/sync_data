@@ -175,6 +175,15 @@ CrossScopePrivilege({
 })
 
 CrossScopePrivilege({
+    $id: Now.ID['csp-software-writer-execute'],
+    status: 'allowed',
+    operation: 'execute',
+    targetName: 'SyncBridgeSoftwareWrite',
+    targetScope: 'global',
+    targetType: 'sys_script_include',
+})
+
+CrossScopePrivilege({
     $id: Now.ID['csp-metadata-writer-execute'],
     status: 'allowed',
     operation: 'execute',

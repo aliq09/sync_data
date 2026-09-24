@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.8 (software-instance setValue; includes 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.4.9 (software-instance write outside the scoped GlideRecord; includes 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -263,6 +263,20 @@ with `payload name=CASE1-COMP-DETAILED Chrome on 01 installed_on=23626c5d… sof
 
 1. On PDI2, `cmdb_software_instance` has the 15 rows. `name` matches the outbox. `installed_on` is the PDI2 computer (`639268d5…` for DETAILED-01), not the payload source id `23626c5d…`.
 2. The Data Execution is not left at 15 selected / 0 sent / cancelled. A remaining failure shows `sealed installed_on=` different from the payload id when Record Mapping hit, and `held before insert name=` equal to the outbox name. It does not show all three held values empty after a scoped property assignment.
+3. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A still populates. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep its configuration filter.
+
+## Software instance apply (0.4.9)
+
+0.4.8 re-Execute still failed. The sealed values were already right: `name=CASE1-COMP-DETAILED Chrome on 01`, `installed_on=639268d5…` (PDI2 DETAILED-01, not the source id), `software=98fd2415…` (a PDI2 package). `held before insert` was still empty for all three, including the string `name`. The Data Execution stayed 15 / 0 / 0 cancelled. `cmdb_software_instance` on PDI2 gained no CASE1-COMP-DETAILED rows. `cmdb_sam_sw_install` is still not used.
+
+**Why setValue does not stick.** `canCreate()` is true, so the table ACL allows create. The scoped `GlideRecord` for this global table still drops the write: after `setValue('name', …)` on that same record, `getValue('name')` is empty. That is the cross-scope element ceiling, not a bad field name and not a reference-only quirk. NIC and storage do not hit it. The 0.4.7 application-access fix script cannot raise that ceiling from the application scope when the platform refuses the `sys_db_object` update. Inserting the empty scoped buffer is what the before rule aborts.
+
+**Fix.** The scoped readback is now the literal `hold-after-setValue`, with `isValidField`, the `setValue` return, `canCreate`, per-field `canWrite` when the value did not stick, and `sameGr`. When that hold is missing `name` or `installed_on`, apply does not insert the empty GlideRecord. It writes the sealed fields as the same integration user through `global.SyncBridgeSoftwareWrite` (only `cmdb_software_instance`, session token, no admin). If that include is not callable, it POSTs the same body to the Table API with the current session token. A new fix script, **Publish global SyncBridgeSoftwareWrite**, publishes the include with `sysparm_transaction_scope=global`. It does not grant admin and it does not change the metadata writer allow-list.
+
+**Verify (do not deploy from this change set).** Install 0.4.9 on both peers. `now-sdk build` must succeed before that install. After install, the system log should contain `software writer callable as global.SyncBridgeSoftwareWrite`. Re-Execute only the Path A software-instance movement, as `sbridge.worker`, after the computer Record Mapping exists.
+
+1. On PDI2, `cmdb_software_instance` has the 15 rows. `name` matches the outbox. `installed_on` is `639268d5…` for DETAILED-01. `software` is the sealed PDI2 package when that id was sent.
+2. The Data Execution is not left at 15 selected / 0 sent / cancelled. A remaining failure contains the literal `hold-after-setValue` with `isValidField`, `setValue=`, `canCreate=`, and `sameGr=`. The global writer or Table API error is on that same line.
 3. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A still populates. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep its configuration filter.
 
 ## Operator runbook (stub)
