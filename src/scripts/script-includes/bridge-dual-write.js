@@ -264,6 +264,16 @@ BridgeDualWrite.prototype = {
         }
 
         var values = this._configValuesFromPolicy(policyGr)
+        // Execute calls linkPolicies before BridgeSeed. That used to copy
+        // policy.condition over a filter the operator had already set
+        // (Case 7: filter nameSTARTSWITHcase6_max_ disappeared). Seed and
+        // capture still read policy.condition. Preview, dry run, and the
+        // DEX snapshot read this filter. Keep it once it is set. An empty
+        // filter still receives the policy condition. Clear the filter to
+        // let the next link copy condition again.
+        if (!isNew && String(gr.getValue('filter') || '').replace(/^\s+|\s+$/g, '') !== '') {
+            delete values.filter
+        }
         var changed = isNew
         for (var field in values) {
             if (!Object.prototype.hasOwnProperty.call(values, field)) continue
@@ -311,6 +321,8 @@ BridgeDualWrite.prototype = {
             target_instance: targetInstance,
             source_table: table,
             target_table: targetTable,
+            // Initial value only. _linkOne does not overwrite a filter that is
+            // already set. policy.condition remains the query BridgeSeed uses.
             filter: policyGr.getValue('condition') || '',
             preserve_sys_id: policyGr.getValue('preserve_sys_id') === '1',
             propagate_deletes: policyGr.getValue('propagate_deletes') === '1',

@@ -1,6 +1,6 @@
 {
     "name": "sync-bridge",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "description": "Sync Bridge \u2014 Fluent outbox sync (capture, seed, drain, apply)",
     "license": "UNLICENSED",
     "imports": {

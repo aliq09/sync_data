@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.5 (Global metadata writer publishes without UpdateManager2; includes 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.4.6 (software-instance apply; includes 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -207,6 +207,26 @@ Record Mapping is still written after a successful upsert and read before insert
 4. On the PDI2 computer, the NIC and software related lists show the child rows. `cmdb_ci`, `installed_on`, `software`, `parent`, and `child` are PDI2 sys_ids. They are not the PDI1 ids left on the source.
 5. Case 2 `alm_hardware.ci` still follows Record Mapping. Case 1 department still updates the existing row and does not insert a duplicate. A drain poll still does not insert an empty Data Execution.
 6. After install, **System Definition → Script Includes** shows `SyncBridgeMetadataWrite` in the **Global** application, API name `global.SyncBridgeMetadataWrite`, Accessible from **All application scopes**. The system log contains `[bridge] metadata writer table api POST sysparm_transaction_scope=global status=201` (or `PATCH` / `200` when the row already exists) and `[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=global.SyncBridgeMetadataWrite access=public`. There is no `UpdateManager2` / `loadXML refused` line. If the Table API status is not 2xx, the log instead says a one-time `sys_trigger` was queued; within a minute the same callable line must appear from that job. Re-run Cases 5, 6, and 9 as `sbridge.worker`. Outbox must not fail with `SyncBridgeMetadataWrite is not installed in global`. A security refusal still retries through that global include; admin is not granted.
+
+## Software instance apply (0.4.6)
+
+Path A `cmdb_software_instance` on PDI2 selected 15 rows, sent 0, and left **0** rows on the destination. The apply error was `insert into cmdb_software_instance returned no sys_id (canCreate=true)` with no `getLastErrorMessage()` text. NIC, storage, and the other Path A children in that run applied, and their foreign keys were PDI2 computer sys_ids. Cases 5, 6, 7, and 9, Gap A, and empty Data Executions were already passing. This build does not grant `sbridge.worker` admin and does not add `cmdb_software_instance` to `global.SyncBridgeMetadataWrite`.
+
+**Root cause.** `canCreate=true` plus an empty platform message is a before-rule `setAbortAction(true)`, not a Deny-Unless ACL. Two things on this table produce that result:
+
+1. Capture only sent `policy.field_list`. A list without `name`, `installed_on`, and `software` inserts a row the software-instance rule refuses. Those fields are mandatory for the install even when the dictionary mandatory flag is only on `name` and `installed_on`.
+2. When `software` is in the payload, xref keeps the source sys_id if the product model was not synced and the name lookup misses. The target rule loads that reference, finds no row, and aborts. `canCreate()` is still true because the table ACL allows create. The same abort happens when the GlideRecord is opened on the parent `cmdb_software_instance` while the install class is `cmdb_sam_sw_install`. The metadata writer allow-list stays `sys_script`, `sc_cat_item`, `item_option_new`, and `sys_user_group`. A global GlideRecord runs the same before rules, so it would still return no sys_id.
+
+**Fix.** Capture and seed union a child include-list (foreign keys plus `name`, `version`, `edition`, and `discovery_source` on software) for every Path A child, including NIC and storage, so a thin field list still sends the parent pointer. Apply rewrites a child foreign key that is not a row on this instance: Record Mapping, then the business key, then a software product matched by name. If the product is still missing, apply inserts one `cmdb_software_product_model` (or `cmdb_ci_spkg` when that is the reference) as the integration user and stores a Record Mapping for that source sys_id. It does not create a CI for a dangling `installed_on`. A product reference that still does not resolve is omitted when `name` is set, so the dangling sys_id is not what aborts the insert. The insert is made on `cmdb_sam_sw_install` when that table exists. The policy table on the payload stays `cmdb_software_instance`, so the inbound policy still matches. A failure still records empty required fields and dangling references on the no-sys_id error.
+
+**Configuration filter vs policy condition.** `BridgeSeed` and `BridgeCapture` still evaluate **sync policy condition**. Preview, dry run, and the Data Execution snapshot read the **configuration filter**. Execute calls `linkPolicies` before seed. That copy used to replace a saved filter with `policy.condition`. A filter that is already set is now left alone, including Case 7 `nameSTARTSWITHcase6_max_` next to whatever condition the policy uses. A new configuration, and an existing one whose filter is empty, still takes the policy condition as the initial filter. Clear the configuration filter to copy the condition again on the next policy link. This does not change which rows seed sends.
+
+**Verify (do not deploy from this change set).** Install 0.4.6 on both peers. No new fix script: script includes update with the application. `now-sdk build` must succeed before that install. Re-Execute only the Path A software-instance movement, as `sbridge.worker`, after the computer Record Mapping exists.
+
+1. On PDI1, the new outbox `values` for those 15 rows include `name`, `installed_on`, and `software` (plus `version` and `discovery_source` when the source has them). `installed_on` in the apply payload is a PDI2 computer sys_id, not the PDI1 id.
+2. On PDI2, `cmdb_sam_sw_install` (or `cmdb_software_instance` if that class is the one the instance accepted) has the 15 rows. The computer Software related list shows them. `installed_on` is the PDI2 computer.
+3. The Data Execution is not left at selected 15 / sent 0 / cancelled, and the outbox error is not `insert into cmdb_software_instance returned no sys_id (canCreate=true)` with nothing after it. A remaining failure names the empty field or the dangling reference.
+4. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A computer fields still populate. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep policy condition and configuration filter `nameSTARTSWITHcase6_max_` as separate values; Execute does not clear the filter.
 
 ## Operator runbook (stub)
 

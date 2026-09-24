@@ -48,7 +48,11 @@ export const x_33764_sbridge_movement_config = Table({
         }),
         source_table: TableNameColumn({ label: 'Source table', mandatory: true }),
         target_table: TableNameColumn({ label: 'Target table' }),
-        filter: ConditionsColumn({ label: 'Filter', dependent: 'source_table' }),
+        filter: ConditionsColumn({
+            label: 'Filter',
+            dependent: 'source_table',
+            hint: 'Preview, dry run, and the execution snapshot. Execute does not replace a filter you already saved with the sync policy condition. BridgeSeed still sends the policy condition. Clear this filter to copy the policy condition on the next policy link.',
+        }),
         operation: StringColumn({
             label: 'Operation',
             default: 'upsert',

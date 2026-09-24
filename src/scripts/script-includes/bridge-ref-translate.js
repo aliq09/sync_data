@@ -18,6 +18,11 @@
  * Computer references to that same xref-first path, including when element
  * metadata is missing. Capture stamps ref_keys; a miss on an implicit field
  * still keeps the source sys_id.
+ *
+ * 0.4.6 capture unions BRIDGE_CHILD_INCLUDE into the policy field list so a
+ * thin list still sends name, installed_on, and software. A software-instance
+ * insert whose software value is a source sys_id the target does not have is
+ * aborted by a before rule with no last error and canCreate still true.
  */
 var BRIDGE_CHILD_REFS = {
     cmdb_ci_network_adapter: {
@@ -73,6 +78,70 @@ var BRIDGE_CHILD_REFS = {
         child: { reference: 'cmdb_ci', business_key: 'name' },
         type: { reference: 'cmdb_rel_type', business_key: 'name' },
     },
+}
+
+/**
+ * Fields capture and seed always union into a Path A child payload.
+ * Policy field_list still wins when it already names the field.
+ * Software instance rows need name and installed_on, and the software
+ * reference, or the target before-rule aborts the insert with no sys_id.
+ */
+var BRIDGE_CHILD_INCLUDE = {
+    cmdb_ci_network_adapter: ['name', 'cmdb_ci', 'mac_address', 'ip_address'],
+    cmdb_serial_number: ['cmdb_ci', 'serial_number', 'serial_number_type'],
+    cmdb_ci_disk: ['name', 'computer', 'cmdb_ci', 'size_bytes', 'device_id'],
+    cmdb_ci_disk_partition: ['name', 'computer', 'cmdb_ci', 'size_bytes'],
+    cmdb_ci_storage_device: ['name', 'computer', 'cmdb_ci', 'size_bytes'],
+    cmdb_ci_storage_volume: ['name', 'computer', 'cmdb_ci', 'size_bytes'],
+    cmdb_ci_memory_module: ['name', 'cmdb_ci', 'computer', 'capacity'],
+    cmdb_software_instance: [
+        'name',
+        'installed_on',
+        'software',
+        'version',
+        'edition',
+        'discovery_source',
+        'publisher',
+        'display_name',
+        'prod_id',
+    ],
+    cmdb_sam_sw_install: [
+        'name',
+        'installed_on',
+        'software',
+        'software_model',
+        'discovery_model',
+        'version',
+        'edition',
+        'discovery_source',
+        'publisher',
+        'display_name',
+        'normalized_publisher',
+        'normalized_product',
+        'normalized_version',
+        'normalized_edition',
+    ],
+    cmdb_ci_file_system: ['name', 'computer', 'cmdb_ci', 'size_bytes', 'mount_point'],
+    cmdb_running_process: ['name', 'computer', 'cmdb_ci', 'command', 'pid'],
+    cmdb_tcp: ['computer', 'cmdb_ci', 'ip', 'port'],
+    cmdb_rel_ci: ['parent', 'child', 'type'],
+}
+
+/** Reported on a no-sys_id insert. Not an allow-list for the metadata writer. */
+var BRIDGE_CHILD_REQUIRED = {
+    cmdb_ci_network_adapter: ['cmdb_ci'],
+    cmdb_serial_number: ['cmdb_ci'],
+    cmdb_ci_disk: ['computer'],
+    cmdb_ci_disk_partition: ['computer'],
+    cmdb_ci_storage_device: ['computer'],
+    cmdb_ci_storage_volume: ['computer'],
+    cmdb_ci_memory_module: ['cmdb_ci'],
+    cmdb_software_instance: ['name', 'installed_on'],
+    cmdb_sam_sw_install: ['name', 'installed_on'],
+    cmdb_ci_file_system: ['computer'],
+    cmdb_running_process: ['computer'],
+    cmdb_tcp: ['computer'],
+    cmdb_rel_ci: ['parent', 'child', 'type'],
 }
 
 var BRIDGE_COMPUTER_REFS = {
@@ -212,6 +281,62 @@ BridgeRefTranslate.prototype = {
             values[field] = src[field]
         }
         return { values: values, unresolved: unresolved }
+    },
+
+    /**
+     * Path A child fields capture always sends, walking parents so a subclass
+     * such as cmdb_sam_sw_install still includes installed_on and software.
+     * @returns {string[]}
+     */
+    childIncludeFields: function (tableName) {
+        return this._chainList(tableName, BRIDGE_CHILD_INCLUDE)
+    },
+
+    /**
+     * Fields whose absence makes a child insert abort. Diagnostics only.
+     * @returns {string[]}
+     */
+    childRequiredFields: function (tableName) {
+        return this._chainList(tableName, BRIDGE_CHILD_REQUIRED)
+    },
+
+    /**
+     * Foreign-key names for this child table and its parents.
+     * @returns {string[]}
+     */
+    childReferenceFieldNames: function (tableName) {
+        if (!tableName) return []
+        var chain = this._ancestry(tableName)
+        var seen = {}
+        var out = []
+        for (var i = 0; i < chain.length; i++) {
+            var specs = BRIDGE_CHILD_REFS[chain[i]]
+            if (!specs) continue
+            for (var field in specs) {
+                if (!Object.prototype.hasOwnProperty.call(specs, field)) continue
+                if (seen[field]) continue
+                seen[field] = true
+                out.push(field)
+            }
+        }
+        return out
+    },
+
+    _chainList: function (tableName, byTable) {
+        if (!tableName || !byTable) return []
+        var chain = this._ancestry(tableName)
+        var seen = {}
+        var out = []
+        for (var i = 0; i < chain.length; i++) {
+            var list = byTable[chain[i]]
+            if (!list) continue
+            for (var j = 0; j < list.length; j++) {
+                if (!list[j] || seen[list[j]]) continue
+                seen[list[j]] = true
+                out.push(list[j])
+            }
+        }
+        return out
     },
 
     /**

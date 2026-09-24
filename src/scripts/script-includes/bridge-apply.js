@@ -113,6 +113,10 @@ BridgeApply.prototype = {
             maps = maps || this.refs.prepare(null, peerId)
             maps.referenceHandling = this._referenceHandling(policy, maps)
             translated = this.refs.translate(item, this.config.refMap(policy), maps)
+            // Software-instance (and the other Path A children) need local FKs
+            // before the same-seq compare and before the write. A source sys_id
+            // left in `software` makes the target before-rule abort the insert.
+            this._prepareCmdbChild(item, translated.values, maps, false)
             if (
                 receipt &&
                 receipt.last_seq === incoming &&
@@ -153,10 +157,16 @@ BridgeApply.prototype = {
             )
         }
 
+        // Create a missing software product only once this write is allowed.
+        // The earlier pass only rewrites references that already exist here,
+        // so a same-seq skip does not insert a product model.
+        this._prepareCmdbChild(item, translated.values, maps, true)
+
         // Same-seq refresh of an existing CI goes through GlideRecord. IRE treats an
         // unchanged source_recency_timestamp as a no-op, which would drop the
         // computer fields this re-execute is trying to fill. A first apply and a
         // higher seq still use IRE when the policy mode is cmdb.
+
         var sameSeqRefresh = !!(receipt && receipt.last_seq === incoming)
         var target =
             policy.mode === 'cmdb' && !sameSeqRefresh
@@ -455,28 +465,71 @@ BridgeApply.prototype = {
      */
     viaGlideRecord: function (item, policy, values) {
         var existing = this._findTarget(item, policy)
+        var table = this._insertGlideTable(item)
 
         if (existing) {
-            var upd = new GlideRecord(item.table)
-            if (!upd.get(existing)) {
-                // The mapping points at a record that no longer exists — someone
-                // deleted it locally. Fall through to insert rather than failing:
-                // convergence onto the new instance is the goal.
-                return this._insert(item, policy, values)
+            var upd = new GlideRecord(table)
+            if (!upd.isValid() || !upd.get(existing)) {
+                if (table !== item.table) upd = new GlideRecord(item.table)
+                if (!upd.isValid() || !upd.get(existing)) {
+                    // The mapping points at a record that no longer exists — someone
+                    // deleted it locally. Fall through to insert rather than failing:
+                    // convergence onto the new instance is the goal.
+                    return this._insert(item, policy, values)
+                }
             }
             this._setValues(upd, values)
             var updated = upd.update()
             if (updated) return { sys_id: updated, operation: 'update' }
             var updateFallback = this._metadataFallback(item, values, 'update', existing, upd)
             if (updateFallback) return updateFallback
-            return { error: this._writeError('update', item.table, upd, existing) }
+            return { error: this._writeError('update', upd.getTableName() || table, upd, existing) }
         }
 
         return this._insert(item, policy, values)
     },
 
     _insert: function (item, policy, values) {
-        var gr = new GlideRecord(item.table)
+        var table = this._insertGlideTable(item)
+        var result = this._insertInto(table, item, policy, values)
+        if (result && result.sys_id) return result
+        if (result && result.error && String(result.error).indexOf('refusing to overwrite') !== -1) return result
+
+        // Parent cmdb_software_instance insert is what returns no sys_id with
+        // canCreate=true: a before rule aborts that class and the install
+        // belongs on cmdb_sam_sw_install. The metadata writer is not used.
+        // It is limited to the four metadata tables and would hit the same rule.
+        var alternate = ''
+        if (table === 'cmdb_sam_sw_install' && item.table && item.table !== table) alternate = item.table
+        else if (table === 'cmdb_software_instance' && this._tableValid('cmdb_sam_sw_install')) {
+            alternate = 'cmdb_sam_sw_install'
+        }
+        if (alternate) {
+            var other = this._insertInto(alternate, item, policy, values)
+            if (other && other.sys_id) return other
+            if (other && other.error && result && result.error) {
+                result = { error: result.error + '; ' + alternate + ': ' + other.error }
+            } else if (other && other.error) result = other
+        }
+
+        if (values && values.discovery_source && result && !result.sys_id && this._isSoftwareItem(item, table)) {
+            var stripped = this._copyValuesExcept(values, 'discovery_source')
+            var retryTable =
+                this._tableValid('cmdb_sam_sw_install') && this._isSoftwareItem(item, table)
+                    ? 'cmdb_sam_sw_install'
+                    : table
+            var retry = this._insertInto(retryTable, item, policy, stripped)
+            if (retry && retry.sys_id) return retry
+            if (retry && retry.error && result && result.error) {
+                return { error: result.error + '; without discovery_source: ' + retry.error }
+            }
+        }
+        return result
+    },
+
+    _insertInto: function (table, item, policy, values) {
+        var gr = new GlideRecord(table)
+        if (!gr.isValid()) return { error: 'invalid table ' + table }
         gr.initialize()
         this._setValues(gr, values)
 
@@ -487,14 +540,14 @@ BridgeApply.prototype = {
              * an error." So the existence check is not optional, and a hit is a
              * routing decision rather than a retry.
              */
-            var clash = new GlideRecord(item.table)
+            var clash = new GlideRecord(table)
             if (clash.get(item.source_sys_id)) {
                 return {
                     error:
                         'sys_id ' +
                         item.source_sys_id +
                         ' already exists in ' +
-                        item.table +
+                        table +
                         ' and is not mapped to this source record — refusing to overwrite. ' +
                         'This is a §8.1 collision: route it deliberately.',
                 }
@@ -504,15 +557,339 @@ BridgeApply.prototype = {
 
         var inserted = gr.insert()
         if (inserted) return { sys_id: inserted, operation: 'insert' }
-        var insertFallback = this._metadataFallback(item, values, 'insert', policy.preserve_sys_id ? item.source_sys_id : '', gr)
+        var insertFallback = this._metadataFallback(
+            item,
+            values,
+            'insert',
+            policy.preserve_sys_id ? item.source_sys_id : '',
+            gr
+        )
         if (insertFallback) return insertFallback
-        return { error: this._writeError('insert', item.table, gr) }
+        return { error: this._writeError('insert', table, gr) }
+    },
+
+    /**
+     * Insert class for this payload. payload.table stays the policy table so
+     * the inbound policy matches. record_class is used only when it extends
+     * that table (a software install queried through cmdb_software_instance).
+     */
+    _insertGlideTable: function (item) {
+        var table = item && item.table ? item.table : ''
+        var cls = item && item.record_class ? String(item.record_class) : ''
+        if (cls && cls !== table && this._tableValid(cls) && this._extendsTable(cls, table)) return cls
+        // Software installs are stored on cmdb_sam_sw_install. Inserting the
+        // parent class is the call that returns no sys_id while canCreate is true.
+        if (
+            (table === 'cmdb_software_instance' || cls === 'cmdb_software_instance') &&
+            this._tableValid('cmdb_sam_sw_install')
+        ) {
+            return 'cmdb_sam_sw_install'
+        }
+        return table
+    },
+
+    _extendsTable: function (className, parentName) {
+        if (!className || !parentName) return false
+        if (className === parentName) return true
+        var chain = []
+        try {
+            chain = this.config.tableAncestry(className) || []
+        } catch (e) {
+            chain = [className]
+        }
+        for (var i = 0; i < chain.length; i++) {
+            if (chain[i] === parentName) return true
+        }
+        return false
+    },
+
+    _tableValid: function (tableName) {
+        if (!tableName) return false
+        try {
+            var gr = new GlideRecord(tableName)
+            return !!(gr && gr.isValid())
+        } catch (e) {
+            return false
+        }
+    },
+
+    _isSoftwareItem: function (item, table) {
+        var names = [table, item && item.table, item && item.record_class]
+        for (var i = 0; i < names.length; i++) {
+            if (names[i] === 'cmdb_software_instance' || names[i] === 'cmdb_sam_sw_install') return true
+        }
+        return false
+    },
+
+    _copyValuesExcept: function (values, skip) {
+        var out = {}
+        values = values || {}
+        for (var field in values) {
+            if (!Object.prototype.hasOwnProperty.call(values, field)) continue
+            if (field === skip) continue
+            out[field] = values[field]
+        }
+        return out
+    },
+
+    /**
+     * Localize Path A child foreign keys before the write.
+     *
+     * canCreate stays true and getLastErrorMessage stays empty when a before
+     * rule calls setAbortAction because `software` (or software_model /
+     * discovery_model) holds a source sys_id that is not a row here. NIC and
+     * storage pass because their computer FK was already in the payload and
+     * Record Mapping resolved it. The metadata writer allow-list is still only
+     * sys_script, sc_cat_item, item_option_new, and sys_user_group — a global
+     * GlideRecord would hit the same before rule.
+     */
+    _prepareCmdbChild: function (item, values, maps, createMissing) {
+        if (!item || !values) return
+        var translator = this.refs
+        if (!translator || !translator.childReferenceFieldNames) return
+        if (!this._isCmdbChildItem(item)) return
+        this._coerceSoftwareIdentity(item, values)
+        this._localizeChildValues(item, values, maps, !!createMissing)
+    },
+
+    _isCmdbChildItem: function (item) {
+        var translator = this.refs
+        if (!translator || !translator.childIncludeFields) return false
+        var names = [item.table, item.record_class]
+        for (var i = 0; i < names.length; i++) {
+            if (names[i] && translator.childIncludeFields(names[i]).length) return true
+        }
+        return false
+    },
+
+    _coerceSoftwareIdentity: function (item, values) {
+        if (!this._isSoftwareItem(item, item.table)) return
+        if (values.name) return
+        var named = ''
+        var keys = item.ref_keys && item.ref_keys.software && item.ref_keys.software.keys
+        if (keys) named = keys.display_name || keys.name || ''
+        if (!named && values.display_name) named = values.display_name
+        if (!named && values.publisher && values.version) named = String(values.publisher) + ' ' + String(values.version)
+        if (named) values.name = String(named).substr(0, 255)
+    },
+
+    _localizeChildValues: function (item, values, maps, createMissing) {
+        var translator = this.refs
+        var fieldNames = this._childFieldUnion(item, 'childReferenceFieldNames')
+        for (var i = 0; i < fieldNames.length; i++) {
+            var field = fieldNames[i]
+            if (!Object.prototype.hasOwnProperty.call(values, field)) continue
+            var raw = values[field]
+            if (raw === undefined || raw === null || String(raw) === '') continue
+            var spec =
+                translator.childReferenceSpec(item.record_class || item.table, field) ||
+                translator.childReferenceSpec(item.table, field)
+            var refTable = (spec && spec.reference) || ''
+            if (refTable && this._rowExists(refTable, raw)) continue
+            var sourceId = String(raw)
+            var replacement = ''
+            if (item.ref_keys && item.ref_keys[field]) {
+                replacement = translator._lookupBusinessKey(item, field, spec || {}, refTable) || ''
+            }
+            if (!replacement && (field === 'software' || field === 'software_model')) {
+                replacement = this._lookupSoftwareByName(item, field, refTable) || ''
+            }
+            if (
+                !replacement &&
+                createMissing &&
+                (field === 'software' || field === 'software_model')
+            ) {
+                replacement = this._insertSoftwareDependency(item, field, spec, sourceId, maps) || ''
+            }
+            if (replacement && refTable && !this._rowExists(refTable, replacement)) replacement = ''
+            if (replacement) {
+                values[field] = replacement
+                continue
+            }
+            if (createMissing && this._dropDanglingSoftwareRef(field, values)) delete values[field]
+        }
+    },
+
+    _childFieldUnion: function (item, method) {
+        var translator = this.refs
+        var seen = {}
+        var out = []
+        var names = [item.table, item.record_class]
+        for (var i = 0; i < names.length; i++) {
+            if (!names[i] || !translator[method]) continue
+            var list = translator[method](names[i]) || []
+            for (var j = 0; j < list.length; j++) {
+                if (!list[j] || seen[list[j]]) continue
+                seen[list[j]] = true
+                out.push(list[j])
+            }
+        }
+        return out
+    },
+
+    /**
+     * A dangling product reference aborts the install. Drop it only when the
+     * row still has a name (and, when we have it, installed_on). installed_on,
+     * cmdb_ci, computer, parent, and child stay so the error names them.
+     */
+    _dropDanglingSoftwareRef: function (field, values) {
+        if (field !== 'software' && field !== 'software_model' && field !== 'discovery_model') return false
+        return !!(values && values.name)
+    },
+
+    _lookupSoftwareByName: function (item, field, preferred) {
+        var keys = item.ref_keys && item.ref_keys[field] && item.ref_keys[field].keys
+        var name = keys ? keys.name || keys.display_name || '' : ''
+        if (!name && item.ref_keys && item.ref_keys.software && item.ref_keys.software.keys) {
+            var softwareKeys = item.ref_keys.software.keys
+            name = softwareKeys.name || softwareKeys.display_name || ''
+        }
+        if (!name) return ''
+        var tables = this._softwareTables(preferred, item, field)
+        for (var i = 0; i < tables.length; i++) {
+            var found = this._findNamedRow(tables[i], name)
+            if (!found) continue
+            if (!preferred || tables[i] === preferred || this._rowExists(preferred, found)) return found
+        }
+        return ''
+    },
+
+    _softwareTables: function (preferred, item, field) {
+        var stamped = item.ref_keys && item.ref_keys[field] ? item.ref_keys[field].table : ''
+        var names = [preferred, stamped, 'cmdb_software_product_model', 'cmdb_ci_spkg']
+        var seen = {}
+        var out = []
+        for (var i = 0; i < names.length; i++) {
+            if (!names[i] || seen[names[i]]) continue
+            seen[names[i]] = true
+            out.push(names[i])
+        }
+        return out
+    },
+
+    _findNamedRow: function (tableName, name) {
+        if (!tableName || !name || !this._tableValid(tableName)) return ''
+        try {
+            var gr = new GlideRecord(tableName)
+            if (gr.isValidField('name')) gr.addQuery('name', name)
+            else return ''
+            gr.setLimit(2)
+            gr.query()
+            if (!gr.next()) return ''
+            var id = gr.getUniqueValue()
+            if (gr.next()) return ''
+            return id || ''
+        } catch (e) {
+            return ''
+        }
+    },
+
+    /**
+     * Create the missing software product as the integration user when the
+     * source sys_id is not on this instance. Does not use the metadata writer
+     * and does not grant admin. A failed create leaves the caller to drop the
+     * dangling reference.
+     */
+    _insertSoftwareDependency: function (item, field, spec, sourceId, maps) {
+        var keys = item.ref_keys && item.ref_keys[field] && item.ref_keys[field].keys
+        var name = ''
+        if (keys) name = keys.display_name || keys.name || ''
+        if (!name && item.ref_keys && item.ref_keys.software && item.ref_keys.software.keys) {
+            var softwareKeys = item.ref_keys.software.keys
+            name = softwareKeys.display_name || softwareKeys.name || ''
+        }
+        if (!name) return ''
+        var preferred = (spec && spec.reference) || ''
+        var tables = this._softwareTables(preferred, item, field)
+        var createOn = ''
+        for (var i = 0; i < tables.length; i++) {
+            if (this._tableValid(tables[i])) {
+                createOn = tables[i]
+                break
+            }
+        }
+        if (!createOn) return ''
+        var existing = this._findNamedRow(createOn, name)
+        if (existing) {
+            this._storeDependencyXref(item, field, sourceId, existing, createOn, maps)
+            return existing
+        }
+        try {
+            var gr = new GlideRecord(createOn)
+            if (!gr.isValid()) return ''
+            gr.initialize()
+            if (gr.isValidField('name')) gr.setValue('name', String(name).substr(0, 255))
+            if (gr.isValidField('display_name')) gr.setValue('display_name', String(name).substr(0, 255))
+            var id = gr.insert()
+            if (!id) return ''
+            gs.info(
+                '[bridge] created ' +
+                    createOn +
+                    ' ' +
+                    id +
+                    ' for software reference ' +
+                    sourceId +
+                    ' as ' +
+                    (gs.getUserName() || '')
+            )
+            this._storeDependencyXref(item, field, sourceId, id, createOn, maps)
+            return String(id)
+        } catch (e) {
+            gs.warn('[bridge] software dependency insert failed for ' + createOn + ': ' + e)
+            return ''
+        }
+    },
+
+    _storeDependencyXref: function (item, field, sourceId, targetId, tableName, maps) {
+        if (!sourceId || !targetId || !tableName) return
+        var peerId = maps && maps.peerId ? maps.peerId : ''
+        if (maps && maps.xrefHits && peerId) maps.xrefHits[peerId + '|' + sourceId] = targetId
+        if (!peerId) return
+        try {
+            var gr = new GlideRecord(BridgeConfig.TABLE.xref)
+            gr.addQuery('peer', peerId)
+            gr.addQuery('source_sys_id', sourceId)
+            gr.addQuery('source_table', tableName)
+            gr.setLimit(1)
+            gr.query()
+            if (gr.next()) {
+                if (gr.getValue('target_sys_id') !== targetId) {
+                    gr.setValue('target_sys_id', targetId)
+                    gr.update()
+                }
+                return
+            }
+            gr.initialize()
+            gr.setValue('peer', peerId)
+            gr.setValue('source_table', tableName)
+            gr.setValue('source_sys_id', sourceId)
+            gr.setValue('target_sys_id', targetId)
+            if (!gr.insert()) {
+                gs.warn('[bridge] software dependency mapping was not saved for ' + field + ' ' + sourceId)
+            }
+        } catch (e) {
+            gs.warn('[bridge] software dependency mapping failed: ' + e)
+        }
+    },
+
+    _rowExists: function (tableName, sysId) {
+        if (!tableName || !sysId) return false
+        try {
+            var gr = new GlideRecord(tableName)
+            if (!gr.isValid()) return false
+            return !!gr.get(sysId)
+        } catch (e) {
+            return false
+        }
     },
 
     /**
      * Declared metadata tables. Scoped GlideRecord honors every matching ACL,
      * including Deny-Unless rules that an extra Allow-If cannot override.
      * The fallback writes the same row as the same user from global scope.
+     *
+     * cmdb_software_instance is not in this list. Its no-sys_id insert happens
+     * with canCreate=true, which is a before-rule abort, not a Deny-Unless ACL.
      */
     _isMetadataTable: function (table) {
         return (
@@ -669,7 +1046,69 @@ BridgeApply.prototype = {
         }
         var where = op + ' into ' + table
         if (sysId) where = op + ' of ' + table + ' ' + sysId
+        var childDetail = this._childWriteDetail(gr)
+        if (childDetail) detail = detail ? detail + '; ' + childDetail : childDetail
         return where + ' returned no sys_id' + (can ? ' (' + can + ')' : '') + (detail ? ': ' + detail : '')
+    },
+
+    /**
+     * Names the fields a silent child-table abort usually cares about:
+     * empty required columns, dangling references, and dictionary mandatory gaps.
+     */
+    _childWriteDetail: function (gr) {
+        if (!gr) return ''
+        var table = ''
+        try {
+            table = gr.getTableName() || ''
+        } catch (e) {
+            return ''
+        }
+        var translator = this.refs
+        if (!translator || !translator.childRequiredFields) return ''
+        var missing = []
+        var required = translator.childRequiredFields(table) || []
+        var i
+        for (i = 0; i < required.length; i++) {
+            if (gr.isValidField(required[i]) && !gr.getValue(required[i])) missing.push(required[i])
+        }
+        var dangling = []
+        var names = translator.childReferenceFieldNames(table) || []
+        for (i = 0; i < names.length; i++) {
+            var field = names[i]
+            if (!gr.isValidField(field)) continue
+            var raw = gr.getValue(field)
+            if (!raw) continue
+            var spec = translator.childReferenceSpec(table, field)
+            var ref = spec && spec.reference
+            if (ref && !this._rowExists(ref, raw)) dangling.push(field + ' not in ' + ref)
+        }
+        var mandatory = this._mandatoryGaps(gr)
+        var parts = []
+        if (missing.length) parts.push('empty ' + missing.join(', '))
+        if (dangling.length) parts.push(dangling.join('; '))
+        if (mandatory.length) parts.push('mandatory ' + mandatory.join(', '))
+        return parts.join('; ')
+    },
+
+    _mandatoryGaps: function (gr) {
+        var gaps = []
+        try {
+            var elements = gr.getElements()
+            if (!elements) return gaps
+            var n = elements.size ? elements.size() : elements.length || 0
+            for (var i = 0; i < n; i++) {
+                var el = elements.get ? elements.get(i) : elements[i]
+                if (!el || !el.getED) continue
+                var ed = el.getED()
+                if (!ed || !ed.isMandatory || !ed.isMandatory()) continue
+                var name = el.getName ? String(el.getName()) : ''
+                if (!name || name.indexOf('sys_') === 0) continue
+                var val = gr.getValue(name)
+                if (val === undefined || val === null || String(val) === '') gaps.push(name)
+                if (gaps.length >= 8) break
+            }
+        } catch (ignore) {}
+        return gaps
     },
 
     /**

@@ -157,6 +157,10 @@ BridgeCapture.prototype = {
      * and the other computer references keep the source sys_id and, when the
      * referenced row has a name (or asset_tag), add `ref_keys` for the same fallback.
      * Other reference fields stay as sys_ids; apply remaps them when a mapping exists.
+     * Path A children also union the child include-list (name, installed_on,
+     * software, and the other foreign keys). payload.record_class is set when
+     * sys_class_name is a subclass, so apply can insert cmdb_sam_sw_install
+     * without changing the policy table on payload.table.
      *
      * Journal fields are read through getJournalEntry rather than copied as a field
      * value: work notes and comments live in `sys_journal_field`, and reading the
@@ -265,12 +269,15 @@ BridgeCapture.prototype = {
         }
         if (hasRefKeys) payload.ref_keys = refKeys
         if (hasNatural) payload.natural_keys = naturalKeys
+        var recordClass = this._recordClassName(current)
+        if (recordClass && recordClass !== payload.table) payload.record_class = recordClass
         return payload
     },
 
     /**
-     * Policy field list, plus the computer include-list when this row is a Computer.
-     * Department and other tables stay on the policy list alone.
+     * Policy field list, plus Path A child include fields, plus the computer
+     * include-list when this row is a Computer.
+     * Department stays on the policy list alone.
      */
     _captureFields: function (current, policy) {
         var out = []
@@ -283,12 +290,39 @@ BridgeCapture.prototype = {
             seen[listed] = true
             out.push(listed)
         }
+        this._appendFields(out, seen, this._childIncludeFields(current))
         if (!this._isComputerRecord(current)) return out
-        var extra = this.config.computerFieldIncludeList()
-        for (i = 0; i < extra.length; i++) {
-            if (seen[extra[i]]) continue
-            seen[extra[i]] = true
-            out.push(extra[i])
+        this._appendFields(out, seen, this.config.computerFieldIncludeList())
+        return out
+    },
+
+    _appendFields: function (out, seen, list) {
+        if (!list) return
+        for (var i = 0; i < list.length; i++) {
+            if (!list[i] || seen[list[i]]) continue
+            seen[list[i]] = true
+            out.push(list[i])
+        }
+    },
+
+    /**
+     * Include-list for the GlideRecord table and the row class. A software
+     * install queried as cmdb_software_instance still picks up the subclass
+     * fields when sys_class_name is cmdb_sam_sw_install.
+     */
+    _childIncludeFields: function (current) {
+        var translator = this._translator()
+        if (!translator || !translator.childIncludeFields) return []
+        var seen = {}
+        var out = []
+        var names = []
+        try {
+            names.push(current.getTableName() || '')
+        } catch (e) {}
+        var cls = this._recordClassName(current)
+        if (cls) names.push(cls)
+        for (var i = 0; i < names.length; i++) {
+            this._appendFields(out, seen, translator.childIncludeFields(names[i]))
         }
         return out
     },

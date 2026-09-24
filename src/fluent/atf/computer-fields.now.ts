@@ -5,7 +5,7 @@ Test(
         $id: Now.ID['atf-computer-fields'],
         name: 'Bridge — computer include list and child reference map',
         description:
-            '0.4.4: the computer include-list contains the DETAILED attributes, Path A child foreign keys resolve to a reference table, and Case 2 alm_hardware.ci stays on cmdb_ci.',
+            '0.4.6: Path A child capture includes installed_on and software. Computer include-list and Case 2 alm_hardware.ci stay as they were.',
         active: true,
         failOnServerError: true,
     },
@@ -31,6 +31,17 @@ Test(
     assertEqual(refs.childReferenceSpec('cmdb_ci_memory_module', 'cmdb_ci').reference, 'cmdb_ci', 'memory cmdb_ci');
     assertEqual(refs.childReferenceSpec('cmdb_software_instance', 'installed_on').reference, 'cmdb_ci', 'software installed_on');
     assertEqual(refs.childReferenceSpec('cmdb_software_instance', 'software').reference, 'cmdb_software_product_model', 'software product');
+    var softwareInclude = refs.childIncludeFields('cmdb_software_instance').join(',');
+    assertEqual(softwareInclude.indexOf('installed_on') > -1 ? 'yes' : 'no', 'yes', 'software include installed_on');
+    assertEqual(softwareInclude.indexOf('software') > -1 ? 'yes' : 'no', 'yes', 'software include software');
+    assertEqual(softwareInclude.indexOf('name') > -1 ? 'yes' : 'no', 'yes', 'software include name');
+    assertEqual(softwareInclude.indexOf('discovery_source') > -1 ? 'yes' : 'no', 'yes', 'software include discovery_source');
+    var samInclude = refs.childIncludeFields('cmdb_sam_sw_install').join(',');
+    assertEqual(samInclude.indexOf('software_model') > -1 ? 'yes' : 'no', 'yes', 'sam include software_model');
+    assertEqual(samInclude.indexOf('installed_on') > -1 ? 'yes' : 'no', 'yes', 'sam include installed_on');
+    assertEqual(refs.childIncludeFields('cmdb_ci_network_adapter').join(',').indexOf('cmdb_ci') > -1 ? 'yes' : 'no', 'yes', 'NIC include cmdb_ci');
+    assertEqual(refs.childRequiredFields('cmdb_software_instance').join(','), 'name,installed_on', 'software required fields');
+    assertEqual(refs.childIncludeFields('cmn_department').length ? 'yes' : 'no', 'no', 'department has no child include list');
     assertEqual(refs.childReferenceSpec('cmdb_ci_file_system', 'computer').reference, 'cmdb_ci_computer', 'filesystem computer');
     assertEqual(refs.childReferenceSpec('cmdb_running_process', 'computer').reference, 'cmdb_ci_computer', 'process computer');
     assertEqual(refs.childReferenceSpec('cmdb_tcp', 'computer').reference, 'cmdb_ci_computer', 'tcp computer');

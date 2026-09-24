@@ -42,7 +42,11 @@ export const x_33764_sbridge_policy = Table({
             dependent: 'table',
             hint: 'For Computer (cmdb_ci_computer and subclasses), capture and seed also merge x_33764_sbridge.cmdb_computer_fields. Blank uses the built-in computer attributes. Set that property to off to sync only this list.',
         }),
-        condition: ConditionsColumn({ label: 'Filter condition', dependent: 'table' }),
+        condition: ConditionsColumn({
+            label: 'Filter condition',
+            dependent: 'table',
+            hint: 'Encoded query BridgeSeed and BridgeCapture use. It does not replace a Data Movement Configuration filter that is already set.',
+        }),
         mode: StringColumn({
             label: 'Apply mode',
             default: 'direct',
