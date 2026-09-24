@@ -50,7 +50,10 @@ export const x_33764_sbridge_policy = Table({
         preserve_sys_id: BooleanColumn({ label: 'Preserve sys_id on target', default: false }),
         propagate_deletes: BooleanColumn({ label: 'Propagate deletes', default: false }),
         capture_ready: BooleanColumn({ label: 'Capture rule ready', default: false, readOnly: true }),
-        ref_map: JsonColumn({ label: 'Reference field map' }),
+        ref_map: JsonColumn({
+            label: 'Reference field map',
+            hint: '0.4.1 xref remaps a source sys_id through Record Mapping, then business_key when that property is set. Example: {"ci":{"strategy":"xref","table":"cmdb_ci_computer","business_key":"name"},"cat_item":{"strategy":"xref","table":"sc_cat_item","business_key":"name"}}.',
+        }),
         target_map: JsonColumn({ label: 'Target field map' }),
         target_table: TableNameColumn({ label: 'Target table (if remapped)' }),
         movement_config: ReferenceColumn({

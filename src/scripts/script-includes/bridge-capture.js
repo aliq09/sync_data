@@ -144,8 +144,11 @@ BridgeCapture.prototype = {
      * exists", and a natural key can only be read on the side that holds the
      * record. The target cannot turn a foreign `sys_user` sys_id into a username —
      * it has never seen that sys_id. So capture resolves `user_name` and group-name
-     * strategies here, and leaves the id-based strategies for the target to resolve
-     * against `sys_object_source` or `bridge_xref`.
+     * strategies here, and leaves id-based strategies for the target. xref /
+     * record_mapping / business_key keep the source sys_id in `values` and, when
+     * `business_key` is set, add `ref_keys` so apply can fall back after Record
+     * Mapping. Other reference fields stay as sys_ids; apply remaps them when a
+     * mapping exists.
      *
      * Journal fields are read through getJournalEntry rather than copied as a field
      * value: work notes and comments live in `sys_journal_field`, and reading the
@@ -156,6 +159,8 @@ BridgeCapture.prototype = {
      */
     _payload: function (current, policy, op) {
         var values = {}
+        var refKeys = {}
+        var hasRefKeys = false
         var refMap = this.config.refMap(policy)
         var fields = policy.field_list ? policy.field_list.split(',') : []
 
@@ -195,6 +200,15 @@ BridgeCapture.prototype = {
                 values[field] = ''
                 continue
             }
+            if (this._isXrefStrategy(strategy)) {
+                values[field] = current.getValue(field)
+                var stamp = this._businessKeyStamp(current, field, refMap[field])
+                if (stamp) {
+                    refKeys[field] = stamp
+                    hasRefKeys = true
+                }
+                continue
+            }
 
             // getValue returns the stored value — sys_id for references, the raw
             // choice value for choices. Display values would not survive
@@ -202,7 +216,7 @@ BridgeCapture.prototype = {
             values[field] = current.getValue(field)
         }
 
-        return {
+        var payload = {
             table: current.getTableName(),
             source_sys_id: current.getUniqueValue(),
             op: op,
@@ -215,6 +229,60 @@ BridgeCapture.prototype = {
             sys_updated_on: current.getValue('sys_updated_on'),
             sys_mod_count: current.getValue('sys_mod_count'),
             values: values,
+        }
+        if (hasRefKeys) payload.ref_keys = refKeys
+        return payload
+    },
+
+    _isXrefStrategy: function (strategy) {
+        return (
+            strategy === 'xref' ||
+            strategy === 'record_mapping' ||
+            strategy === 'mapping' ||
+            strategy === 'business_key'
+        )
+    },
+
+    /** Keep aligned with BridgeRefTranslate._businessKeyFields. */
+    _businessKeyFields: function (spec) {
+        if (!spec) return []
+        var raw = spec.business_key
+        if (raw === undefined || raw === null || raw === '') raw = spec.business_keys
+        if (raw === undefined || raw === null || raw === '') return []
+        var parts = []
+        if (typeof raw === 'string') parts = raw.split(',')
+        else if (typeof raw.length === 'number') {
+            for (var i = 0; i < raw.length; i++) parts.push(String(raw[i]))
+        }
+        var out = []
+        for (var j = 0; j < parts.length; j++) {
+            var name = String(parts[j] || '').replace(/^\s+|\s+$/g, '')
+            if (name) out.push(name)
+        }
+        return out
+    },
+
+    _businessKeyStamp: function (current, field, spec) {
+        var fields = this._businessKeyFields(spec)
+        if (!fields.length) return null
+        var raw = current.getValue(field)
+        if (!raw) return null
+        var ref
+        try {
+            ref = current.getElement(field).getRefRecord()
+        } catch (e) {
+            return null
+        }
+        if (!ref || !ref.isValidRecord()) return null
+        var keys = {}
+        for (var i = 0; i < fields.length; i++) {
+            var name = fields[i]
+            if (!ref.isValidField(name)) return null
+            keys[name] = ref.getValue(name) || ''
+        }
+        return {
+            table: (spec && (spec.table || spec.source_table)) || ref.getTableName(),
+            keys: keys,
         }
     },
 

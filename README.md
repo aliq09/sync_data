@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.0 (staged acknowledgement and correlation) |
+| **App version** | 0.4.1 (Case 2 worker ACLs and reference remap) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -35,7 +35,7 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 | BridgePolicyHelper + policy after-BR (declarative capture BR) | Implemented |
 | Scripted REST: `/apply`, `/seed`, `/ensure_capture` | Implemented |
 | Drain job + condition (skip empty outbox) | Implemented |
-| BridgeRefTranslate | Minimal (user_name / group_name / identity) |
+| BridgeRefTranslate | user_name / group_name / identity, plus Record Mapping xref (0.4.1) |
 | BridgeDivergence / compare API / OAuth peer pack | Stubbed / deferred |
 | ATF | Minimal stubs (SI load + intent; not green until fixtures) |
 
@@ -85,10 +85,46 @@ While Prevent is the concurrent policy and a data execution is still open, **Exe
 
 Live progress uses acknowledgement weight **9** (reading 25, transfer 30, target 18) when the flag is on, and the 0.3.2 weights with `ack_skipped: true` when it is off. The configuration panel shows the ACK stage instead of “Acknowledgement not enabled”. Transfer Audit lists `message_type` (including Ack), `ack_stage`, `acknowledged_at`, and `remote_audit_id`. The Data Execution timeline already shows Acknowledged At.
 
+## Apply worker ACLs and reference remap (0.4.1)
+
+Case 2 apply runs as the integration user (`sbridge.worker` by default), which holds `x_33764_sbridge.operator`. 0.4.0 could insert `cmdb_ci_computer` and `alm_hardware` and rejected `sys_script` and `sc_cat_item` with `insert into {table} returned no sys_id`.
+
+**Role.** `x_33764_sbridge.worker` is contained by `x_33764_sbridge.operator`, so the existing integration user inherits it when this version is installed. Record ACLs also list `x_33764_sbridge.operator` directly. Every metadata ACL script requires `gs.getUserName()` to equal `x_33764_sbridge.integration_user`, so other operator accounts do not gain these writes. Do not run apply as admin to prove the path.
+
+| Table | Operations | Fields |
+|---|---|---|
+| `sys_script` | read, create, write | `*`, plus `script`, `condition`, `filter_condition`, `advanced` |
+| `sc_cat_item` | read, create, write | `*` |
+| `item_option_new` | read, create, write | `*`, plus `cat_item` |
+
+A `*` field rule does not override a more specific field rule, which is why `sys_script.script` is granted on its own.
+
+**Record Mapping.** After each successful upsert, including CMDB mode, apply upserts `x_33764_sbridge_xref` (`peer` + `source_table` + `source_sys_id` → `target_sys_id`).
+
+**Reference remap.** Before insert or update, apply resolves references:
+
+1. `user_name` and `group_name` are unchanged.
+2. `identity` and `preserve` on a ref_map entry keep the source sys_id. Movement-config **Reference handling** `preserve` does the same for fields with no entry.
+3. `xref`, `record_mapping`, `mapping`, or `business_key` look up Record Mapping first (same source sys_id, preferring the entry's `table` when set, then any table). If that misses and `business_key` is set, apply queries the target table with the keys captured in payload `ref_keys`. A miss nulls the field and writes a DLQ note.
+4. Any other reference field (and glide_list) is remapped when a Record Mapping exists. A miss keeps the source sys_id. `sys_user` and `sys_user_group` stay on the user/group strategies so department head and group fields are left alone. `alm_hardware.ci` (reference `cmdb_ci`) and `item_option_new.cat_item` (reference `sc_cat_item`) follow this path with no ref_map entry required.
+
+Example ref_map when a business-key fallback is wanted:
+
+```json
+{
+  "ci": { "strategy": "xref", "table": "cmdb_ci_computer", "business_key": "name" },
+  "cat_item": { "strategy": "xref", "table": "sc_cat_item", "business_key": "name" }
+}
+```
+
+Apply the referenced table first (CI before hardware, catalog item before variables) so the mapping exists. Re-applying hardware or variables after the mapping exists rewrites `ci` and `cat_item`.
+
+**Case 1 smoke.** Department capture, the integration-user echo skip, drain, and `/apply` are the same path. `ack_required` on configuration `0c74f48953e78b50a88275e0a0490e03` stays false. Re-execute that movement as `sbridge.worker` and confirm each `SBMOVE` department updates the existing target row (receipt, then Record Mapping) instead of inserting a duplicate. Reference fields on `cmn_department` change on that re-apply only when a Record Mapping exists for the source sys_id and **Reference handling** is Resolve (the default). User and group references are unchanged by the xref path. A configuration set to Preserve keeps source sys_ids.
+
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
-2. **Integration user** — the shipped default is `sbridge.worker`. Blank still fail-closes capture at runtime if an admin clears the property.
+2. **Integration user** — the shipped default is `sbridge.worker`, with roles `x_33764_sbridge.operator` (contains `x_33764_sbridge.worker`) and `x_33764_sbridge.reader`. Metadata ACLs allow that user to create and update `sys_script`, `sc_cat_item`, and `item_option_new`. Blank still fail-closes capture at runtime if an admin clears the property.
 3. **Instances** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote instance. Keep remote `active=true` only when ready. The physical table is still `x_33764_sbridge_peer`.
 4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
 5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.
