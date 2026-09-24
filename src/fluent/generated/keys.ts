@@ -169,10 +169,30 @@ declare global {
                         table: 'sys_module'
                         id: '38c6d9f0e8824a328db050ebb81ea0c0'
                     }
+                    'br-config-orphan-badge': {
+                        table: 'sys_script'
+                        id: 'f16955e33f364c9282e8da840cb29fdd'
+                    }
+                    'br-dex-hide-orphans': {
+                        table: 'sys_script'
+                        id: '561c56b7ff494502825478a21e5eefaa'
+                    }
                     'br-dex-number': {
                         table: 'sys_script'
                         id: 'ab994e35f10a44c6922ea26e22c75581'
                         deleted: false
+                    }
+                    'br-dex-orphan-badge': {
+                        table: 'sys_script'
+                        id: '5cb89f700af344a9bed3441a6e67846b'
+                    }
+                    'br-dex-require-configuration-insert': {
+                        table: 'sys_script'
+                        id: '9be0c994c9c74769a36ff168602195f2'
+                    }
+                    'br-dex-require-configuration-update': {
+                        table: 'sys_script'
+                        id: '684fce28cf304bc5a1bd01517a3ccabb'
                     }
                     'br-policy-ensure-capture': {
                         table: 'sys_script'
@@ -318,6 +338,10 @@ declare global {
                     'mod-failed': {
                         table: 'sys_app_module'
                         id: '7f52f9fc6cbe4993b0485095c90c2707'
+                    }
+                    'mod-orphan-executions': {
+                        table: 'sys_app_module'
+                        id: 'a39040ae41364fe6b66cc3d664814ee5'
                     }
                     'mod-outbox': {
                         table: 'sys_app_module'

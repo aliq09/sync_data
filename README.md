@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.1 (Case 2 worker ACLs and reference remap) |
+| **App version** | 0.4.2 (empty Data Execution hygiene; includes 0.4.1 ACL and xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -121,6 +121,29 @@ Apply the referenced table first (CI before hardware, catalog item before variab
 
 **Case 1 smoke.** Department capture, the integration-user echo skip, drain, and `/apply` are the same path. `ack_required` on configuration `0c74f48953e78b50a88275e0a0490e03` stays false. Re-execute that movement as `sbridge.worker` and confirm each `SBMOVE` department updates the existing target row (receipt, then Record Mapping) instead of inserting a duplicate. Reference fields on `cmn_department` change on that re-apply only when a Record Mapping exists for the source sys_id and **Reference handling** is Resolve (the default). User and group references are unchanged by the xref path. A configuration set to Preserve keeps source sys_ids.
 
+## Empty Data Execution hygiene (0.4.2)
+
+0.4.1 worker ACLs and Record Mapping xref are unchanged. This patch only stops empty Data Execution rows.
+
+`BridgeTransport.drain` opens a new sync run on every poll. Dual-write treated that run like a movement and inserted `x_33764_sbridge_data_execution` with `legacy_key` `run:<drain run>`. A drain run has no seed policy, so **Configuration** stayed empty. Closing the run then set **State** = Completed and **Result** = Successful, often with the same selected count as the real execution a second earlier. The next poll inserted another shell. `continueQueued` does not insert a Data Execution; it only pages controller rows that already have a configuration.
+
+Rules in this version:
+
+- A Data Execution is inserted only when `configuration` is set. There is no `internal_probe` type.
+- Completed / Successful is set only on that configured row, after a real source read or apply (or an explicit dry run). A drain poll does not complete a shell.
+- `continueQueued` and `drain` update the existing controller execution or no-op. They do not insert a DEX per call.
+- **Data Executions** and **Overview** use the list filter `configurationISNOTEMPTY`. A before-query rule applies the same hide when the list is opened without that module. Loading one row by `sys_id` still works.
+- Admins see an info message on the configuration and data execution forms while any orphan remains, and **Data Movement → Orphan executions** (role `x_33764_sbridge.admin`) opens the review list.
+
+**Orphan cleanup (review, do not auto-delete).** Existing empty rows are left in place. There is no fix script and no production job that deletes them. On a lab instance, an admin may delete after review:
+
+| | |
+|---|---|
+| Table | `x_33764_sbridge_data_execution` |
+| Encoded query | `configurationISEMPTY` |
+
+That is the same filter as **Orphan executions**. Clear the default `configurationISNOTEMPTY` filter only by opening that module (or by pasting `configurationISEMPTY`). Do not run that delete on a customer production instance from this app.
+
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
@@ -129,7 +152,7 @@ Apply the referenced table first (CI before hardware, catalog item before variab
 4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
 5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.
 6. **Seed** — `POST /api/x_33764_sbridge/sync/seed` with `{ "policy": "<sys_id>" }` as the integration user. Repeat with `run_id` until `done: true`. Does **not** update source rows. A Data Execution shadow is written when dual-write is on.
-7. **Monitor** — Data Executions, Transfers, Failed Transfers, and Audit. Legacy queue and technical logs are under Developer / Diagnostics. Watch `last_error` on the instance and lag on sync runs.
+7. **Monitor** — Data Executions (default filter `configurationISNOTEMPTY`), Transfers, Failed Transfers, and Audit. Legacy queue and technical logs are under Developer / Diagnostics. Watch `last_error` on the instance and lag on sync runs. Empty-configuration orphans, if any remain from older builds, are under **Orphan executions** (`configurationISEMPTY`). Review them there; this app does not delete them.
 
 ## Scripts
 

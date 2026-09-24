@@ -19,6 +19,10 @@
  * number column default) assigns DEX###### / TRN###### from sys_number. Epoch numbers are not written.
  * When movement_config.ack_required is false, acknowledgement milestones stay empty and
  * HTTP 200 still completes the execution. When it is true, the result waits for ACK.
+ *
+ * 0.4.2: a drain run is a transport poll, not a movement. _shadowRunById does not
+ * insert a Data Execution for type=drain, and it does not insert or complete a row
+ * whose configuration is empty. continueQueued / drain stay idempotent.
  */
 var BridgeDualWrite = Class.create()
 
@@ -331,6 +335,14 @@ BridgeDualWrite.prototype = {
         var run = new GlideRecord(BridgeConfig.TABLE.run)
         if (!run.get(runId)) return
 
+        // Drain creates a new x_33764_sbridge_run on every poll. Shadowing that run
+        // inserted a second Data Execution with an empty configuration (the drain
+        // row has no seed policy) and onRunClosed then marked it Completed /
+        // Successful — including selected=0 rows when the poll sent nothing.
+        // Transfers already roll onto the controller execution from the outbox
+        // payload (onOutboxSettled). Do not mint a DEX for the poll itself.
+        if ((run.getValue('type') || '') === 'drain') return
+
         var key = 'run:' + runId
         var dex = this._controllerDexForRun(runId)
         var isNew = false
@@ -347,13 +359,16 @@ BridgeDualWrite.prototype = {
                 dex.setValue('run', runId)
             }
         }
-        // Drain close still writes the run: shadow. It must not finish a controller DEX.
+        // Controller rows are finished by _rollupExecution, not by closing a sync run.
         if (!isNew && this._isControllerDex(dex) && phase === 'close') return
 
         var type = run.getValue('type') || ''
         var policyId = run.getValue('seed_policy') || ''
-        var configId = policyId ? this._configIdForPolicy(policyId) : dex.getValue('configuration') || ''
-        if (configId && !dex.getValue('configuration')) dex.setValue('configuration', configId)
+        var configId = policyId ? this._configIdForPolicy(policyId) : ''
+        if (!configId) configId = dex.getValue('configuration') || ''
+        // Never insert, and never mark Completed/Successful, without a configuration.
+        if (!configId) return
+        if (!dex.getValue('configuration')) dex.setValue('configuration', configId)
         this._fillDexRouting(dex, run, policyId, configId)
 
         if (isNew || !dex.getValue('config_snapshot')) {
@@ -495,6 +510,7 @@ BridgeDualWrite.prototype = {
         }
 
         if (isNew) {
+            if (!dex.getValue('configuration')) return
             this._ensurePlatformNumber(dex)
             dex.insert()
         } else dex.update()
@@ -1015,6 +1031,7 @@ BridgeDualWrite.prototype = {
      */
     _maybeCompleteController: function (dex, byStage) {
         if (!this._isControllerDex(dex)) return false
+        if (!dex.getValue('configuration')) return false
         var mode = dex.getValue('execution_mode') || ''
         if (mode === 'dry_run' || mode === 'reconciliation') return false
         var state = dex.getValue('execution_state') || ''
@@ -1346,6 +1363,12 @@ BridgeDualWrite.prototype = {
         gr.query()
         var created = 0
         while (gr.next()) {
+            // Drain polls and controller-linked seed runs are not missing shadows.
+            // Counting them used to walk the same rows on every drain() and, for
+            // drain runs, insert an empty Data Execution each time the legacy_key
+            // lookup missed (controller rows use ctrl:, not run:).
+            if (keyPrefix === 'run' && (gr.getValue('type') || '') === 'drain') continue
+            if (keyPrefix === 'run' && this._controllerDexForRun(gr.getUniqueValue())) continue
             var key = keyPrefix + ':' + gr.getUniqueValue()
             var target = this._backfillTarget(keyPrefix)
             if (!target) return
@@ -1355,6 +1378,8 @@ BridgeDualWrite.prototype = {
             } catch (e) {
                 gs.warn('[bridge] dual-write backfill ' + key + ' failed (ignored): ' + e)
             }
+            // A writer that refuses an empty configuration must not consume the budget.
+            if (!this._findId(target, 'legacy_key', key)) continue
             created++
             if (created >= limit) return
         }
