@@ -114,6 +114,8 @@ BridgeApply.prototype = {
 
         if (item.op === 'delete') return this.applyDelete(peerId, item, policy, receipt, out)
 
+        maps = maps || this.refs.prepare(null, peerId)
+        maps.referenceHandling = this._referenceHandling(policy, maps)
         var translated = this.refs.translate(item, this.config.refMap(policy), maps)
 
         // §6.4 — "unresolvable: null the field, flag the record, note in DLQ." The
@@ -140,7 +142,7 @@ BridgeApply.prototype = {
         }
 
         this.writeReceipt(peerId, item, target.sys_id)
-        if (policy.mode !== 'cmdb') this.writeXref(peerId, item, target.sys_id)
+        this.writeXref(peerId, item, target.sys_id, maps)
 
         out.status = 'applied'
         out.target_sys_id = target.sys_id
@@ -180,8 +182,9 @@ BridgeApply.prototype = {
      * Three things here are load-bearing, and each one is a documented footgun:
      *
      * - `source_native_key` is the *source* instance's sys_id, which is what makes
-     *   `sys_object_source` double as the CI cross-reference for later phases. That
-     *   is why `bridge_xref` deliberately carries no CI mappings.
+     *   `sys_object_source` the IRE cross-reference. 0.4.1 also upserts Record
+     *   Mapping for CMDB applies so a later row can remap a reference such as
+     *   `alm_hardware.ci`. IRE identification is unchanged.
      * - `source_recency_timestamp` is the source record's own `sys_updated_on`, not
      *   wall clock at send time. A stale timestamp on replay causes a silent no-op —
      *   no error, nothing applied, and nothing to notice.
@@ -553,27 +556,66 @@ BridgeApply.prototype = {
         return gr.insert()
     },
 
-    /** §4 — non-CMDB identity mapping only. CMDB mapping lives in `sys_object_source`. */
-    writeXref: function (peerId, item, targetSysId) {
+    /**
+     * Record Mapping for every successful upsert, including CMDB.
+     * Later items in this batch read the same map BridgeRefTranslate caches.
+     */
+    writeXref: function (peerId, item, targetSysId, maps) {
         var gr = new GlideRecord(BridgeConfig.TABLE.xref)
         gr.addQuery('peer', peerId)
         gr.addQuery('source_table', item.table)
         gr.addQuery('source_sys_id', item.source_sys_id)
         gr.setLimit(1)
         gr.query()
+        var stored = false
         if (gr.next()) {
             if (gr.getValue('target_sys_id') !== targetSysId) {
                 gr.setValue('target_sys_id', targetSysId)
                 gr.update()
             }
-            return
+            stored = true
+        } else {
+            gr.initialize()
+            gr.setValue('peer', peerId)
+            gr.setValue('source_table', item.table)
+            gr.setValue('source_sys_id', item.source_sys_id)
+            gr.setValue('target_sys_id', targetSysId)
+            stored = !!gr.insert()
+            if (!stored) {
+                gs.warn(
+                    '[bridge] record mapping insert failed for ' +
+                        item.table +
+                        ' ' +
+                        item.source_sys_id
+                )
+            }
         }
-        gr.initialize()
-        gr.setValue('peer', peerId)
-        gr.setValue('source_table', item.table)
-        gr.setValue('source_sys_id', item.source_sys_id)
-        gr.setValue('target_sys_id', targetSysId)
-        gr.insert()
+        if (stored && maps && item && item.source_sys_id) {
+            if (!maps.xrefHits) maps.xrefHits = {}
+            maps.xrefHits[peerId + '|' + item.source_sys_id] = targetSysId || ''
+        }
+    },
+
+    /**
+     * Movement-config reference handling for this policy. Default resolve.
+     * Preserve skips implicit xref. An explicit ref_map strategy still applies.
+     */
+    _referenceHandling: function (policy, maps) {
+        var id = policy && policy.sys_id
+        if (!id) return 'resolve'
+        if (!maps.handling) maps.handling = {}
+        if (maps.handling[id]) return maps.handling[id]
+        var value = 'resolve'
+        var cfg = new GlideRecord(BridgeConfig.TABLE.movementConfig)
+        cfg.addQuery('policy', id)
+        cfg.setLimit(1)
+        cfg.query()
+        if (cfg.next() && cfg.isValidField('reference_handling')) {
+            value = String(cfg.getValue('reference_handling') || 'resolve').toLowerCase()
+        }
+        if (value !== 'preserve' && value !== 'null_and_flag' && value !== 'resolve') value = 'resolve'
+        maps.handling[id] = value
+        return value
     },
 
     /**

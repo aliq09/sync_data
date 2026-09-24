@@ -70,6 +70,7 @@ export const x_33764_sbridge_movement_config = Table({
         }),
         reference_handling: StringColumn({
             label: 'Reference handling',
+            hint: 'Resolve (default) remaps reference fields through Record Mapping on apply. Preserve keeps the source sys_id. A per-field identity or preserve entry on the sync policy Reference field map overrides this.',
             default: 'resolve',
             choices: {
                 resolve: 'Resolve references',
