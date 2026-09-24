@@ -12,7 +12,94 @@
  * no mapping stay as they were. identity and preserve never remap.
  * reference handling preserve skips that implicit path. Explicit xref still
  * nulls the field and reports it unresolved when both lookups miss.
+ *
+ * 0.4.4 adds the Path A child foreign keys (NIC, serial, storage, memory,
+ * software install, filesystem, process, tcp, cmdb_rel_ci) and the standard
+ * Computer references to that same xref-first path, including when element
+ * metadata is missing. Capture stamps ref_keys; a miss on an implicit field
+ * still keeps the source sys_id.
  */
+var BRIDGE_CHILD_REFS = {
+    cmdb_ci_network_adapter: {
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_serial_number: {
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_ci_disk: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_ci_disk_partition: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_ci_storage_device: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_ci_storage_volume: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_ci_memory_module: {
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+    },
+    cmdb_software_instance: {
+        installed_on: { reference: 'cmdb_ci', business_key: 'name' },
+        software: { reference: 'cmdb_software_product_model', business_key: 'name' },
+    },
+    cmdb_sam_sw_install: {
+        installed_on: { reference: 'cmdb_ci', business_key: 'name' },
+        software: { reference: 'cmdb_software_product_model', business_key: 'name' },
+        software_model: { reference: 'cmdb_software_product_model', business_key: 'name' },
+        discovery_model: { reference: 'cmdb_sam_sw_discovery_model', business_key: 'display_name' },
+    },
+    cmdb_ci_file_system: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_running_process: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_tcp: {
+        computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
+        cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+    },
+    cmdb_rel_ci: {
+        parent: { reference: 'cmdb_ci', business_key: 'name' },
+        child: { reference: 'cmdb_ci', business_key: 'name' },
+        type: { reference: 'cmdb_rel_type', business_key: 'name' },
+    },
+}
+
+var BRIDGE_COMPUTER_REFS = {
+    manufacturer: { reference: 'core_company', business_key: 'name' },
+    company: { reference: 'core_company', business_key: 'name' },
+    vendor: { reference: 'core_company', business_key: 'name' },
+    model_id: { reference: 'cmdb_model', business_key: 'name' },
+    location: { reference: 'cmn_location', business_key: 'name' },
+    department: { reference: 'cmn_department', business_key: 'name' },
+    cost_center: { reference: 'cmn_cost_center', business_key: 'name' },
+    asset: { reference: 'alm_asset', business_key: 'asset_tag' },
+}
+
+var BRIDGE_COMPUTER_USER_FIELDS = {
+    assigned_to: true,
+    owned_by: true,
+    managed_by: true,
+    supported_by: true,
+    most_frequent_user: true,
+}
+
+var BRIDGE_COMPUTER_GROUP_FIELDS = {
+    support_group: true,
+    assignment_group: true,
+    managed_by_group: true,
+}
+
 var BridgeRefTranslate = Class.create()
 
 BridgeRefTranslate.prototype = {
@@ -52,6 +139,12 @@ BridgeRefTranslate.prototype = {
             if (!Object.prototype.hasOwnProperty.call(src, field)) continue
             var spec = refMap[field] || {}
             var strategy = spec.strategy || ''
+            var implicitNatural = false
+            var hinted = item && item.natural_keys ? item.natural_keys[field] : ''
+            if (!strategy && (hinted === 'user_name' || hinted === 'group_name')) {
+                strategy = hinted
+                implicitNatural = true
+            }
 
             if (strategy === 'identity' || strategy === 'preserve') {
                 values[field] = src[field]
@@ -73,7 +166,7 @@ BridgeRefTranslate.prototype = {
                     values[field] = uid
                 } else {
                     values[field] = ''
-                    unresolved.push({ field: field, strategy: strategy, key: uname })
+                    if (!implicitNatural) unresolved.push({ field: field, strategy: strategy, key: uname })
                 }
                 continue
             }
@@ -89,7 +182,7 @@ BridgeRefTranslate.prototype = {
                     values[field] = gid
                 } else {
                     values[field] = ''
-                    unresolved.push({ field: field, strategy: strategy, key: gname })
+                    if (!implicitNatural) unresolved.push({ field: field, strategy: strategy, key: gname })
                 }
                 continue
             }
@@ -121,6 +214,55 @@ BridgeRefTranslate.prototype = {
         return { values: values, unresolved: unresolved }
     },
 
+    /**
+     * Path A child foreign key, walking the table's parents so a subclass still matches.
+     * @returns {{reference: string, business_key: string}|null}
+     */
+    childReferenceSpec: function (tableName, field) {
+        if (!tableName || !field) return null
+        var chain = this._ancestry(tableName)
+        for (var i = 0; i < chain.length; i++) {
+            var tableSpecs = BRIDGE_CHILD_REFS[chain[i]]
+            if (tableSpecs && tableSpecs[field]) return tableSpecs[field]
+        }
+        return null
+    },
+
+    /**
+     * Standard Computer reference. Not used for user or group fields.
+     * @returns {{reference: string, business_key: string}|null}
+     */
+    computerReferenceSpec: function (field) {
+        if (!field || !BRIDGE_COMPUTER_REFS[field]) return null
+        return BRIDGE_COMPUTER_REFS[field]
+    },
+
+    isComputerUserField: function (field) {
+        return !!BRIDGE_COMPUTER_USER_FIELDS[field]
+    },
+
+    isComputerGroupField: function (field) {
+        return !!BRIDGE_COMPUTER_GROUP_FIELDS[field]
+    },
+
+    _withStampedKey: function (spec, item, field) {
+        spec = spec || {}
+        if (this._businessKeyFields(spec).length) return spec
+        var stamped = item && item.ref_keys ? item.ref_keys[field] : null
+        if (!stamped || !stamped.keys) return spec
+        var names = []
+        for (var key in stamped.keys) {
+            if (!Object.prototype.hasOwnProperty.call(stamped.keys, key)) continue
+            names.push(key)
+        }
+        if (!names.length) return spec
+        return {
+            strategy: spec.strategy || 'xref',
+            table: stamped.table || spec.table || spec.source_table || spec.reference || '',
+            business_key: names.join(','),
+        }
+    },
+
     _isXrefStrategy: function (strategy) {
         return (
             strategy === 'xref' ||
@@ -139,6 +281,7 @@ BridgeRefTranslate.prototype = {
     },
 
     _applyXref: function (values, unresolved, item, field, raw, spec, maps, tableName, explicit) {
+        spec = this._withStampedKey(spec, item, field)
         var kind = this._fieldKind(tableName, field, maps)
         if (kind.type === 'glide_list') {
             var parts = String(raw || '').split(',')
@@ -269,7 +412,7 @@ BridgeRefTranslate.prototype = {
                 kind = { type: '', reference: '' }
             }
         }
-        if (!kind.type) {
+        if (!kind.type || (kind.type !== 'reference' && kind.type !== 'glide_list')) {
             var known = this._knownReference(tableName, field)
             if (known) kind = { type: 'reference', reference: known }
         }
@@ -277,11 +420,50 @@ BridgeRefTranslate.prototype = {
         return kind
     },
 
-    /** Dictionary fallback for the Case 2 refs when element metadata is unavailable. */
+    /**
+     * Dictionary fallback when element metadata is missing or not a reference.
+     * Case 2 alm_hardware.ci stays here. 0.4.4 adds Path A child FKs and Computer refs.
+     */
     _knownReference: function (tableName, field) {
         if (field === 'ci' && (tableName === 'alm_hardware' || tableName === 'alm_asset')) return 'cmdb_ci'
         if (field === 'cat_item' && tableName === 'item_option_new') return 'sc_cat_item'
+        var child = this.childReferenceSpec(tableName, field)
+        if (child && child.reference) return child.reference
+        if (this._isComputerTableName(tableName)) {
+            var computer = this.computerReferenceSpec(field)
+            if (computer && computer.reference) return computer.reference
+        }
         return ''
+    },
+
+    _isComputerTableName: function (tableName) {
+        if (!tableName) return false
+        if (tableName === 'cmdb_ci_computer') return true
+        var chain = this._ancestry(tableName)
+        for (var i = 0; i < chain.length; i++) {
+            if (chain[i] === 'cmdb_ci_computer') return true
+        }
+        return false
+    },
+
+    _ancestry: function (tableName) {
+        if (!tableName) return []
+        if (!this._ancestryCache) this._ancestryCache = {}
+        if (this._ancestryCache[tableName]) return this._ancestryCache[tableName]
+        var chain = [tableName]
+        try {
+            var walked = this._config().tableAncestry(tableName)
+            if (walked && walked.length) chain = walked
+        } catch (e) {
+            chain = [tableName]
+        }
+        this._ancestryCache[tableName] = chain
+        return chain
+    },
+
+    _config: function () {
+        if (!this._cfg) this._cfg = new BridgeConfig()
+        return this._cfg
     },
 
     _lookupUser: function (userName) {

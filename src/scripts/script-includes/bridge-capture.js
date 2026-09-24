@@ -136,8 +136,13 @@ BridgeCapture.prototype = {
     },
 
     /**
-     * §6.1 — only the fields in `field_list`, plus `sys_updated_on` and
-     * `sys_mod_count`.
+     * §6.1 — fields in `field_list`, plus the computer include-list when this
+     * record is a Computer CI, plus `sys_updated_on` and `sys_mod_count`.
+     *
+     * BridgeSeed calls this same builder. A thin policy list (name, status,
+     * serial, asset tag, category) stays, and os / cpu / ram / manufacturer /
+     * model_id and the other standard computer attributes are merged in unless
+     * `x_33764_sbridge.cmdb_computer_fields` is `off`.
      *
      * Reference fields are emitted according to their `ref_map` strategy, and the
      * split matters: §6.4 says "prefer natural keys over sys_id lookups wherever one
@@ -147,8 +152,11 @@ BridgeCapture.prototype = {
      * strategies here, and leaves id-based strategies for the target. xref /
      * record_mapping / business_key keep the source sys_id in `values` and, when
      * `business_key` is set, add `ref_keys` so apply can fall back after Record
-     * Mapping. Other reference fields stay as sys_ids; apply remaps them when a
-     * mapping exists.
+     * Mapping. Computer user and group fields with no strategy are sent as
+     * user_name / group_name and marked on `natural_keys`. Child CMDB foreign keys
+     * and the other computer references keep the source sys_id and, when the
+     * referenced row has a name (or asset_tag), add `ref_keys` for the same fallback.
+     * Other reference fields stay as sys_ids; apply remaps them when a mapping exists.
      *
      * Journal fields are read through getJournalEntry rather than copied as a field
      * value: work notes and comments live in `sys_journal_field`, and reading the
@@ -158,15 +166,32 @@ BridgeCapture.prototype = {
      * EXECUTION_PLAN.md §D8 for the attribution trade-off it carries.
      */
     _payload: function (current, policy, op) {
+        current = this._recordForCapture(current) || current
         var values = {}
         var refKeys = {}
         var hasRefKeys = false
+        var naturalKeys = {}
+        var hasNatural = false
         var refMap = this.config.refMap(policy)
-        var fields = policy.field_list ? policy.field_list.split(',') : []
+        var fields = this._captureFields(current, policy)
+        var computer = this._isComputerRecord(current)
+        var translator = this._translator()
 
         for (var i = 0; i < fields.length; i++) {
-            var field = (fields[i] || '').trim()
+            var field = fields[i]
             if (!field || !current.isValidField(field)) continue
+            var implicitNatural = false
+            var strategy = refMap[field] ? refMap[field].strategy : ''
+            if (!strategy && computer && translator) {
+                var info = this._elementInfo(current, field)
+                if (info.reference === 'sys_user' && translator.isComputerUserField(field)) {
+                    strategy = 'user_name'
+                    implicitNatural = true
+                } else if (info.reference === 'sys_user_group' && translator.isComputerGroupField(field)) {
+                    strategy = 'group_name'
+                    implicitNatural = true
+                }
+            }
 
             if (this._isJournal(current, field)) {
                 /**
@@ -191,9 +216,12 @@ BridgeCapture.prototype = {
                 continue
             }
 
-            var strategy = refMap[field] ? refMap[field].strategy : ''
             if (strategy === 'user_name' || strategy === 'group_name') {
                 values[field] = this._naturalKey(current, field, strategy)
+                if (implicitNatural) {
+                    naturalKeys[field] = strategy
+                    hasNatural = true
+                }
                 continue
             }
             if (strategy === 'null_and_flag') {
@@ -207,6 +235,11 @@ BridgeCapture.prototype = {
                     refKeys[field] = stamp
                     hasRefKeys = true
                 }
+                continue
+            }
+
+            if (!strategy && translator && this._stampKnownRef(current, field, computer, translator, values, refKeys)) {
+                if (refKeys[field]) hasRefKeys = true
                 continue
             }
 
@@ -231,7 +264,144 @@ BridgeCapture.prototype = {
             values: values,
         }
         if (hasRefKeys) payload.ref_keys = refKeys
+        if (hasNatural) payload.natural_keys = naturalKeys
         return payload
+    },
+
+    /**
+     * Policy field list, plus the computer include-list when this row is a Computer.
+     * Department and other tables stay on the policy list alone.
+     */
+    _captureFields: function (current, policy) {
+        var out = []
+        var seen = {}
+        var raw = policy && policy.field_list ? String(policy.field_list).split(',') : []
+        var i
+        for (i = 0; i < raw.length; i++) {
+            var listed = String(raw[i] || '').replace(/^\s+|\s+$/g, '')
+            if (!listed || seen[listed]) continue
+            seen[listed] = true
+            out.push(listed)
+        }
+        if (!this._isComputerRecord(current)) return out
+        var extra = this.config.computerFieldIncludeList()
+        for (i = 0; i < extra.length; i++) {
+            if (seen[extra[i]]) continue
+            seen[extra[i]] = true
+            out.push(extra[i])
+        }
+        return out
+    },
+
+    /**
+     * Read a Computer through its own class so os, cpu, and ram are real fields
+     * when the policy table is a parent such as cmdb_ci. The payload table follows
+     * that class. A record whose class is already the GlideRecord table is unchanged.
+     */
+    _recordForCapture: function (current) {
+        if (!current) return current
+        var className = this._recordClassName(current)
+        if (!className || !this._isComputerTableName(className)) return current
+        var tableName = ''
+        try {
+            tableName = current.getTableName() || ''
+        } catch (e) {
+            return current
+        }
+        if (!tableName || className === tableName) return current
+        // cmdb_ci_computer already exposes os, cpu, and ram. Rebinding to a
+        // subclass would change payload.table and can insert a second CI.
+        if (this._isComputerTableName(tableName)) return current
+        try {
+            var gr = new GlideRecord(className)
+            if (gr.isValid() && gr.get(current.getUniqueValue())) return gr
+        } catch (e2) {}
+        return current
+    },
+
+    _recordClassName: function (current) {
+        try {
+            if (current.getRecordClassName) {
+                var fromApi = current.getRecordClassName()
+                if (fromApi) return String(fromApi)
+            }
+        } catch (e) {}
+        try {
+            if (current.isValidField && current.isValidField('sys_class_name')) {
+                var stored = current.getValue('sys_class_name')
+                if (stored) return String(stored)
+            }
+        } catch (e2) {}
+        try {
+            return String(current.getTableName() || '')
+        } catch (e3) {
+            return ''
+        }
+    },
+
+    _isComputerRecord: function (current) {
+        if (!current) return false
+        if (this._isComputerTableName(this._recordClassName(current))) return true
+        try {
+            return !!(current.isValidField('os') && current.isValidField('cpu_count') && current.isValidField('ram'))
+        } catch (e) {
+            return false
+        }
+    },
+
+    _isComputerTableName: function (tableName) {
+        if (!tableName) return false
+        if (tableName === 'cmdb_ci_computer') return true
+        var chain = []
+        try {
+            chain = this.config.tableAncestry(tableName) || []
+        } catch (e) {
+            chain = []
+        }
+        for (var i = 0; i < chain.length; i++) {
+            if (chain[i] === 'cmdb_ci_computer') return true
+        }
+        return false
+    },
+
+    _translator: function () {
+        if (this._translatorObj !== undefined) return this._translatorObj
+        try {
+            this._translatorObj = new BridgeRefTranslate()
+        } catch (e) {
+            this._translatorObj = null
+        }
+        return this._translatorObj
+    },
+
+    _elementInfo: function (current, field) {
+        var info = { type: '', reference: '' }
+        try {
+            if (!current.isValidField(field)) return info
+            var element = current.getElement(field)
+            var ed = element && element.getED()
+            if (!ed) return info
+            info.type = String(ed.getInternalType() || '')
+            if (info.type === 'reference' || info.type === 'glide_list') {
+                info.reference = String(ed.getReference() || '')
+            }
+        } catch (e) {}
+        return info
+    },
+
+    /**
+     * @returns {boolean} true when this field was handled (value stored, stamp optional)
+     */
+    _stampKnownRef: function (current, field, computer, translator, values, refKeys) {
+        var spec = translator.childReferenceSpec(current.getTableName(), field)
+        if (!spec && computer) spec = translator.computerReferenceSpec(field)
+        if (!spec) return false
+        values[field] = current.getValue(field)
+        var stamp = this._businessKeyStamp(current, field, {
+            business_key: spec.business_key,
+        })
+        if (stamp) refKeys[field] = stamp
+        return true
     },
 
     _isXrefStrategy: function (strategy) {

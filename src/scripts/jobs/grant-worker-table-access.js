@@ -21,6 +21,11 @@
  *    the row to global, with Accessible from = All application scopes
  *    and Caller Access = Caller Tracking. Apply calls
  *    new global.SyncBridgeMetadataWrite().
+ *
+ *    0.4.4 runs this same publisher from a second fix script,
+ *    Install global SyncBridgeMetadataWrite. An instance that already
+ *    executed the 0.4.3 record does not run that record again.
+ *    verifyWriter makes a second run a refresh, not a second include.
  */
 ;(function grantWorkerTableAccess() {
     var TABLES = ['sys_script', 'sc_cat_item', 'item_option_new', 'sys_user_group']

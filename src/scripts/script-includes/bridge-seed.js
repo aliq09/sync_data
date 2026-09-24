@@ -121,6 +121,7 @@ BridgeSeed.prototype = {
             table: tableName,
             direction: 'outbound',
             mode: policyGr.getValue('mode') || 'direct',
+            // Capture unions the computer include-list for cmdb_ci_computer. This column stays the policy list.
             field_list: policyGr.getValue('field_list') || '',
             condition: policyGr.getValue('condition') || '',
             ref_map: policyGr.getValue('ref_map') || '',

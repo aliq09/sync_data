@@ -15,7 +15,7 @@
  */
 var BridgeAck = Class.create()
 
-BridgeAck.VERSION = '0.4.3'
+BridgeAck.VERSION = '0.4.4'
 
 BridgeAck.STAGES = {
     received: true,

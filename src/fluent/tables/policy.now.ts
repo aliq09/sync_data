@@ -37,7 +37,11 @@ export const x_33764_sbridge_policy = Table({
             mandatory: true,
             referenceTable: 'x_33764_sbridge_peer',
         }),
-        field_list: FieldListColumn({ label: 'Fields to sync', dependent: 'table' }),
+        field_list: FieldListColumn({
+            label: 'Fields to sync',
+            dependent: 'table',
+            hint: 'For Computer (cmdb_ci_computer and subclasses), capture and seed also merge x_33764_sbridge.cmdb_computer_fields. Blank uses the built-in computer attributes. Set that property to off to sync only this list.',
+        }),
         condition: ConditionsColumn({ label: 'Filter condition', dependent: 'table' }),
         mode: StringColumn({
             label: 'Apply mode',

@@ -825,6 +825,14 @@ declare global {
                         table: 'sys_atf_step'
                         id: '018c4d343d5547fe82d8f436bc678abc'
                     }
+                    'atf-computer-fields': {
+                        table: 'sys_atf_test'
+                        id: 'a9c3e4b15d7f4a0e8c2b6f1d0e9a7c35'
+                    }
+                    'atf-computer-fields-step': {
+                        table: 'sys_atf_step'
+                        id: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                    }
                     'atf-dual-write-shadow': {
                         table: 'sys_atf_test'
                         id: '5f4461160530499e841e6d1b81d3f9c3'
@@ -1055,6 +1063,10 @@ declare global {
                         table: 'sys_script_fix'
                         id: 'f240c4e6957049628840653b990ab068'
                     }
+                    'fix-install-global-metadata-writer': {
+                        table: 'sys_script_fix'
+                        id: 'e7b1c2d34a5f4e6b8c9d0a1b2c3d4e5f'
+                    }
                     'job-continue-executions': {
                         table: 'sysauto_script'
                         id: '569194e451a04084ae6d5017503747a9'
@@ -1186,6 +1198,10 @@ declare global {
                     'prop-batch': {
                         table: 'sys_properties'
                         id: 'fc451097fdb44e2087c26e8ac529de4e'
+                    }
+                    'prop-cmdb-computer-fields': {
+                        table: 'sys_properties'
+                        id: 'c4e8a1b07d3f4e2a9b6c5d8e1f0a4b27'
                     }
                     'prop-dlq': {
                         table: 'sys_properties'
@@ -4635,6 +4651,14 @@ declare global {
                             name: 'x_33764_sbridge_policy'
                             element: 'owner_peer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '24cdb10cddbf44dabc9ee2cc481c29e7'
+                        key: {
+                            document_key: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            variable: '42f2564b73031300440211d8faf6a777'
                         }
                     },
                     {
@@ -10762,6 +10786,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_element_mapping'
+                        id: '67dfcc34c21b485db9ded9a26a6ff4e2'
+                        key: {
+                            id: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '681f6c57c4594ed7a21c582de74e4f8c'
                         deleted: true
@@ -14852,6 +14885,14 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'comments_and_work_notes'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '919b2c61563744fbab57c1bed1c42fa5'
+                        key: {
+                            document_key: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            variable: '989d9e235324220002c6435723dc3484'
                         }
                     },
                     {

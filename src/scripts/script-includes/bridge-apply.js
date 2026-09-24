@@ -5,9 +5,11 @@
  * suppression work (§3.3) and what makes every replicated change attributable to a
  * named account in the audit log.
  *
- * The order of the checks is the design. Sequence before ownership before writing:
- * a replay is cheap to skip, an ownership violation must never reach a write, and
- * only then is it worth resolving references.
+ * The order of the checks is the design. A newer sequence is applied. An older
+ * sequence is skipped. The same sequence is a skip only when the translated
+ * payload already matches the target, so a re-execute can fill computer fields
+ * and rewrite child foreign keys without inserting a second row. An ownership
+ * violation never reaches a write.
  */
 var BridgeApply = Class.create()
 
@@ -93,9 +95,34 @@ BridgeApply.prototype = {
         }
 
         // §3.2 — idempotency and out-of-order tolerance from one platform field.
-        // Replay of an already-applied item lands here and costs one indexed read.
+        // An older seq is a replay and costs one indexed read. The same seq is a
+        // replay only when the translated values already match the target. That
+        // lets a re-execute of an unchanged source row fill fields that were not
+        // in the earlier payload and point child FKs at the mapped parent.
         var receipt = this.receipt(peerId, item.source_sys_id)
-        if (receipt && receipt.last_seq >= item.seq) {
+        var incoming = parseInt(item.seq, 10)
+        if (isNaN(incoming)) incoming = 0
+        if (receipt && receipt.last_seq > incoming) {
+            out.status = 'skipped'
+            out.target_sys_id = receipt.target_sys_id
+            return out
+        }
+
+        var translated = null
+        if (item.op !== 'delete') {
+            maps = maps || this.refs.prepare(null, peerId)
+            maps.referenceHandling = this._referenceHandling(policy, maps)
+            translated = this.refs.translate(item, this.config.refMap(policy), maps)
+            if (
+                receipt &&
+                receipt.last_seq === incoming &&
+                !this._valuesDiffer(item, translated.values, receipt.target_sys_id)
+            ) {
+                out.status = 'skipped'
+                out.target_sys_id = receipt.target_sys_id
+                return out
+            }
+        } else if (receipt && receipt.last_seq >= incoming) {
             out.status = 'skipped'
             out.target_sys_id = receipt.target_sys_id
             return out
@@ -114,10 +141,6 @@ BridgeApply.prototype = {
 
         if (item.op === 'delete') return this.applyDelete(peerId, item, policy, receipt, out)
 
-        maps = maps || this.refs.prepare(null, peerId)
-        maps.referenceHandling = this._referenceHandling(policy, maps)
-        var translated = this.refs.translate(item, this.config.refMap(policy), maps)
-
         // §6.4 — "unresolvable: null the field, flag the record, note in DLQ." The
         // record is still written with the field nulled, because a task that arrives
         // without its assignee is more useful than a task that does not arrive; the
@@ -130,8 +153,13 @@ BridgeApply.prototype = {
             )
         }
 
+        // Same-seq refresh of an existing CI goes through GlideRecord. IRE treats an
+        // unchanged source_recency_timestamp as a no-op, which would drop the
+        // computer fields this re-execute is trying to fill. A first apply and a
+        // higher seq still use IRE when the policy mode is cmdb.
+        var sameSeqRefresh = !!(receipt && receipt.last_seq === incoming)
         var target =
-            policy.mode === 'cmdb'
+            policy.mode === 'cmdb' && !sameSeqRefresh
                 ? this.viaIRE(item, policy, translated.values)
                 : this.viaGlideRecord(item, policy, translated.values)
 
@@ -148,6 +176,41 @@ BridgeApply.prototype = {
         out.target_sys_id = target.sys_id
         if (target.privilege) out.privilege = target.privilege
         return out
+    },
+
+    /**
+     * Same-seq replay writes only when a field we would set differs.
+     * Journals are ignored so an unchanged note is not appended again.
+     * A missing target returns true so the caller inserts.
+     */
+    _valuesDiffer: function (item, values, targetSysId) {
+        if (!item || !targetSysId) return true
+        try {
+            var gr = new GlideRecord(item.table)
+            if (!gr.isValid() || !gr.get(targetSysId)) return true
+            values = values || {}
+            for (var field in values) {
+                if (!Object.prototype.hasOwnProperty.call(values, field)) continue
+                if (field === 'sys_id') continue
+                if (field.indexOf('sys_') === 0 && field !== 'sys_domain') continue
+                if (!gr.isValidField(field)) continue
+                if (this._isJournalField(gr, field)) continue
+                var next = this._normValue(values[field])
+                var current = this._normValue(gr.getValue(field))
+                if (next !== current) return true
+            }
+            return false
+        } catch (e) {
+            return true
+        }
+    },
+
+    _normValue: function (value) {
+        if (value === undefined || value === null) return ''
+        var text = String(value)
+        if (text === 'true') return '1'
+        if (text === 'false') return '0'
+        return text
     },
 
     /**

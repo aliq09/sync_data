@@ -18,3 +18,23 @@ Record({
         script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
     },
 })
+
+/**
+ * New sys_id so an instance that already ran "Grant worker metadata access"
+ * on 0.4.3 runs the publisher again. That record may not re-execute after
+ * the 0.4.3 body change. This script calls the same loadXML / moveMetadata
+ * publisher. It does not grant admin.
+ */
+Record({
+    $id: Now.ID['fix-install-global-metadata-writer'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Install global SyncBridgeMetadataWrite',
+        description:
+            '0.4.4. Create or move SyncBridgeMetadataWrite into the Global application so apply can call global.SyncBridgeMetadataWrite. Does not grant admin.',
+        before: false,
+        unloadable: false,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
+    },
+})

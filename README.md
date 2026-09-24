@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.3 (metadata apply; includes 0.4.2 empty Data Execution hygiene and 0.4.1 ACL/xref) |
+| **App version** | 0.4.4 (Case 1 DETAILED computer fields and child FK xref; includes 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -35,7 +35,7 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 | BridgePolicyHelper + policy after-BR (declarative capture BR) | Implemented |
 | Scripted REST: `/apply`, `/seed`, `/ensure_capture` | Implemented |
 | Drain job + condition (skip empty outbox) | Implemented |
-| BridgeRefTranslate | user_name / group_name / identity, plus Record Mapping xref (0.4.1) |
+| BridgeRefTranslate | user_name / group_name / identity, Record Mapping xref (0.4.1), Path A child FKs (0.4.4) |
 | BridgeDivergence / compare API / OAuth peer pack | Stubbed / deferred |
 | ATF | Minimal stubs (SI load + intent; not green until fixtures) |
 
@@ -97,7 +97,9 @@ Apply runs as the integration user (`sbridge.worker` by default). `/apply` rejec
 
 **Metadata write fallback.** Role allow rules remain the first attempt, so a table with no Deny-Unless (Case 7, Case 1) never leaves the integration user. When insert or update of `sys_script`, `sc_cat_item`, `item_option_new`, or `sys_user_group` returns no sys_id and the failure looks like security (`canCreate`/`canWrite` false, an empty platform message, or an access error), apply retries once through `global.SyncBridgeMetadataWrite`. Global `GlideRecord` is the platform path that does not apply the scoped ACL evaluator, so a Deny-Unless admin or script-writer rule does not block it. The session user is still the integration user (`sys_created_by` stays that user). The writer accepts only those four tables, only insert and update, and only a session token that apply sets for the call. It does not impersonate and it does not grant `admin`. Each success is `gs.info` and a Transfer Audit row with `result=metadata_privilege` (the note is in the error column; the apply result stays applied). The apply response includes `privilege: "global_metadata_writer"`. A validation message that is not an access refusal is not retried.
 
-Fluent cannot ship that script include. `apiName` must start with `x_33764_sbridge.`, and a scoped `GlideRecord` insert is stamped with the application scope, which is why the first 0.4.3 install left `new global.SyncBridgeMetadataWrite()` undefined. The fix script `Grant worker metadata access` runs after the payload loads and publishes the include into **Global**: `sys_scope=global`, `api_name=global.SyncBridgeMetadataWrite`, Accessible from = All application scopes, Caller Access = Caller Tracking. Version stays 0.4.3 so the same application record is upgraded; the fix script body changed, so the upgrade runs it again.
+Fluent cannot ship that script include. `apiName` must start with `x_33764_sbridge.`, and a scoped `GlideRecord` insert is stamped with the application scope, which is why the first 0.4.3 install left `new global.SyncBridgeMetadataWrite()` undefined. The fix script publishes the include into **Global** with `GlideUpdateManager2.loadXML` (`sys_scope=global`, `api_name=global.SyncBridgeMetadataWrite`) or, if that does not leave a callable global row, inserts and calls `sn_gfiles.GlobalApp.moveMetadata`. Accessible from = All application scopes. Caller Access = Caller Tracking. App-scoped copies are deleted after the global row is callable.
+
+**Why 0.4.3 still reported `SyncBridgeMetadataWrite is not installed in global`.** The first 0.4.3 install ran `Grant worker metadata access` before that publisher existed, and a fix script does not run again just because its script changed. 0.4.4 keeps that publisher (the 0.4.3 hotfix) and adds **Install global SyncBridgeMetadataWrite**, a new fix-script record, so an instance that already executed the old record still publishes the global include. Admin is not granted.
 
 Confirm after install, before re-running Cases 5, 6, 7, and 9:
 
@@ -124,7 +126,7 @@ A failed insert or update now appends `canCreate` / `canWrite` and `getLastError
 1. `user_name` and `group_name` are unchanged.
 2. `identity` and `preserve` on a ref_map entry keep the source sys_id. Movement-config **Reference handling** `preserve` does the same for fields with no entry.
 3. `xref`, `record_mapping`, `mapping`, or `business_key` look up Record Mapping first (same source sys_id, preferring the entry's `table` when set, then any table). If that misses and `business_key` is set, apply queries the target table with the keys captured in payload `ref_keys`. A miss nulls the field and writes a DLQ note.
-4. Any other reference field (and glide_list) is remapped when a Record Mapping exists. A miss keeps the source sys_id. `sys_user` and `sys_user_group` stay on the user/group strategies so department head and group fields are left alone. `alm_hardware.ci` (reference `cmdb_ci`) and `item_option_new.cat_item` (reference `sc_cat_item`) follow this path with no ref_map entry required.
+4. Any other reference field (and glide_list) is remapped when a Record Mapping exists. A miss keeps the source sys_id. `sys_user` and `sys_user_group` stay on the user/group strategies so department head and group fields are left alone. `alm_hardware.ci` (reference `cmdb_ci`) and `item_option_new.cat_item` (reference `sc_cat_item`) follow this path with no ref_map entry required. 0.4.4 uses this same path for the Path A child foreign keys listed under Case 1 DETAILED.
 
 Example ref_map when a business-key fallback is wanted:
 
@@ -163,6 +165,44 @@ Rules in this version:
 | Encoded query | `configurationISEMPTY` |
 
 That is the same filter as **Orphan executions**. Clear the default `configurationISNOTEMPTY` filter only by opening that module (or by pasting `configurationISEMPTY`). Do not run that delete on a customer production instance from this app.
+
+## Case 1 DETAILED computer fields and child references (0.4.4)
+
+Kept from 0.4.3: empty Data Execution guards, the metadata writer, and Case 2 `alm_hardware.ci` xref. This does not add a Path B multi-table expand pack. It only sends a fuller computer field set and remaps foreign keys that are already in the payload.
+
+**Why the computer form was thin.** Capture and BridgeSeed copy `policy.field_list` and nothing else. The CASE1-COMP-DETAILED policy list is the eight `cmdb_ci` fields (`name`, `short_description`, `operational_status`, `install_status`, `serial_number`, `asset_tag`, `category`, `subcategory`), so `os`, `os_version`, `ip_address`, `manufacturer`, `model_id`, `ram`, `cpu_count`, `cpu_core_count`, and `discovery_source` never entered `values`.
+
+**Include-list.** For `cmdb_ci_computer` and any subclass, capture unions that policy list with `x_33764_sbridge.cmdb_computer_fields`. Blank uses the built-in computer set (the eight fields above plus the standard computer attributes). Set the property to `off` to keep only the policy list. A field that is not on that class is skipped. `cmn_department` is not a computer, so the Case 1 department payload is unchanged.
+
+Computer user and group references with no ref_map strategy are sent as `user_name` / `group_name` (`natural_keys` on the payload) so apply can resolve them. `manufacturer`, `model_id`, `location`, `department`, `company`, `vendor`, `cost_center`, and `asset` keep the source sys_id and stamp `ref_keys` for a business-key fallback after Record Mapping. An implicit miss keeps the source sys_id and does not dead-letter the row.
+
+**Child foreign keys.** The same xref-first path as `alm_hardware.ci` now knows these fields when dictionary metadata is missing, and capture stamps a business key (`name`, or `display_name` / `asset_tag` where that is the key) when the payload already contains the field:
+
+| Table | Fields |
+|---|---|
+| `cmdb_ci_network_adapter` | `cmdb_ci` |
+| `cmdb_serial_number` | `cmdb_ci` |
+| `cmdb_ci_disk`, `cmdb_ci_disk_partition`, `cmdb_ci_storage_device`, `cmdb_ci_storage_volume` | `computer`, `cmdb_ci` |
+| `cmdb_ci_memory_module` | `cmdb_ci`, `computer` |
+| `cmdb_software_instance` | `installed_on`, `software` |
+| `cmdb_sam_sw_install` | `installed_on`, `software`, `software_model`, `discovery_model` |
+| `cmdb_ci_file_system` | `computer`, `cmdb_ci` |
+| `cmdb_running_process` | `computer`, `cmdb_ci` |
+| `cmdb_tcp` | `computer`, `cmdb_ci` |
+| `cmdb_rel_ci` | `parent`, `child`, `type` |
+
+Record Mapping is still written after a successful upsert and read before insert or update. A reference with no mapping and no unique business key is left as the source sys_id. `sys_user` and `sys_user_group` stay off that implicit xref path.
+
+**Same sequence.** Apply used to skip whenever `receipt.last_seq` was already at this `sys_mod_count`, so a re-execute could not fill newly captured fields or rewrite a child FK. A same-seq payload is now a skip only when the translated values already match the target row. An older seq is still a skip. A matching replay does not insert a second row and does not append a journal again. Case 1 department re-execute still updates the existing row instead of duplicating it.
+
+**Verify (do not deploy from this change set).** Install 0.4.4 on both peers. `now-sdk build` must succeed before that install.
+
+1. Re-Execute the CASE1-COMP-DETAILED computer movement. On PDI1, the outbox `values` for that computer include `os`, `os_version`, `ip_address`, `manufacturer`, `model_id`, `ram`, `cpu_count`, `cpu_core_count`, and `discovery_source` when those fields are filled on the source (plus any other include-list field that exists on the class).
+2. On PDI2, open the computer. Those fields are populated, not only the previous eight.
+3. Re-Execute Path A children after the computer Record Mapping exists: network adapter, serial number, storage or disk, memory, software instance, file system, running process, tcp, and `cmdb_rel_ci`.
+4. On the PDI2 computer, the NIC and software related lists show the child rows. `cmdb_ci`, `installed_on`, `software`, `parent`, and `child` are PDI2 sys_ids. They are not the PDI1 ids left on the source.
+5. Case 2 `alm_hardware.ci` still follows Record Mapping. Case 1 department still updates the existing row and does not insert a duplicate. A drain poll still does not insert an empty Data Execution.
+6. Install log contains `[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=global.SyncBridgeMetadataWrite access=public`. The Script Include Application is Global. Re-run Cases 5, 6, and 9 as `sbridge.worker`. Outbox must not fail with `SyncBridgeMetadataWrite is not installed in global`. A security refusal still retries through that global include; admin is not granted.
 
 ## Operator runbook (stub)
 
