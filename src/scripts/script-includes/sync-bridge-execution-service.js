@@ -684,15 +684,84 @@ SyncBridgeExecutionService.prototype = {
         var state = dex.getValue('execution_state') || ''
         if (state === 'cancelled' || state === 'completed') return
         var mode = dex.getValue('execution_mode') || 'execute'
-        if (mode === 'dry_run') this._pageDryRun(dex)
-        else if (mode === 'reconciliation') {
+        if (mode === 'reconciliation') {
             dex.work_notes = 'Sync Bridge: reconciliation does not run in 0.3.0. No target rows were changed.'
             dex.setValue('execution_result', 'cancelled')
             dex.setValue('execution_state', 'cancelled')
             dex.setValue('execution_completed_at', new GlideDateTime().getValue())
             this._setDuration(dex)
             dex.update()
-        } else this._pageSeed(dex)
+            return
+        }
+        var token = this._claimExecution(dexId)
+        if (!token) return
+        try {
+            dex = this._dex(dexId)
+            if (!dex) return
+            if ((dex.getValue('execution_state') || '') === 'cancelled') return
+            if (mode === 'dry_run') this._pageDryRun(dex)
+            else this._pageSeed(dex)
+        } finally {
+            this._releaseExecution(dexId, token)
+        }
+    },
+
+    /**
+     * One expander per Data Execution. Two callers (the continue job and a
+     * manual continueQueued) both read state=queued, so a state check alone
+     * lets both seed. The token is written, then read back. The caller whose
+     * token is still stored owns the page. A claim older than three minutes
+     * can be taken over. Expansion is also idempotent in BridgeSeed.
+     */
+    _claimExecution: function (dexId) {
+        if (!dexId) return ''
+        var probe = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!probe.isValid() || !probe.isValidField('expand_claim')) {
+            gs.warn('[bridge] expand_claim is missing; this execution is not locked')
+            return 'unlocked'
+        }
+        var token = gs.generateGUID()
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.get(dexId)) return ''
+        var state = dex.getValue('execution_state') || ''
+        if (state === 'completed' || state === 'cancelled' || state === 'sending') return ''
+        var held = dex.getValue('expand_claim') || ''
+        if (held && !this._claimIsStale(dex)) return ''
+        dex.setValue('expand_claim', token)
+        if (dex.isValidField('expand_claimed_at')) dex.setValue('expand_claimed_at', new GlideDateTime().getValue())
+        dex.setWorkflow(false)
+        if (!dex.update()) return ''
+        var check = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!check.get(dexId)) return ''
+        if ((check.getValue('expand_claim') || '') !== token) return ''
+        return token
+    },
+
+    _claimIsStale: function (dex) {
+        var at = ''
+        try {
+            at = dex.getValue('expand_claimed_at') || ''
+        } catch (e) {
+            at = ''
+        }
+        if (!at) return true
+        try {
+            var then = new GlideDateTime(at)
+            var now = new GlideDateTime()
+            return now.getNumericValue() - then.getNumericValue() > 180000
+        } catch (e2) {
+            return true
+        }
+    },
+
+    _releaseExecution: function (dexId, token) {
+        if (!dexId || !token || token === 'unlocked') return
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.get(dexId) || !dex.isValidField('expand_claim')) return
+        if ((dex.getValue('expand_claim') || '') !== token) return
+        dex.setValue('expand_claim', '')
+        dex.setWorkflow(false)
+        dex.update()
     },
 
     _pageSeed: function (dex) {

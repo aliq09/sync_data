@@ -152,10 +152,15 @@ BridgeApply.prototype = {
             )
         }
 
-        // Create a missing software product only once this write is allowed.
+        // Create a missing cmdb_ci_spkg only once this write is allowed.
         // The earlier pass only rewrites references that already exist here,
-        // so a same-seq skip does not insert a product model.
+        // so a same-seq skip does not insert a package. A product model is never created.
         this._prepareCmdbChild(item, translated.values, maps, true)
+        if (item._bridge_software_error) {
+            out.error = item._bridge_software_error
+            this.deadLetter(item, out.error)
+            return out
+        }
 
         // Same-seq refresh of an existing CI goes through GlideRecord. IRE treats an
         // unchanged source_recency_timestamp as a no-op, which would drop the
@@ -495,34 +500,35 @@ BridgeApply.prototype = {
             this._setValues(upd, values)
             if (this._isSoftwareItem(item, table)) {
                 this._stampSoftwareFields(upd, values)
-                // Same cross-scope ceiling as insert: setValue does not keep
-                // the sealed values, and update() then returns no sys_id.
-                // An existing row can still getValue the previous value, so
-                // compare the hold to the sealed text rather than to empty.
-                var probe = this._probeSoftwareSet(upd, item, values)
-                if (!this._softwareHoldMatches(item, values)) {
-                    var alt = this._writeSoftwareUnscoped(item, values, policy, existing)
-                    if (alt && alt.sys_id) return alt
-                    var canWrite = ''
-                    try {
-                        canWrite = upd.canWrite() ? 'canWrite=true' : 'canWrite=false'
-                    } catch (ignoreUpd) {
-                        canWrite = ''
-                    }
-                    var sealedDetail = this._softwareAbortDetail(item, upd, 'after', 'update')
-                    return {
-                        error:
-                            'update of ' +
-                            (upd.getTableName() || table) +
-                            ' ' +
-                            existing +
-                            ' returned no sys_id' +
-                            (canWrite ? ' (' + canWrite + ')' : '') +
-                            ': ' +
-                            (probe || '') +
-                            (alt && alt.error ? '; ' + alt.error : '') +
-                            (sealedDetail ? '; ' + sealedDetail : ''),
-                    }
+                // An existing row's scoped getValue returns the OLD name and
+                // installed_on. Those match the sealed values even when
+                // setValue was a no-op, so a hold check must not decide the
+                // route. Always update through the global writer, then PATCH.
+                // If both return nothing, a scoped update() that returns null
+                // is still a failure and the error names both fallbacks.
+                this._probeSoftwareSet(upd, item, values)
+                var alt = this._writeSoftwareUnscoped(item, values, policy, existing)
+                if (alt && alt.sys_id) return alt
+                var updatedSoftware = upd.update()
+                if (updatedSoftware) return { sys_id: updatedSoftware, operation: 'update' }
+                var canWrite = ''
+                try {
+                    canWrite = upd.canWrite() ? 'canWrite=true' : 'canWrite=false'
+                } catch (ignoreUpd) {
+                    canWrite = ''
+                }
+                var sealedDetail = this._softwareAbortDetail(item, upd, 'after', 'update')
+                return {
+                    error:
+                        'update of ' +
+                        (upd.getTableName() || table) +
+                        ' ' +
+                        existing +
+                        ' returned no sys_id' +
+                        (canWrite ? ' (' + canWrite + ')' : '') +
+                        ': ' +
+                        (alt && alt.error ? alt.error : 'global writer and table api were not called') +
+                        (sealedDetail ? '; ' + sealedDetail : ''),
                 }
             }
             var updated = upd.update()
@@ -832,59 +838,128 @@ BridgeApply.prototype = {
     },
 
     /**
-     * Keep software only when the dictionary reference (cmdb_ci_spkg on a
-     * PDI without SAM, not the hardcoded product model) contains the row.
-     * Create that package as the integration user when the name is known.
-     * A dangling source sys_id is omitted so it cannot abort the install.
-     * name and installed_on are not cleared here.
+     * cmdb_software_instance.software references cmdb_ci_spkg. Match an existing
+     * package by Record Mapping or by name. Never insert cmdb_software_product_model.
+     * Create a cmdb_ci_spkg only when reference handling is resolve and this is
+     * the write pass. Otherwise the write fails and names the miss.
      */
     _resolveSoftwareField: function (item, values, maps, createMissing) {
         var payload = (item && item.values) || {}
         var raw = values.software || payload.software || ''
         raw = raw ? String(raw) : ''
-        var insertTable = this._insertGlideTable(item)
-        var dictRef =
-            this._dictionaryReference(insertTable, 'software') ||
-            this._dictionaryReference(item.table, 'software') ||
-            ''
+        var refTable = this._softwareReferenceTable(this._insertGlideTable(item) || (item && item.table))
+        if (!this._isSoftwareInstance(item)) {
+            var samRef =
+                this._dictionaryReference(item.record_class || item.table, 'software') ||
+                this._dictionaryReference(item.table, 'software') ||
+                ''
+            if (samRef) refTable = samRef
+        }
         if (!raw) {
             delete values.software
             item._bridge_software_note = ''
+            item._bridge_software_error = ''
             return
         }
-        if (dictRef && this._rowExists(dictRef, raw)) {
+        if (refTable && this._rowExists(refTable, raw)) {
             values.software = raw
             item._bridge_software_note = ''
+            item._bridge_software_error = ''
             return
         }
         var peerId = maps && maps.peerId ? maps.peerId : ''
-        var mapped = this._lookupMappedOnTable(peerId, raw, dictRef, maps)
+        var mapped = this._lookupMappedOnTable(peerId, raw, refTable, maps)
         if (mapped) {
             values.software = mapped
             item._bridge_software_note = ''
+            item._bridge_software_error = ''
             return
         }
-        var byName = dictRef ? this._lookupSoftwareByName(item, 'software', dictRef) : ''
-        if (byName && (!dictRef || this._rowExists(dictRef, byName))) {
+        var byName = this._lookupSoftwareByName(item, 'software', refTable || 'cmdb_ci_spkg')
+        if (byName && (!refTable || this._rowExists(refTable, byName))) {
             values.software = byName
             item._bridge_software_note = ''
+            item._bridge_software_error = ''
             return
         }
-        if (createMissing) {
-            var created = this._insertSoftwareDependency(item, 'software', { reference: dictRef }, raw, maps)
-            if (created && (!dictRef || this._rowExists(dictRef, created))) {
+        if (createMissing && this._referenceHandlingAllowsCreate(maps) && this._isSoftwareInstance(item)) {
+            var created = this._insertSoftwareDependency(item, 'software', { reference: 'cmdb_ci_spkg' }, raw, maps)
+            if (created && this._rowExists('cmdb_ci_spkg', created)) {
                 values.software = created
                 item._bridge_software_note = ''
+                item._bridge_software_error = ''
                 return
             }
         }
-        delete values.software
-        item._bridge_software_note =
-            'software ' +
-            raw +
-            ' omitted (not a local ' +
-            (dictRef || 'software reference') +
-            ' row)'
+        if (createMissing && this._isSoftwareInstance(item)) {
+            var softwareName = this._softwareKeyName(item, 'software')
+            item._bridge_software_error =
+                'software ' +
+                raw +
+                ' did not match a cmdb_ci_spkg' +
+                (softwareName ? ' named ' + softwareName : '') +
+                '; cmdb_software_product_model was not created'
+            return
+        }
+        if (!this._isSoftwareInstance(item)) {
+            delete values.software
+            item._bridge_software_note =
+                'software ' + raw + ' omitted (not a local ' + (refTable || 'software reference') + ' row)'
+        }
+    },
+
+    _isSoftwareInstance: function (item) {
+        if (!item) return false
+        return item.table === 'cmdb_software_instance' || item.record_class === 'cmdb_software_instance'
+    },
+
+    /**
+     * The column reference for cmdb_software_instance.software. The static
+     * child spec and a failed element descriptor must not report
+     * cmdb_software_product_model. sys_dictionary wins when it names a table.
+     */
+    _softwareReferenceTable: function (tableName) {
+        if (tableName === 'cmdb_software_instance') {
+            var row = this._dictionaryRowReference(tableName, 'software')
+            if (row && row !== 'cmdb_software_product_model') return row
+            return 'cmdb_ci_spkg'
+        }
+        return (
+            this._dictionaryReference(tableName, 'software') ||
+            this._dictionaryRowReference(tableName, 'software') ||
+            ''
+        )
+    },
+
+    _dictionaryRowReference: function (tableName, field) {
+        if (!tableName || !field) return ''
+        try {
+            var gr = new GlideRecord('sys_dictionary')
+            if (!gr.isValid()) return ''
+            gr.addQuery('name', tableName)
+            gr.addQuery('element', field)
+            gr.setLimit(1)
+            gr.query()
+            if (!gr.next()) return ''
+            return String(gr.getValue('reference') || '')
+        } catch (e) {
+            return ''
+        }
+    },
+
+    _referenceHandlingAllowsCreate: function (maps) {
+        var handling = maps && maps.referenceHandling ? String(maps.referenceHandling) : 'resolve'
+        return handling === 'resolve'
+    },
+
+    _softwareKeyName: function (item, field) {
+        var keys = item && item.ref_keys && item.ref_keys[field] && item.ref_keys[field].keys
+        var name = keys ? keys.name || keys.display_name || '' : ''
+        if (!name && item && item.ref_keys && item.ref_keys.software && item.ref_keys.software.keys) {
+            var softwareKeys = item.ref_keys.software.keys
+            name = softwareKeys.name || softwareKeys.display_name || ''
+        }
+        return name ? String(name) : ''
     },
 
     _lookupMappedOnTable: function (peerId, sourceSysId, tableName, maps) {
@@ -1098,24 +1173,38 @@ BridgeApply.prototype = {
         return { error: parts.join('; ') || 'software alternate returned no sys_id' }
     },
 
+    /**
+     * Every non-empty mapped value, not only the original eight columns.
+     * install_date is included when capture sent it. System columns stay out.
+     */
     _softwareWriteBody: function (values) {
-        var fields = [
+        var first = [
             'name',
             'installed_on',
             'software',
+            'install_date',
             'version',
             'edition',
             'publisher',
             'display_name',
             'prod_id',
-            'install_date',
+            'discovery_source',
         ]
         var out = {}
+        var seen = {}
         values = values || {}
-        for (var i = 0; i < fields.length; i++) {
-            var field = fields[i]
-            if (values[field] === undefined || values[field] === null || String(values[field]) === '') continue
+        var copy = function (field) {
+            if (!field || seen[field]) return
+            seen[field] = true
+            if (field === 'sys_id') return
+            if (field.indexOf('sys_') === 0 && field !== 'sys_domain') return
+            if (values[field] === undefined || values[field] === null || String(values[field]) === '') return
             out[field] = String(values[field])
+        }
+        var i
+        for (i = 0; i < first.length; i++) copy(first[i])
+        for (var field in values) {
+            if (Object.prototype.hasOwnProperty.call(values, field)) copy(field)
         }
         return out
     },
@@ -1371,8 +1460,10 @@ BridgeApply.prototype = {
             // cmdb_software_product_model is not a table.
             var dictRef =
                 this._dictionaryReference(item.record_class || item.table, field) ||
-                this._dictionaryReference(item.table, field)
-            if (dictRef) refTable = dictRef
+                this._dictionaryReference(item.table, field) ||
+                this._dictionaryRowReference(item.table, field)
+            if (field === 'software' && this._isSoftwareInstance(item)) refTable = 'cmdb_ci_spkg'
+            else if (dictRef) refTable = dictRef
             else if (refTable && !this._tableValid(refTable)) refTable = ''
             if (refTable && this._rowExists(refTable, raw)) continue
             var sourceId = String(raw)
@@ -1380,12 +1471,14 @@ BridgeApply.prototype = {
             if (item.ref_keys && item.ref_keys[field]) {
                 replacement = translator._lookupBusinessKey(item, field, spec || {}, refTable) || ''
             }
+            if (replacement && refTable && !this._rowExists(refTable, replacement)) replacement = ''
             if (!replacement && (field === 'software' || field === 'software_model')) {
                 replacement = this._lookupSoftwareByName(item, field, refTable) || ''
             }
             if (
                 !replacement &&
                 createMissing &&
+                this._referenceHandlingAllowsCreate(maps) &&
                 (field === 'software' || field === 'software_model')
             ) {
                 replacement = this._insertSoftwareDependency(item, field, { reference: refTable }, sourceId, maps) || ''
@@ -1393,6 +1486,17 @@ BridgeApply.prototype = {
             if (replacement && refTable && !this._rowExists(refTable, replacement)) replacement = ''
             if (replacement) {
                 values[field] = replacement
+                if (field === 'software') item._bridge_software_error = ''
+                continue
+            }
+            if (field === 'software' && this._isSoftwareInstance(item) && createMissing) {
+                var softwareName = this._softwareKeyName(item, field)
+                item._bridge_software_error =
+                    'software ' +
+                    sourceId +
+                    ' did not match a cmdb_ci_spkg' +
+                    (softwareName ? ' named ' + softwareName : '') +
+                    '; cmdb_software_product_model was not created'
                 continue
             }
             if (createMissing && this._dropDanglingSoftwareRef(field, values)) delete values[field]
@@ -1445,7 +1549,9 @@ BridgeApply.prototype = {
 
     _softwareTables: function (preferred, item, field) {
         var stamped = item.ref_keys && item.ref_keys[field] ? item.ref_keys[field].table : ''
-        var names = [preferred, stamped, 'cmdb_ci_spkg', 'cmdb_software_product_model']
+        if (preferred === 'cmdb_software_product_model') preferred = 'cmdb_ci_spkg'
+        if (stamped === 'cmdb_software_product_model') stamped = 'cmdb_ci_spkg'
+        var names = [preferred, stamped, 'cmdb_ci_spkg']
         var seen = {}
         var out = []
         for (var i = 0; i < names.length; i++) {
@@ -1489,6 +1595,11 @@ BridgeApply.prototype = {
         }
         if (!name) return ''
         var preferred = (spec && spec.reference) || ''
+        if (preferred === 'cmdb_software_product_model' || this._isSoftwareInstance(item)) preferred = 'cmdb_ci_spkg'
+        if (preferred === 'cmdb_software_product_model') {
+            gs.warn('[bridge] refused to create cmdb_software_product_model for software reference ' + sourceId)
+            return ''
+        }
         var tables = this._softwareTables(preferred, item, field)
         var createOn = ''
         for (var i = 0; i < tables.length; i++) {
@@ -1497,7 +1608,12 @@ BridgeApply.prototype = {
                 break
             }
         }
-        if (!createOn) return ''
+        if (!createOn || createOn === 'cmdb_software_product_model') {
+            if (createOn === 'cmdb_software_product_model') {
+                gs.warn('[bridge] refused to create cmdb_software_product_model for software reference ' + sourceId)
+            }
+            return ''
+        }
         var existing = this._findNamedRow(createOn, name)
         if (existing) {
             this._storeDependencyXref(item, field, sourceId, existing, createOn, maps)
@@ -1839,11 +1955,11 @@ BridgeApply.prototype = {
             var raw = gr.getValue(field)
             if (!raw) continue
             var spec = translator.childReferenceSpec(table, field)
-            // Dictionary reference wins. cmdb_software_instance.software is
-            // cmdb_ci_spkg on a PDI without Software Asset Management; the
-            // static child spec still names cmdb_software_product_model.
-            var ref = this._dictionaryReference(table, field)
-            if (!ref && spec && spec.reference) ref = spec.reference
+            var ref = ''
+            if (field === 'software' && table === 'cmdb_software_instance') ref = 'cmdb_ci_spkg'
+            else ref = this._dictionaryReference(table, field) || this._dictionaryRowReference(table, field)
+            if (!ref && spec && spec.reference && spec.reference !== 'cmdb_software_product_model') ref = spec.reference
+            if (!ref && field === 'software') ref = 'cmdb_ci_spkg'
             if (ref && !this._rowExists(ref, raw)) dangling.push(field + ' not in ' + ref)
         }
         var mandatory = this._mandatoryGaps(gr)

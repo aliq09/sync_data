@@ -17,11 +17,12 @@
  */
 ;(function publishSoftwareWriter() {
     var WRITER = 'SyncBridgeSoftwareWrite'
+    var MARKER = 'sbridge-software-writer=0.5.2'
     var script = softwareWriterScript()
 
     try {
         if (verifyWriter(false)) {
-            gs.info('[bridge] software writer callable as global.' + WRITER + ' update=yes')
+            gs.info('[bridge] software writer callable as global.' + WRITER + ' update=yes marker=0.5.2')
             return
         }
     } catch (checkErr) {
@@ -34,14 +35,23 @@
         return
     }
 
+    stampGlobal(script)
+    if (verifyWriter(true)) {
+        deleteAppCopies()
+        return
+    }
+
     var queued = queueGlobalPublish(script)
     gs.error(
-        '[bridge] SyncBridgeSoftwareWrite is not in global yet. Table API status=' +
+        '[bridge] SyncBridgeSoftwareWrite 0.5.2 is not stored in global yet. Table API status=' +
             api.status +
             (api.detail ? ' ' + api.detail : '') +
             (queued
-                ? '. Queued a one-time sys_trigger to publish it in global; confirm the log line software writer callable as global.SyncBridgeSoftwareWrite update=yes.'
-                : '. The one-time sys_trigger was not queued.')
+                ? '. Queued a one-time sys_trigger. Confirm the log line software writer callable as global.SyncBridgeSoftwareWrite update=yes marker=0.5.2.'
+                : '. The one-time sys_trigger was not queued.') +
+            ' If the log line is missing, PATCH sys_script_include global.SyncBridgeSoftwareWrite with softwareWriterScript() from src/scripts/jobs/publish-software-writer.js. The stored script must contain ' +
+            MARKER +
+            '.'
     )
 
     function publishViaTableApi(body) {
@@ -108,7 +118,7 @@
     function queueGlobalPublish(body) {
         var ready = new GlideRecord('sys_trigger')
         if (!ready.isValid()) return false
-        ready.addQuery('name', 'Sync Bridge publish global software writer')
+        ready.addQuery('name', 'Sync Bridge publish software writer 0.5.2')
         ready.addQuery('state', '0')
         ready.setLimit(1)
         ready.query()
@@ -117,7 +127,7 @@
         when.addSeconds(15)
         var trigger = new GlideRecord('sys_trigger')
         trigger.initialize()
-        trigger.setValue('name', 'Sync Bridge publish global software writer')
+        trigger.setValue('name', 'Sync Bridge publish software writer 0.5.2')
         trigger.setValue('script', globalPublishScript(body))
         trigger.setValue('trigger_type', '0')
         trigger.setValue('state', '0')
@@ -175,9 +185,65 @@
             '    gs.error("[bridge] software writer publish left scope=" + check.getValue("sys_scope") + " api_name=" + check.getValue("api_name") + " update=" + (callable ? "yes" : "no"));',
             '    return;',
             '  }',
-            '  gs.info("[bridge] software writer callable as global.SyncBridgeSoftwareWrite update=yes scope=global api_name=" + check.getValue("api_name") + " access=" + check.getValue("access"));',
+            '  var stored = check.getValue("script") || "";',
+            '  if (stored.indexOf("sbridge-software-writer=0.5.2") === -1) {',
+            '    gs.error("[bridge] software writer trigger did not store sbridge-software-writer=0.5.2. PATCH sys_script_include global.SyncBridgeSoftwareWrite from src/scripts/jobs/publish-software-writer.js softwareWriterScript().");',
+            '    return;',
+            '  }',
+            '  gs.info("[bridge] software writer callable as global.SyncBridgeSoftwareWrite update=yes marker=0.5.2 scope=global api_name=" + check.getValue("api_name") + " access=" + check.getValue("access"));',
             '})();',
         ].join('\n')
+    }
+
+    function stampGlobal(body) {
+        var id = writerId(true)
+        if (!id) {
+            gs.warn('[bridge] software writer stamp skipped: no global sys_script_include row')
+            return
+        }
+        var previous = ''
+        var switched = false
+        try {
+            previous = gs.getCurrentApplicationId() + ''
+        } catch (ignore) {
+            previous = ''
+        }
+        try {
+            gs.setCurrentApplicationId('global')
+            switched = true
+        } catch (scopeErr) {
+            gs.warn('[bridge] software writer setCurrentApplicationId(global) refused: ' + scopeErr)
+        }
+        try {
+            var gr = new GlideRecord('sys_script_include')
+            if (!gr.get(id)) return
+            gr.setWorkflow(false)
+            gr.setValue('script', body)
+            gr.setValue('active', true)
+            gr.setValue('access', 'public')
+            if (gr.isValidField('api_name')) gr.setValue('api_name', 'global.' + WRITER)
+            if (gr.isValidField('sys_scope')) gr.setValue('sys_scope', 'global')
+            if (gr.isValidField('sys_package')) gr.setValue('sys_package', 'global')
+            var updated = gr.update()
+            var saved = new GlideRecord('sys_script_include')
+            var stored = saved.get(id) ? saved.getValue('script') || '' : ''
+            gs.info(
+                '[bridge] software writer stamp update=' +
+                    updated +
+                    ' marker=' +
+                    (stored.indexOf(MARKER) !== -1 ? '0.5.2' : 'missing') +
+                    ' scope=' +
+                    (saved.getValue('sys_scope') || '')
+            )
+        } finally {
+            if (switched && previous) {
+                try {
+                    gs.setCurrentApplicationId(previous)
+                } catch (restoreErr) {
+                    gs.warn('[bridge] could not restore application after software writer stamp: ' + restoreErr)
+                }
+            }
+        }
     }
 
     function verifyWriter(log) {
@@ -189,7 +255,7 @@
         row.query()
         if (!row.next()) return false
         var body = row.getValue('script') || ''
-        var scriptHasUpdate = body.indexOf('update: function') !== -1
+        var scriptCurrent = body.indexOf(MARKER) !== -1 && body.indexOf('update: function') !== -1
         var callable = false
         var updateLive = false
         try {
@@ -200,12 +266,25 @@
             if (log) gs.warn('[bridge] global.' + WRITER + ' is not callable yet: ' + e)
             return false
         }
-        if (!callable || !scriptHasUpdate || !updateLive) return false
+        // The stored script is the source of truth. A cached update() from
+        // 0.5.1 is not enough: 0.5.1's fix script returned before the Table
+        // API wrote this body on the PDIs.
+        if (!scriptCurrent) return false
+        if (!callable || !updateLive) {
+            if (log) {
+                gs.info(
+                    '[bridge] software writer script is stored with ' +
+                        MARKER +
+                        ' but the class cache does not expose update yet'
+                )
+            }
+            return true
+        }
         if (log) {
             gs.info(
                 '[bridge] software writer callable as global.' +
                     WRITER +
-                    ' update=yes scope=global api_name=' +
+                    ' update=yes marker=0.5.2 scope=global api_name=' +
                     row.getValue('api_name') +
                     ' access=' +
                     row.getValue('access')
@@ -276,6 +355,7 @@
 
     function softwareWriterScript() {
         return [
+            '/* sbridge-software-writer=0.5.2 */',
             'var SyncBridgeSoftwareWrite = Class.create();',
             'SyncBridgeSoftwareWrite.prototype = {',
             '    initialize: function () {},',
@@ -339,6 +419,13 @@
             '        var i;',
             '        values = values || {};',
             '        for (i = 0; i < fields.length; i++) bits.push(this._setOne(gr, fields[i], values));',
+            '        var known = {};',
+            '        for (i = 0; i < fields.length; i++) known[fields[i]] = true;',
+            '        for (var extra in values) {',
+            '            if (!Object.prototype.hasOwnProperty.call(values, extra) || known[extra]) continue;',
+            '            if (extra === "sys_id" || (extra.indexOf("sys_") === 0 && extra !== "sys_domain")) continue;',
+            '            this._setOne(gr, extra, values);',
+            '        }',
             "        var name = '';",
             "        var installed = '';",
             "        try { name = gr.getValue('name') || ''; installed = gr.getValue('installed_on') || ''; } catch (hErr) {}",

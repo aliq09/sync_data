@@ -775,9 +775,11 @@ BridgeDualWrite.prototype = {
                 if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
             }
         }
+        if (controller) {
+            changed = this._setCount(dex, 'failed_count', this._failedTransferCount(byStage)) || changed
+        }
         if (!closed && controller) {
             changed = this._setCount(dex, 'sent_count', byStage.sent || 0) || changed
-            changed = this._setCount(dex, 'failed_count', byStage.dead || 0) || changed
             if ((byStage.sent || 0) > 0 && (state === 'queued' || state === 'reading_source' || state === 'preparing' || state === 'validating')) {
                 if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
             }
@@ -793,6 +795,12 @@ BridgeDualWrite.prototype = {
         if (changed) dex.update()
         var endState = dex.getValue('execution_state') || ''
         if (controller && (endState === 'completed' || endState === 'cancelled')) this._touchConfigFromDex(dex)
+    },
+
+    /** Retrying rows are stage failed. Dead rows have exhausted attempts. Both are failures. */
+    _failedTransferCount: function (byStage) {
+        byStage = byStage || {}
+        return (byStage.failed || 0) + (byStage.dead || 0)
     },
 
     _setCount: function (dex, field, value) {
@@ -905,6 +913,7 @@ BridgeDualWrite.prototype = {
     _actionLabel: function (status, operation, fallback) {
         var op = operation ? String(operation) : ''
         if (status === 'skipped' || op === 'skip') return 'skip'
+        if (status === 'failed' || status === 'rejected') return 'fail'
         if (op === 'update' || op === 'upsert') return 'update'
         if (op === 'insert' || op === 'delete') return op
         return fallback || ''
@@ -1085,7 +1094,7 @@ BridgeDualWrite.prototype = {
         else if (dead > 0) result = 'failed'
         else if (rejected > 0) result = 'successful_with_warnings'
         dex.setValue('execution_result', result)
-        dex.setValue('failed_count', dead)
+        dex.setValue('failed_count', this._failedTransferCount(byStage))
         var now = new GlideDateTime().getValue()
         if (!dex.getValue('transfer_completed_at') && selected > 0) dex.setValue('transfer_completed_at', now)
         if (!dex.getValue('execution_completed_at')) dex.setValue('execution_completed_at', now)

@@ -162,6 +162,16 @@ export const x_33764_sbridge_data_execution = Table({
         updated_count: IntegerColumn({ label: 'Updated', default: 0 }),
         skipped_count: IntegerColumn({ label: 'Skipped', default: 0 }),
         failed_count: IntegerColumn({ label: 'Failed', default: 0 }),
+        expand_claim: StringColumn({
+            label: 'Expand claim',
+            maxLength: 40,
+            readOnly: true,
+            hint: 'Token held while one controller expands this execution. Empty when no expand is in progress.',
+        }),
+        expand_claimed_at: DateTimeColumn({
+            label: 'Expand claimed at',
+            readOnly: true,
+        }),
         acknowledged_count: IntegerColumn({
             label: 'Acknowledged',
             hint: 'Transfers whose terminal ACK has been applied. Empty when acknowledgement is not required.',

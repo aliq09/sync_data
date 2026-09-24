@@ -30,7 +30,7 @@ Test(
     assertEqual(refs.childReferenceSpec('cmdb_ci_disk', 'computer').reference, 'cmdb_ci_computer', 'disk computer');
     assertEqual(refs.childReferenceSpec('cmdb_ci_memory_module', 'cmdb_ci').reference, 'cmdb_ci', 'memory cmdb_ci');
     assertEqual(refs.childReferenceSpec('cmdb_software_instance', 'installed_on').reference, 'cmdb_ci', 'software installed_on');
-    assertEqual(refs.childReferenceSpec('cmdb_software_instance', 'software').reference, 'cmdb_software_product_model', 'software product');
+    assertEqual(refs.childReferenceSpec('cmdb_software_instance', 'software').reference, 'cmdb_ci_spkg', 'software package');
     var softwareInclude = refs.childIncludeFields('cmdb_software_instance').join(',');
     assertEqual(softwareInclude.indexOf('installed_on') > -1 ? 'yes' : 'no', 'yes', 'software include installed_on');
     assertEqual(softwareInclude.indexOf('software') > -1 ? 'yes' : 'no', 'yes', 'software include software');

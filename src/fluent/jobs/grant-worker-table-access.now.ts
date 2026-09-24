@@ -114,3 +114,22 @@ Record({
         script: Now.include('../../scripts/jobs/publish-software-writer.js'),
     },
 })
+
+/**
+ * 0.5.1's republish record already ran and did not replace the global
+ * include. That record will not run again. This record stores the 0.5.2
+ * script, which contains sbridge-software-writer=0.5.2. It does not grant admin.
+ */
+Record({
+    $id: Now.ID['fix-republish-software-writer-052'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Republish SyncBridgeSoftwareWrite 0.5.2',
+        description:
+            '0.5.2. Store global.SyncBridgeSoftwareWrite with update and marker sbridge-software-writer=0.5.2. Confirm the log line software writer callable as global.SyncBridgeSoftwareWrite update=yes marker=0.5.2. If that line is missing, PATCH the global include from src/scripts/jobs/publish-software-writer.js softwareWriterScript(). Does not grant admin.',
+        before: false,
+        unloadable: true,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/publish-software-writer.js'),
+    },
+})

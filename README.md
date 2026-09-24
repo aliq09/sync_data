@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.5.1 (software-instance update and execution counters; includes 0.5.0 Movement Pack, 0.4.9 software-instance write, 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.5.2 (software-instance update route, package reference, expand lock, failure counts; includes 0.5.1 counters, 0.5.0 Movement Pack, and 0.4.1–0.4.9) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -310,6 +310,26 @@ A later software-instance update also logs `software writer update` plus the tar
 Record results store the apply outcome. `action` is `insert`, `update`, or `skip`. The controller Data Execution `inserted_count`, `updated_count`, and `skipped_count` use that label for pack runs and for Path A single-table runs. An outbox row can still say `op=insert` when the source seeded it. The record result is what the target did.
 
 Do not deploy from this change set. Install 0.5.1 on PDI1, then PDI2. Confirm the log line on both before re-Executing the Path A software-instance movement.
+
+## Re-verify fixes (0.5.2)
+
+0.5.1 re-verify failed four ways. This version fixes them.
+
+**Software-instance update.** On an existing row the scoped `getValue` returns the old `name` and `installed_on`. Those matched the sealed values, so 0.5.1 skipped `global.SyncBridgeSoftwareWrite.update` and the Table API PATCH, then `update()` returned no sys_id. Updates of `cmdb_software_instance` now always call `SyncBridgeSoftwareWrite.update` first, then PATCH. If `update()` still returns null, the error includes the `global writer:` and `table api:` text. The dangling-reference note says `cmdb_ci_spkg`, not `cmdb_software_product_model`.
+
+**Software reference and install_date.** `cmdb_software_instance.software` resolves to an existing `cmdb_ci_spkg` by Record Mapping or by name (the same name match used for other child references). Apply does not create `cmdb_software_product_model`. A `cmdb_ci_spkg` is created only when reference handling is `resolve` and no package matches. Otherwise the row fails and names the miss. Capture always includes `install_date`. The global writer and the Table API copy `install_date` and every other non-empty mapped field on insert and on update.
+
+**Expand lock.** A queued Data Execution can be continued by the every-minute job and by a manual `continueQueued` at the same time. `expand_claim` is written and read back, so only the caller whose token is still stored expands that execution. A claim older than three minutes can be taken over. `BridgeSeed` also skips an outbox row that this execution already queued for the same source record and seq.
+
+**failed_count.** Controller executions counted only transfers in stage `dead`. Rows still retrying are stage `failed`, so a 15-row failure showed `failed_count` 0. `failed_count` is now `failed` plus `dead`. The record result action for those rows is `fail`.
+
+**Global include.** 0.5.1's fix script **Republish SyncBridgeSoftwareWrite update** already ran and did not store the new script. It will not run again. **Republish SyncBridgeSoftwareWrite 0.5.2** is a new fix script. It PATCHes with `sysparm_transaction_scope=global`, stamps the global `sys_script_include` row, and queues a one-time trigger if the stored script still lacks the marker. After install, the system log should contain:
+
+`software writer callable as global.SyncBridgeSoftwareWrite update=yes marker=0.5.2`
+
+The stored global script must contain `sbridge-software-writer=0.5.2`. If that marker is missing, PATCH `global.SyncBridgeSoftwareWrite` with the script built by `softwareWriterScript()` in `src/scripts/jobs/publish-software-writer.js`. `SyncBridgeMetadataWrite` is not republished. Apply still runs as `sbridge.worker`.
+
+Do not deploy from this change set. Install 0.5.2 on PDI1, then PDI2. Confirm the marker on both before re-Executing the Path A software-instance movement.
 
 ## Operator runbook (stub)
 

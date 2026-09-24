@@ -58,7 +58,7 @@ var BRIDGE_CHILD_REFS = {
     },
     cmdb_software_instance: {
         installed_on: { reference: 'cmdb_ci', business_key: 'name' },
-        software: { reference: 'cmdb_software_product_model', business_key: 'name' },
+        software: { reference: 'cmdb_ci_spkg', business_key: 'name' },
     },
     cmdb_sam_sw_install: {
         installed_on: { reference: 'cmdb_ci', business_key: 'name' },
@@ -104,6 +104,7 @@ var BRIDGE_CHILD_INCLUDE = {
         'name',
         'installed_on',
         'software',
+        'install_date',
         'version',
         'edition',
         'discovery_source',

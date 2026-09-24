@@ -1211,6 +1211,10 @@ declare global {
                         table: 'sys_script_fix'
                         id: '9844bda11f5f4408a780747471acbcfe'
                     }
+                    'fix-republish-software-writer-052': {
+                        table: 'sys_script_fix'
+                        id: 'dbb92be4753b4374aa21af229d6175a5'
+                    }
                     'fix-republish-software-writer-update': {
                         table: 'sys_script_fix'
                         id: '664639f5ca9d4d7cbfac5513649ca823'
@@ -3260,6 +3264,15 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '10dfa764e4fc4518ab2b58bb5c3fbdc8'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claimed_at'
+                            language: 'en'
                         }
                     },
                     {
@@ -8974,6 +8987,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '4bc2788eccac468d8ea0db6790b3f6c0'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claim'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '4bd4c553a1e34a19acb1aa7dffd10d82'
                         key: {
@@ -11364,6 +11385,14 @@ declare global {
                             value: 'monthly'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '5f7d871d22d243449f3e6da548bda740'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claimed_at'
                         }
                     },
                     {
@@ -25692,6 +25721,15 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'name'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'ea0a386a85604840a4b670d01795bf1c'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claim'
+                            language: 'en'
                         }
                     },
                     {

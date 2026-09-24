@@ -201,13 +201,18 @@ BridgeSeed.prototype = {
         if (extra.pack_order) payload.pack_order = extra.pack_order
         if (extra.pack_fk) payload.pack_fk = extra.pack_fk
 
+        var seq = this.capture.sequenceFor(current, 'insert')
+        if (executionId && this._outboxAlreadyQueued(policy.peer, tableName, current.getUniqueValue(), seq, executionId)) {
+            return false
+        }
+
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.initialize()
         gr.setValue('peer', policy.peer)
         gr.setValue('table', tableName)
         gr.setValue('source_sys_id', current.getUniqueValue())
         gr.setValue('op', 'insert')
-        gr.setValue('seq', this.capture.sequenceFor(current, 'insert'))
+        gr.setValue('seq', seq)
         gr.setValue('payload', JSON.stringify(payload))
         gr.setValue('state', 'pending')
         gr.setValue('attempts', 0)
@@ -222,6 +227,30 @@ BridgeSeed.prototype = {
             }
         }
         return !!id
+    },
+
+    /**
+     * Same execution, source record, and seq already has an outbox row.
+     * A second expander must not queue it again. A later execution may.
+     */
+    _outboxAlreadyQueued: function (peer, tableName, sourceId, seq, executionId) {
+        if (!peer || !tableName || !sourceId || !executionId) return false
+        var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
+        gr.addQuery('peer', peer)
+        gr.addQuery('table', tableName)
+        gr.addQuery('source_sys_id', sourceId)
+        gr.addQuery('seq', seq)
+        gr.query()
+        while (gr.next()) {
+            var payload = {}
+            try {
+                payload = JSON.parse(gr.getValue('payload') || '{}')
+            } catch (e) {
+                payload = {}
+            }
+            if ((payload.execution || '') === executionId) return true
+        }
+        return false
     },
 
     type: 'BridgeSeed',
