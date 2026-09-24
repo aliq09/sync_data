@@ -103,9 +103,7 @@ BridgeApply.prototype = {
         var incoming = parseInt(item.seq, 10)
         if (isNaN(incoming)) incoming = 0
         if (receipt && receipt.last_seq > incoming) {
-            out.status = 'skipped'
-            out.target_sys_id = receipt.target_sys_id
-            return out
+            return this._skipped(out, receipt.target_sys_id)
         }
 
         var translated = null
@@ -123,14 +121,10 @@ BridgeApply.prototype = {
                 receipt.last_seq === incoming &&
                 !this._valuesDiffer(item, translated.values, receipt.target_sys_id)
             ) {
-                out.status = 'skipped'
-                out.target_sys_id = receipt.target_sys_id
-                return out
+                return this._skipped(out, receipt.target_sys_id)
             }
         } else if (receipt && receipt.last_seq >= incoming) {
-            out.status = 'skipped'
-            out.target_sys_id = receipt.target_sys_id
-            return out
+            return this._skipped(out, receipt.target_sys_id)
         }
 
         // §3.1 — this instance owns the table, so an inbound write would be a
@@ -185,8 +179,27 @@ BridgeApply.prototype = {
 
         out.status = 'applied'
         out.target_sys_id = target.sys_id
+        out.operation = this._appliedOperation(target)
         if (target.privilege) out.privilege = target.privilege
         return out
+    },
+
+    /**
+     * Same-seq match and an older sequence are skips. The outbox op stays
+     * insert; the apply result is what the Data Execution counts.
+     */
+    _skipped: function (out, targetSysId) {
+        out.status = 'skipped'
+        out.operation = 'skip'
+        if (targetSysId) out.target_sys_id = targetSysId
+        return out
+    },
+
+    _appliedOperation: function (target) {
+        var op = target && target.operation ? String(target.operation) : ''
+        if (op === 'upsert') return 'update'
+        if (op === 'insert' || op === 'update' || op === 'delete') return op
+        return op || 'insert'
     },
 
     /**
@@ -482,7 +495,35 @@ BridgeApply.prototype = {
             this._setValues(upd, values)
             if (this._isSoftwareItem(item, table)) {
                 this._stampSoftwareFields(upd, values)
-                this._rememberSoftwareHold(item, upd)
+                // Same cross-scope ceiling as insert: setValue does not keep
+                // the sealed values, and update() then returns no sys_id.
+                // An existing row can still getValue the previous value, so
+                // compare the hold to the sealed text rather than to empty.
+                var probe = this._probeSoftwareSet(upd, item, values)
+                if (!this._softwareHoldMatches(item, values)) {
+                    var alt = this._writeSoftwareUnscoped(item, values, policy, existing)
+                    if (alt && alt.sys_id) return alt
+                    var canWrite = ''
+                    try {
+                        canWrite = upd.canWrite() ? 'canWrite=true' : 'canWrite=false'
+                    } catch (ignoreUpd) {
+                        canWrite = ''
+                    }
+                    var sealedDetail = this._softwareAbortDetail(item, upd, 'after', 'update')
+                    return {
+                        error:
+                            'update of ' +
+                            (upd.getTableName() || table) +
+                            ' ' +
+                            existing +
+                            ' returned no sys_id' +
+                            (canWrite ? ' (' + canWrite + ')' : '') +
+                            ': ' +
+                            (probe || '') +
+                            (alt && alt.error ? '; ' + alt.error : '') +
+                            (sealedDetail ? '; ' + sealedDetail : ''),
+                    }
+                }
             }
             var updated = upd.update()
             if (updated) return { sys_id: updated, operation: 'update' }
@@ -997,37 +1038,59 @@ BridgeApply.prototype = {
     },
 
     /**
-     * Scoped GlideRecord left name and installed_on empty. Write the sealed
-     * fields as this same user from global scope, then via the Table API
-     * using the current session. Neither path grants admin. cmdb_sam_sw_install
-     * is not used.
+     * True when the scoped buffer is holding the sealed name and installed_on.
+     * An update of an existing row can read the previous value back, so an
+     * empty check is not enough.
      */
-    _writeSoftwareUnscoped: function (item, values, policy) {
+    _softwareHoldMatches: function (item, values) {
+        var held = (item && item._bridge_held) || {}
+        var wantedName = values && values.name ? String(values.name) : ''
+        var wantedOn = values && values.installed_on ? String(values.installed_on) : ''
+        if (!wantedName || !wantedOn) return false
+        return held.name === wantedName && held.installed_on === wantedOn
+    },
+
+    /**
+     * Scoped GlideRecord left name or installed_on off the buffer. Write the
+     * sealed fields as this same user from global scope, then via the Table
+     * API using the current session. targetSysId selects update (global
+     * writer update, then PATCH). A missing targetSysId stays an insert.
+     * Neither path grants admin. cmdb_sam_sw_install is not used.
+     */
+    _writeSoftwareUnscoped: function (item, values, policy, targetSysId) {
         var body = this._softwareWriteBody(values)
         if (!body.name || !body.installed_on) {
             return { error: 'software alternate had no sealed name or installed_on' }
         }
-        var globalResult = this._callSoftwareWriter(body, policy, item)
+        var updating = !!targetSysId
+        var operation = updating ? 'update' : 'insert'
+        var globalResult = this._callSoftwareWriter(body, policy, item, targetSysId)
         if (globalResult && globalResult.sys_id) {
             gs.info(
                 '[bridge] software instance ' +
                     globalResult.sys_id +
-                    ' via global.SyncBridgeSoftwareWrite as ' +
+                    ' via global.SyncBridgeSoftwareWrite ' +
+                    operation +
+                    ' as ' +
                     (gs.getUserName() || '') +
                     '; admin was not granted'
             )
-            return { sys_id: globalResult.sys_id, operation: 'insert', privilege: 'global_software_writer' }
+            return { sys_id: globalResult.sys_id, operation: operation, privilege: 'global_software_writer' }
         }
-        var tableResult = this._insertSoftwareViaTableApi(body)
+        var tableResult = updating
+            ? this._insertSoftwareViaTableApi(body, 'PATCH', targetSysId)
+            : this._insertSoftwareViaTableApi(body)
         if (tableResult && tableResult.sys_id) {
             gs.info(
                 '[bridge] software instance ' +
                     tableResult.sys_id +
-                    ' via table api as ' +
+                    ' via table api ' +
+                    operation +
+                    ' as ' +
                     (gs.getUserName() || '') +
                     '; admin was not granted'
             )
-            return { sys_id: tableResult.sys_id, operation: 'insert', privilege: 'table_api_software' }
+            return { sys_id: tableResult.sys_id, operation: operation, privilege: 'table_api_software' }
         }
         var parts = []
         if (globalResult && globalResult.error) parts.push('global writer: ' + globalResult.error)
@@ -1036,7 +1099,17 @@ BridgeApply.prototype = {
     },
 
     _softwareWriteBody: function (values) {
-        var fields = ['name', 'installed_on', 'software', 'version', 'edition', 'publisher', 'display_name', 'prod_id']
+        var fields = [
+            'name',
+            'installed_on',
+            'software',
+            'version',
+            'edition',
+            'publisher',
+            'display_name',
+            'prod_id',
+            'install_date',
+        ]
         var out = {}
         values = values || {}
         for (var i = 0; i < fields.length; i++) {
@@ -1047,7 +1120,7 @@ BridgeApply.prototype = {
         return out
     },
 
-    _callSoftwareWriter: function (body, policy, item) {
+    _callSoftwareWriter: function (body, policy, item, targetSysId) {
         var session = gs.getSession()
         var token = gs.generateGUID()
         var key = 'x_33764_sbridge.sw_write'
@@ -1060,6 +1133,15 @@ BridgeApply.prototype = {
         try {
             var writer = new global.SyncBridgeSoftwareWrite()
             var payload = JSON.stringify(body || {})
+            if (targetSysId) {
+                if (!writer || typeof writer.update !== 'function') {
+                    return {
+                        error:
+                            'SyncBridgeSoftwareWrite.update is not installed. Re-install 0.5.1 and confirm the system log says software writer callable as global.SyncBridgeSoftwareWrite update=yes.',
+                    }
+                }
+                return writer.update(String(targetSysId), payload, token) || { error: 'software writer update returned nothing' }
+            }
             var preserveId = ''
             if (policy && policy.preserve_sys_id && item && item.source_sys_id) preserveId = String(item.source_sys_id)
             return writer.insert(payload, token, preserveId) || { error: 'software writer returned nothing' }
@@ -1068,7 +1150,7 @@ BridgeApply.prototype = {
                 error:
                     'SyncBridgeSoftwareWrite is not installed in global (' +
                     e +
-                    '). Re-install and confirm the system log says software writer callable as global.SyncBridgeSoftwareWrite.',
+                    '). Re-install and confirm the system log says software writer callable as global.SyncBridgeSoftwareWrite update=yes.',
             }
         } finally {
             try {
@@ -1080,7 +1162,8 @@ BridgeApply.prototype = {
         }
     },
 
-    _insertSoftwareViaTableApi: function (body) {
+    _insertSoftwareViaTableApi: function (body, method, sysId) {
+        method = method || 'POST'
         var base = ''
         try {
             base = (gs.getProperty('glide.servlet.uri') || '') + ''
@@ -1089,11 +1172,13 @@ BridgeApply.prototype = {
         }
         if (!base) return { error: 'table api skipped: glide.servlet.uri is empty' }
         if (base.charAt(base.length - 1) !== '/') base += '/'
-        var endpoint = base + 'api/now/table/cmdb_software_instance?sysparm_exclude_ref_link=true'
+        var endpoint = base + 'api/now/table/cmdb_software_instance'
+        if (sysId) endpoint += '/' + sysId
+        endpoint += '?sysparm_exclude_ref_link=true'
         try {
             var rm = new sn_ws.RESTMessageV2()
             rm.setEndpoint(endpoint)
-            rm.setHttpMethod('POST')
+            rm.setHttpMethod(method)
             rm.setRequestHeader('Accept', 'application/json')
             rm.setRequestHeader('Content-Type', 'application/json')
             var token = ''
@@ -1651,7 +1736,7 @@ BridgeApply.prototype = {
         }
         var where = op + ' into ' + table
         if (sysId) where = op + ' of ' + table + ' ' + sysId
-        var sealed = this._softwareAbortDetail(item, gr, 'after')
+        var sealed = this._softwareAbortDetail(item, gr, 'after', op)
         if (sealed) detail = detail ? detail + '; ' + sealed : sealed
         var childDetail = this._childWriteDetail(gr)
         if (childDetail) detail = detail ? detail + '; ' + childDetail : childDetail
@@ -1664,8 +1749,9 @@ BridgeApply.prototype = {
      * record, so both mandatory fields look empty even when setValue held them
      * and a before rule aborted.
      */
-    _softwareAbortDetail: function (item, gr, phase) {
+    _softwareAbortDetail: function (item, gr, phase, op) {
         if (!item || !this._isSoftwareItem(item, item.table)) return ''
+        var verb = op === 'update' ? 'update' : 'insert'
         var payload = item.values || {}
         var held = item._bridge_held || {}
         var sealed = item._bridge_sealed || {}
@@ -1688,7 +1774,9 @@ BridgeApply.prototype = {
                 this._diag(sealed.software)
         )
         parts.push(
-            'held before insert name=' +
+            'held before ' +
+                verb +
+                ' name=' +
                 this._diag(held.name) +
                 ' installed_on=' +
                 this._diag(held.installed_on) +
@@ -1704,13 +1792,13 @@ BridgeApply.prototype = {
                 afterName = gr.getValue('name') || ''
                 afterOn = gr.getValue('installed_on') || ''
             } catch (e) {}
-            parts.push('after insert name=' + this._diag(afterName) + ' installed_on=' + this._diag(afterOn))
+            parts.push('after ' + verb + ' name=' + this._diag(afterName) + ' installed_on=' + this._diag(afterOn))
             if ((held.name && !afterName) || (held.installed_on && !afterOn)) {
-                parts.push('before-rule cleared name or installed_on during insert')
+                parts.push('before-rule cleared name or installed_on during ' + verb)
             }
         }
         if (!held.name || !held.installed_on) {
-            parts.push('name and installed_on were not both on the GlideRecord before insert')
+            parts.push('name and installed_on were not both on the GlideRecord before ' + verb)
         }
         if (item._bridge_installed_on_note) parts.push(item._bridge_installed_on_note)
         if (item._bridge_software_note) parts.push(item._bridge_software_note)
@@ -1751,7 +1839,11 @@ BridgeApply.prototype = {
             var raw = gr.getValue(field)
             if (!raw) continue
             var spec = translator.childReferenceSpec(table, field)
-            var ref = spec && spec.reference
+            // Dictionary reference wins. cmdb_software_instance.software is
+            // cmdb_ci_spkg on a PDI without Software Asset Management; the
+            // static child spec still names cmdb_software_product_model.
+            var ref = this._dictionaryReference(table, field)
+            if (!ref && spec && spec.reference) ref = spec.reference
             if (ref && !this._rowExists(ref, raw)) dangling.push(field + ' not in ' + ref)
         }
         var mandatory = this._mandatoryGaps(gr)
@@ -1851,8 +1943,7 @@ BridgeApply.prototype = {
         var targetSysId = receipt && receipt.target_sys_id ? receipt.target_sys_id : this._findTarget(item, policy)
 
         if (!targetSysId) {
-            out.status = 'skipped'
-            return out
+            return this._skipped(out, '')
         }
 
         var gr = new GlideRecord(item.table)
@@ -1873,6 +1964,7 @@ BridgeApply.prototype = {
         while (x.next()) x.deleteRecord()
 
         out.status = 'applied'
+        out.operation = 'delete'
         out.target_sys_id = targetSysId
         return out
     },

@@ -957,6 +957,14 @@ declare global {
                         table: 'sys_atf_step'
                         id: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
                     }
+                    'atf-software-update': {
+                        table: 'sys_atf_test'
+                        id: '7219dcf5723f4890a7e9a06c596bb03f'
+                    }
+                    'atf-software-update-step': {
+                        table: 'sys_atf_step'
+                        id: '3266ce906b8f4a39bd03d10038ee894e'
+                    }
                     'atf-staged-ack': {
                         table: 'sys_atf_test'
                         id: '2b519fca0b9042c3902dbbf3c8ec6f1d'
@@ -1202,6 +1210,10 @@ declare global {
                     'fix-publish-global-software-writer': {
                         table: 'sys_script_fix'
                         id: '9844bda11f5f4408a780747471acbcfe'
+                    }
+                    'fix-republish-software-writer-update': {
+                        table: 'sys_script_fix'
+                        id: '664639f5ca9d4d7cbfac5513649ca823'
                     }
                     'job-continue-executions': {
                         table: 'sysauto_script'
@@ -13030,6 +13042,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: '6f8afea3de7042c08383c964443993a6'
+                        key: {
+                            document_key: '3266ce906b8f4a39bd03d10038ee894e'
+                            variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '6f9d90a925984cd58f6ff6390d361b0e'
                         key: {
@@ -13843,6 +13863,15 @@ declare global {
                         id: '76c1ac86757b4ad7a52f408d03964dbb'
                         key: {
                             name: 'x_33764_sbridge_run'
+                        }
+                    },
+                    {
+                        table: 'sys_element_mapping'
+                        id: '76e90110ab3d4fd498589045ea261372'
+                        key: {
+                            id: '3266ce906b8f4a39bd03d10038ee894e'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
                         }
                     },
                     {
@@ -18329,6 +18358,14 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: 'a1d8a1246bf642faba8a9c9b4dcae0d2'
+                        key: {
+                            document_key: '3266ce906b8f4a39bd03d10038ee894e'
+                            variable: '42f2564b73031300440211d8faf6a777'
                         }
                     },
                     {

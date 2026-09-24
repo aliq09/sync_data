@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.5.0 (Movement Pack / related-pack expand; includes 0.4.9 software-instance write, 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.5.1 (software-instance update and execution counters; includes 0.5.0 Movement Pack, 0.4.9 software-instance write, 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -292,6 +292,24 @@ To run it, create or update a Data Movement Configuration with **Configuration t
 Inbound policies and worker ACLs for these CMDB tables stay the ones Path A already proved. Global `SyncBridgeMetadataWrite` and `SyncBridgeSoftwareWrite` are not republished by this version.
 
 Do not deploy from this change set. Install 0.5.0 on PDI1, then PDI2, as admin through now-sdk. Then Execute the pack once from PDI1 and verify on PDI2.
+
+## Software instance update + counters (0.5.1)
+
+0.5.0 Path A re-Execute of `cmdb_software_instance` updated nothing. Fifteen selected rows failed on the target because the existing-row path called scoped `GlideRecord.update()`. That is the same cross-scope `setValue` ceiling 0.4.9 worked around for insert, so the update returned no sys_id. The sealed `installed_on` and `software` values were already the target ids. The error text described that failure as an insert (`held before insert`, `after insert`), and it looked up `software` on `cmdb_software_product_model`. On these PDIs `cmdb_software_instance.software` references `cmdb_ci_spkg`. Apply now reads that reference from the dictionary. The static child spec stays only when the dictionary has no reference.
+
+When the scoped hold does not match the sealed `name` and `installed_on`, apply updates the existing row through `global.SyncBridgeSoftwareWrite.update` (target sys_id, session token `x_33764_sbridge.sw_write`, `cmdb_software_instance` only, no admin). If that method is not callable, apply PATCHes `api/now/table/cmdb_software_instance/{sys_id}` with the current session, the same fallback as the insert POST. The body includes `install_date` when the payload has it. A same-seq apply whose translated values already match the target is still a skip and does not call the writer.
+
+0.4.9 already installed the insert-only include, and that fix script does not run again. **Republish SyncBridgeSoftwareWrite update** is a new fix script. It republishes the global include when `update` is missing. `SyncBridgeMetadataWrite` is not republished.
+
+After install on each peer, confirm the new method is live. The system log must contain this line:
+
+`software writer callable as global.SyncBridgeSoftwareWrite update=yes`
+
+A later software-instance update also logs `software writer update` plus the target sys_id and the integration user. Apply still runs as `sbridge.worker`.
+
+Record results store the apply outcome. `action` is `insert`, `update`, or `skip`. The controller Data Execution `inserted_count`, `updated_count`, and `skipped_count` use that label for pack runs and for Path A single-table runs. An outbox row can still say `op=insert` when the source seeded it. The record result is what the target did.
+
+Do not deploy from this change set. Install 0.5.1 on PDI1, then PDI2. Confirm the log line on both before re-Executing the Path A software-instance movement.
 
 ## Operator runbook (stub)
 

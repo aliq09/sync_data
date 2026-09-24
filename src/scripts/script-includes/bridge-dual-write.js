@@ -201,7 +201,7 @@ BridgeDualWrite.prototype = {
                     source_table: item.table || '',
                     source_sys_id: item.source_sys_id,
                     target_sys_id: (out && out.target_sys_id) || '',
-                    action: item.op || '',
+                    action: this._actionLabel(status, out && out.operation, item.op || ''),
                     result: status,
                     error: out && out.error ? String(out.error).substr(0, 4000) : '',
                 }
@@ -723,7 +723,7 @@ BridgeDualWrite.prototype = {
             source_table: outboxGr.getValue('table') || '',
             source_sys_id: outboxGr.getValue('source_sys_id') || '',
             target_sys_id: mapped.targetSysId,
-            action: outboxGr.getValue('op') || '',
+            action: this._recordAction(outboxGr, mapped),
             result: mapped.result,
             error: mapped.error,
         })
@@ -884,7 +884,30 @@ BridgeDualWrite.prototype = {
             dead: !!(outcome && outcome.dead),
             dlqId: outcome && outcome.dlqId ? outcome.dlqId : '',
             targetSysId: outcome && outcome.targetSysId ? outcome.targetSysId : '',
+            operation: outcome && outcome.operation ? String(outcome.operation) : '',
         }
+    },
+
+    /**
+     * Record-result action from the apply outcome. The outbox op is always
+     * insert for a seed. Skip, update, and insert are what the execution counts.
+     */
+    _recordAction: function (outboxGr, mapped) {
+        var fallback = ''
+        try {
+            fallback = outboxGr && outboxGr.getValue ? outboxGr.getValue('op') || '' : ''
+        } catch (e) {
+            fallback = ''
+        }
+        return this._actionLabel(mapped && mapped.result, mapped && mapped.operation, fallback)
+    },
+
+    _actionLabel: function (status, operation, fallback) {
+        var op = operation ? String(operation) : ''
+        if (status === 'skipped' || op === 'skip') return 'skip'
+        if (op === 'update' || op === 'upsert') return 'update'
+        if (op === 'insert' || op === 'delete') return op
+        return fallback || ''
     },
 
     _correlation: function (payloadText, outboxId) {

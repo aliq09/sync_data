@@ -539,6 +539,7 @@ BridgeTransport.prototype = {
                         httpStatus: 200,
                         attempts: row.attempts,
                         targetSysId: result.target_sys_id || '',
+                        operation: result.operation || (result.status === 'skipped' ? 'skip' : ''),
                         ackHold: ackRequired,
                     })
                 })

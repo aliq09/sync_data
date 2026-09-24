@@ -95,3 +95,22 @@ Record({
         script: Now.include('../../scripts/jobs/publish-software-writer.js'),
     },
 })
+
+/**
+ * 0.4.9's publisher already ran on both PDIs and will not run again.
+ * This new record republishes SyncBridgeSoftwareWrite with update().
+ * It does not grant admin and it does not republish the metadata writer.
+ */
+Record({
+    $id: Now.ID['fix-republish-software-writer-update'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Republish SyncBridgeSoftwareWrite update',
+        description:
+            '0.5.1. Republish global.SyncBridgeSoftwareWrite with update for cmdb_software_instance. Same session token, no admin grant. Confirm the log line software writer callable as global.SyncBridgeSoftwareWrite update=yes.',
+        before: false,
+        unloadable: true,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/publish-software-writer.js'),
+    },
+})

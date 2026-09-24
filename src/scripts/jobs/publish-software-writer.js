@@ -1,12 +1,15 @@
 /**
- * 0.4.9. Runs once from its own sys_script_fix record.
+ * 0.5.1. Runs once from its own sys_script_fix record.
  *
  * Scoped GlideRecord.setValue on cmdb_software_instance does not keep field
  * values for the integration user, including the string name. canCreate()
  * still returns true because that checks the ACL, not the cross-scope
- * element. This publishes global.SyncBridgeSoftwareWrite, which inserts
- * that one table as the same user. It does not grant admin and it does
- * not add the table to SyncBridgeMetadataWrite.
+ * element. This publishes global.SyncBridgeSoftwareWrite, which inserts and
+ * updates that one table as the same user. It does not grant admin and it
+ * does not add the table to SyncBridgeMetadataWrite.
+ *
+ * 0.4.9 already published insert. verifyWriter requires update as well, so
+ * this record replaces the global script when update is missing.
  *
  * Fluent cannot declare apiName global.*. UpdateManager2 is not used.
  * The Table API call sets sysparm_transaction_scope=global, same as the
@@ -18,7 +21,7 @@
 
     try {
         if (verifyWriter(false)) {
-            gs.info('[bridge] software writer already callable as global.' + WRITER)
+            gs.info('[bridge] software writer callable as global.' + WRITER + ' update=yes')
             return
         }
     } catch (checkErr) {
@@ -37,7 +40,7 @@
             api.status +
             (api.detail ? ' ' + api.detail : '') +
             (queued
-                ? '. Queued a one-time sys_trigger to publish it in global; confirm the log line software writer callable as global.SyncBridgeSoftwareWrite.'
+                ? '. Queued a one-time sys_trigger to publish it in global; confirm the log line software writer callable as global.SyncBridgeSoftwareWrite update=yes.'
                 : '. The one-time sys_trigger was not queued.')
     )
 
@@ -63,7 +66,7 @@
             caller_access: '1',
             client_callable: 'false',
             description:
-                'Sync Bridge insert for cmdb_software_instance. Runs as the integration user. Does not grant admin.',
+                'Sync Bridge insert and update for cmdb_software_instance. Runs as the integration user. Does not grant admin.',
         }
         try {
             var rm = new sn_ws.RESTMessageV2()
@@ -151,7 +154,7 @@
             '  gr.setValue("access", "public");',
             '  if (gr.isValidField("client_callable")) gr.setValue("client_callable", false);',
             '  if (gr.isValidField("caller_access")) gr.setValue("caller_access", "1");',
-            '  gr.setValue("description", "Sync Bridge insert for cmdb_software_instance. Runs as the integration user. Does not grant admin.");',
+            '  gr.setValue("description", "Sync Bridge insert and update for cmdb_software_instance. Runs as the integration user. Does not grant admin.");',
             '  if (gr.isValidField("api_name")) gr.setValue("api_name", "global." + WRITER);',
             '  if (gr.isValidField("sys_scope")) gr.setValue("sys_scope", "global");',
             '  if (gr.isValidField("sys_package")) gr.setValue("sys_package", "global");',
@@ -164,15 +167,15 @@
             '  var callable = false;',
             '  try {',
             '    var writer = new SyncBridgeSoftwareWrite();',
-            '    callable = !!(writer && typeof writer.insert === "function");',
+            '    callable = !!(writer && typeof writer.insert === "function" && typeof writer.update === "function");',
             '  } catch (callErr) {',
             '    gs.error("[bridge] global.SyncBridgeSoftwareWrite is not callable: " + callErr);',
             '  }',
             '  if (!callable || (check.getValue("sys_scope") || "") !== "global" || check.getValue("api_name") !== "global." + WRITER) {',
-            '    gs.error("[bridge] software writer publish left scope=" + check.getValue("sys_scope") + " api_name=" + check.getValue("api_name"));',
+            '    gs.error("[bridge] software writer publish left scope=" + check.getValue("sys_scope") + " api_name=" + check.getValue("api_name") + " update=" + (callable ? "yes" : "no"));',
             '    return;',
             '  }',
-            '  gs.info("[bridge] software writer callable as global.SyncBridgeSoftwareWrite scope=global api_name=" + check.getValue("api_name") + " access=" + check.getValue("access"));',
+            '  gs.info("[bridge] software writer callable as global.SyncBridgeSoftwareWrite update=yes scope=global api_name=" + check.getValue("api_name") + " access=" + check.getValue("access"));',
             '})();',
         ].join('\n')
     }
@@ -185,20 +188,24 @@
         row.setLimit(1)
         row.query()
         if (!row.next()) return false
+        var body = row.getValue('script') || ''
+        var scriptHasUpdate = body.indexOf('update: function') !== -1
         var callable = false
+        var updateLive = false
         try {
             var writer = new global.SyncBridgeSoftwareWrite()
             callable = !!(writer && typeof writer.insert === 'function')
+            updateLive = !!(writer && typeof writer.update === 'function')
         } catch (e) {
             if (log) gs.warn('[bridge] global.' + WRITER + ' is not callable yet: ' + e)
             return false
         }
-        if (!callable) return false
+        if (!callable || !scriptHasUpdate || !updateLive) return false
         if (log) {
             gs.info(
                 '[bridge] software writer callable as global.' +
                     WRITER +
-                    ' scope=global api_name=' +
+                    ' update=yes scope=global api_name=' +
                     row.getValue('api_name') +
                     ' access=' +
                     row.getValue('access')
@@ -273,12 +280,8 @@
             'SyncBridgeSoftwareWrite.prototype = {',
             '    initialize: function () {},',
             '    insert: function (valuesJson, token, preserveId) {',
-            "        if (!this._tokenOk(token)) return { error: 'software write is only available to apply' };",
-            "        if (!this._callerOk()) return { error: 'software write refused for this user' };",
-            '        var values = {};',
-            '        try { values = valuesJson ? JSON.parse(valuesJson) : {}; } catch (parseErr) {',
-            "            return { error: 'software values were not valid JSON' };",
-            '        }',
+            '        var gate = this._gate(token, valuesJson);',
+            '        if (gate.error) return gate;',
             "        var table = 'cmdb_software_instance';",
             '        var gr = new GlideRecord(table);',
             "        if (!gr.isValid()) return { error: 'invalid table ' + table };",
@@ -290,47 +293,82 @@
             '            }',
             '            gr.setNewGuidValue(preserveId);',
             '        }',
-            "        var fields = ['name', 'installed_on', 'software', 'version', 'edition', 'publisher', 'display_name', 'prod_id'];",
-            '        var bits = [];',
-            '        var i;',
-            '        for (i = 0; i < fields.length; i++) {',
-            '            var field = fields[i];',
-            '            var text = values[field] === undefined || values[field] === null ? "" : String(values[field]);',
-            '            var valid = false;',
-            '            try { valid = !!gr.isValidField(field); } catch (vErr) { valid = false; }',
-            "            var ret = 'not-called';",
-            '            if (valid && text) {',
-            '                try {',
-            '                    var returned = gr.setValue(field, text);',
-            "                    ret = returned === undefined || returned === null ? 'undefined' : String(returned);",
-            "                } catch (setErr) { ret = 'threw:' + setErr; }",
-            '            }',
-            "            var held = '';",
-            "            try { held = gr.getValue(field) || ''; } catch (gErr) { held = ''; }",
-            "            var canWrite = '';",
-            '            if (!held && valid) {',
-            '                try {',
-            '                    var element = gr.getElement(field);',
-            "                    if (element && element.canWrite) canWrite = element.canWrite() ? 'true' : 'false';",
-            "                } catch (cErr) { canWrite = 'threw'; }",
-            '            }',
-            "            bits.push(field + '=' + (held || '(empty)') + ' isValidField=' + (valid ? 'true' : 'false') + ' setValue=' + ret + (canWrite ? ' canWrite=' + canWrite : ''));",
-            '        }',
-            "        var canCreate = '?';",
-            "        try { canCreate = gr.canCreate() ? 'true' : 'false'; } catch (ccErr) { canCreate = 'threw'; }",
-            "        var name = '';",
-            "        var installed = '';",
-            "        try { name = gr.getValue('name') || ''; installed = gr.getValue('installed_on') || ''; } catch (hErr) {}",
-            "        var hold = 'hold-after-setValue ' + bits.join(' ') + ' canCreate=' + canCreate + ' sameGr=true scope=global';",
-            '        if (!name || !installed) return { error: hold };',
+            '        var applied = this._applyFields(gr, gate.values);',
+            '        if (!applied.ok) return { error: applied.hold };',
             '        var id = gr.insert();',
             '        if (!id) {',
             "            var detail = '';",
             "            try { detail = gr.getLastErrorMessage() || ''; } catch (dErr) { detail = ''; }",
-            "            return { error: 'global insert into ' + table + ' returned no sys_id (canCreate=' + canCreate + ')' + (detail ? ': ' + detail : '') + '; ' + hold };",
+            "            return { error: 'global insert into ' + table + ' returned no sys_id' + (detail ? ': ' + detail : '') + '; ' + applied.hold };",
             '        }',
-            "        gs.info('[bridge] software writer insert ' + id + ' user=' + (gs.getUserName() || '') + ' ' + hold);",
-            "        return { sys_id: id + '', hold: hold };",
+            "        gs.info('[bridge] software writer insert ' + id + ' user=' + (gs.getUserName() || '') + ' ' + applied.hold);",
+            "        return { sys_id: id + '', hold: applied.hold, operation: 'insert' };",
+            '    },',
+            '    update: function (targetSysId, valuesJson, token) {',
+            '        var gate = this._gate(token, valuesJson);',
+            '        if (gate.error) return gate;',
+            "        var id = targetSysId ? String(targetSysId) : '';",
+            "        if (!id) return { error: 'software update requires a target sys_id' };",
+            "        var table = 'cmdb_software_instance';",
+            '        var gr = new GlideRecord(table);',
+            "        if (!gr.isValid()) return { error: 'invalid table ' + table };",
+            "        if (!gr.get(id)) return { error: 'cmdb_software_instance ' + id + ' was not found for update' };",
+            '        var applied = this._applyFields(gr, gate.values);',
+            '        if (!applied.ok) return { error: applied.hold };',
+            '        var updated = gr.update();',
+            '        if (!updated) {',
+            "            var detail = '';",
+            "            try { detail = gr.getLastErrorMessage() || ''; } catch (dErr) { detail = ''; }",
+            "            return { error: 'global update of ' + table + ' ' + id + ' returned no sys_id' + (detail ? ': ' + detail : '') + '; ' + applied.hold };",
+            '        }',
+            "        gs.info('[bridge] software writer update ' + updated + ' user=' + (gs.getUserName() || '') + ' ' + applied.hold);",
+            "        return { sys_id: updated + '', hold: applied.hold, operation: 'update' };",
+            '    },',
+            '    _gate: function (token, valuesJson) {',
+            "        if (!this._tokenOk(token)) return { error: 'software write is only available to apply' };",
+            "        if (!this._callerOk()) return { error: 'software write refused for this user' };",
+            '        var values = {};',
+            '        try { values = valuesJson ? JSON.parse(valuesJson) : {}; } catch (parseErr) {',
+            "            return { error: 'software values were not valid JSON' };",
+            '        }',
+            '        return { values: values };',
+            '    },',
+            '    _applyFields: function (gr, values) {',
+            "        var fields = ['name', 'installed_on', 'software', 'version', 'edition', 'publisher', 'display_name', 'prod_id', 'install_date'];",
+            '        var bits = [];',
+            '        var i;',
+            '        values = values || {};',
+            '        for (i = 0; i < fields.length; i++) bits.push(this._setOne(gr, fields[i], values));',
+            "        var name = '';",
+            "        var installed = '';",
+            "        try { name = gr.getValue('name') || ''; installed = gr.getValue('installed_on') || ''; } catch (hErr) {}",
+            "        var wantedName = values.name ? String(values.name) : '';",
+            "        var wantedOn = values.installed_on ? String(values.installed_on) : '';",
+            '        var ok = !!(wantedName && wantedOn && name === wantedName && installed === wantedOn);',
+            "        var hold = 'hold-after-setValue ' + bits.join(' ') + ' sameGr=true scope=global';",
+            '        return { ok: ok, hold: hold };',
+            '    },',
+            '    _setOne: function (gr, field, values) {',
+            '        var text = values[field] === undefined || values[field] === null ? "" : String(values[field]);',
+            '        var valid = false;',
+            '        try { valid = !!gr.isValidField(field); } catch (vErr) { valid = false; }',
+            "        var ret = 'not-called';",
+            '        if (valid && text) {',
+            '            try {',
+            '                var returned = gr.setValue(field, text);',
+            "                ret = returned === undefined || returned === null ? 'undefined' : String(returned);",
+            "            } catch (setErr) { ret = 'threw:' + setErr; }",
+            '        }',
+            "        var held = '';",
+            "        try { held = gr.getValue(field) || ''; } catch (gErr) { held = ''; }",
+            "        var canWrite = '';",
+            '        if (valid && text && held !== text) {',
+            '            try {',
+            '                var element = gr.getElement(field);',
+            "                if (element && element.canWrite) canWrite = element.canWrite() ? 'true' : 'false';",
+            "            } catch (cErr) { canWrite = 'threw'; }",
+            '        }',
+            "        return field + '=' + (held || '(empty)') + ' isValidField=' + (valid ? 'true' : 'false') + ' setValue=' + ret + (canWrite ? ' canWrite=' + canWrite : '');",
             '    },',
             '    _tokenOk: function (token) {',
             "        var expected = '';",
