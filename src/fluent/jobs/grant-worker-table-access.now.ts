@@ -11,9 +11,9 @@ Record({
     data: {
         name: 'Grant worker metadata access',
         description:
-            'Assign x_33764_sbridge.worker to the integration user, log whether operator is present, open cross-scope read/create/update on the four metadata tables, and install global.SyncBridgeMetadataWrite for the apply fallback.',
+            'Assign x_33764_sbridge.worker to the integration user, log whether operator is present, open cross-scope read/create/update on the four metadata tables, and publish SyncBridgeMetadataWrite into the global scope.',
         before: false,
-        unloadable: false,
+        unloadable: true,
         record_for_rollback: true,
         script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
     },

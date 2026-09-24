@@ -13,16 +13,20 @@
  * 2. Can read / Can create / Can update on the global tables apply
  *    writes. A cross-scope privilege cannot exceed those flags.
  *
- * 3. global.SyncBridgeMetadataWrite. Scoped GlideRecord still evaluates
- *    Deny-Unless ACLs, and an extra Allow-If does not override those.
- *    The global writer uses GlideRecord as the same integration user,
- *    which is not subject to that scoped ACL check. It is limited to
- *    the four tables and to a session token apply sets for the call.
+ * 3. global.SyncBridgeMetadataWrite. Fluent cannot declare apiName
+ *    global.* (the SDK requires x_33764_sbridge.*), and a scoped
+ *    GlideRecord insert is stamped with this application's scope, so
+ *    the 0.4.3 payload never created a global script include. This
+ *    script publishes one: loadXML into global, or insert then move
+ *    the row to global, with Accessible from = All application scopes
+ *    and Caller Access = Caller Tracking. Apply calls
+ *    new global.SyncBridgeMetadataWrite().
  */
 ;(function grantWorkerTableAccess() {
     var TABLES = ['sys_script', 'sc_cat_item', 'item_option_new', 'sys_user_group']
     var ROLE = 'x_33764_sbridge.worker'
     var WRITER = 'SyncBridgeMetadataWrite'
+    var WRITER_ID = 'e7c4b2a19f6d4e0a8b3c5d7e1f9a0b2c'
 
     try {
         grantWorkerRole(ROLE)
@@ -262,24 +266,86 @@
     }
 
     function installMetadataWriter() {
+        var script = metadataWriterScript()
+        if (verifyWriter(true)) {
+            stampWriter(writerId(true), script)
+            verifyWriter(false)
+            return
+        }
+
+        try {
+            loadWriterXml(script)
+        } catch (e) {
+            gs.warn('[bridge] metadata writer loadXML refused: ' + e)
+        }
+        if (verifyWriter()) {
+            deleteAppCopies()
+            return
+        }
+
+        var id = writerId(false)
+        if (!id) id = insertWriter(script)
+        if (id) publishGlobal(id, script)
+        if (verifyWriter()) deleteAppCopies()
+    }
+
+    function writerId(globalOnly) {
+        var gr = new GlideRecord('sys_script_include')
+        gr.addQuery('name', WRITER)
+        if (globalOnly) gr.addQuery('sys_scope', 'global')
+        gr.query()
+        var other = ''
+        while (gr.next()) {
+            if ((gr.getValue('sys_scope') || '') === 'global') return gr.getUniqueValue()
+            if (!other) other = gr.getUniqueValue()
+        }
+        return globalOnly ? '' : other
+    }
+
+    function insertWriter(script) {
+        var gr = new GlideRecord('sys_script_include')
+        gr.initialize()
+        fillWriter(gr, script, false)
+        var id = gr.insert()
+        if (!id) {
+            gs.error('[bridge] metadata writer insert failed ' + lastError(gr))
+            return ''
+        }
+        gs.info('[bridge] metadata writer inserted ' + id + ' scope=' + gr.getValue('sys_scope'))
+        return id
+    }
+
+    function publishGlobal(id, script) {
+        var gr = new GlideRecord('sys_script_include')
+        if (!gr.get(id)) return
+        if ((gr.getValue('sys_scope') || '') === 'global') {
+            stampWriter(id, script)
+            return
+        }
+
         var previous = ''
+        var switched = false
         try {
             previous = gs.getCurrentApplicationId() + ''
         } catch (ignore) {
             previous = ''
         }
-        var globalScope = globalScopeId() || 'global'
-        var switched = false
         try {
-            if (globalScope && globalScope !== previous) {
-                gs.setCurrentApplicationId(globalScope)
-                switched = true
-            }
+            gs.setCurrentApplicationId('global')
+            switched = true
         } catch (scopeErr) {
-            gs.warn('[bridge] setCurrentApplicationId(global) for metadata writer refused: ' + scopeErr)
+            gs.warn('[bridge] setCurrentApplicationId(global) refused: ' + scopeErr)
         }
         try {
-            upsertWriter(globalScope)
+            try {
+                var response = sn_gfiles.GlobalApp.moveMetadata(id, 'global')
+                var ok = response && response.success && response.success()
+                var message = response && response.getErrorMessage ? response.getErrorMessage() : ''
+                gs.info('[bridge] moveMetadata to global success=' + ok + (message ? ' ' + message : ''))
+            } catch (moveErr) {
+                gs.warn('[bridge] GlobalApp.moveMetadata refused: ' + moveErr)
+            }
+            stampWriter(id, script)
         } finally {
             if (switched && previous) {
                 try {
@@ -291,43 +357,127 @@
         }
     }
 
-    function upsertWriter(globalScope) {
+    function stampWriter(id, script) {
+        if (!id) return
         var gr = new GlideRecord('sys_script_include')
-        gr.addQuery('name', WRITER)
-        gr.addQuery('sys_scope', globalScope)
-        gr.setLimit(1)
-        gr.query()
-        var exists = gr.next()
-        if (!exists) {
-            gr.initialize()
-            gr.setValue('name', WRITER)
-        }
-        gr.setValue('script', metadataWriterScript())
+        if (!gr.get(id)) return
+        gr.setWorkflow(false)
+        fillWriter(gr, script, true)
+        var updated = gr.update()
+        var saved = new GlideRecord('sys_script_include')
+        saved.get(id)
+        gs.info(
+            '[bridge] metadata writer stamp update=' +
+                updated +
+                ' scope=' +
+                (saved.getValue('sys_scope') || '') +
+                ' api=' +
+                (saved.getValue('api_name') || '') +
+                ' access=' +
+                (saved.getValue('access') || '') +
+                ' caller_access=' +
+                (saved.getValue('caller_access') || 'none') +
+                (updated ? '' : ' ' + lastError(gr))
+        )
+    }
+
+    function fillWriter(gr, script, forceGlobal) {
+        gr.setValue('name', WRITER)
+        gr.setValue('script', script)
         gr.setValue('active', true)
         gr.setValue('access', 'public')
         if (gr.isValidField('client_callable')) gr.setValue('client_callable', false)
+        if (gr.isValidField('caller_access')) gr.setValue('caller_access', '1')
         gr.setValue(
             'description',
             'Sync Bridge apply fallback for sys_script, sc_cat_item, item_option_new, and sys_user_group. Runs as the integration user. Does not grant admin.'
         )
-        if (gr.isValidField('sys_scope')) gr.setValue('sys_scope', globalScope)
-        if (gr.isValidField('api_name')) gr.setValue('api_name', 'global.' + WRITER)
-        var id = exists ? gr.update() : gr.insert()
-        var check = new GlideRecord('sys_script_include')
-        if (!id || !check.get(id)) {
-            gs.error('[bridge] metadata writer was not saved ' + lastError(gr))
-            return
+        if (forceGlobal || (gr.getValue('sys_scope') || '') === 'global') {
+            if (gr.isValidField('sys_scope')) gr.setValue('sys_scope', 'global')
+            if (gr.isValidField('sys_package')) gr.setValue('sys_package', 'global')
+            if (gr.isValidField('api_name')) gr.setValue('api_name', 'global.' + WRITER)
         }
-        var scope = check.getValue('sys_scope')
-        if (scope !== globalScope && scope !== 'global') {
-            gs.error(
-                '[bridge] metadata writer landed in scope ' +
-                    scope +
-                    ' instead of global. Scoped GlideRecord will still honor Deny-Unless ACLs.'
-            )
-            return
+    }
+
+    function loadWriterXml(script) {
+        var xml = [
+            '<?xml version="1.0"?>',
+            '<record_update table="sys_script_include">',
+            '<sys_script_include action="INSERT_OR_UPDATE">',
+            '<sys_id>' + WRITER_ID + '</sys_id>',
+            '<sys_scope display_value="global">global</sys_scope>',
+            '<sys_package display_value="Global">global</sys_package>',
+            '<sys_class_name>sys_script_include</sys_class_name>',
+            '<sys_update_name>sys_script_include_' + WRITER_ID + '</sys_update_name>',
+            '<access>public</access>',
+            '<active>true</active>',
+            '<api_name>global.' + WRITER + '</api_name>',
+            '<caller_access>1</caller_access>',
+            '<client_callable>false</client_callable>',
+            '<name>' + WRITER + '</name>',
+            '<description>Sync Bridge apply fallback. Runs as the integration user. Does not grant admin.</description>',
+            '<script><![CDATA[' + script + ']]></script>',
+            '</sys_script_include>',
+            '</record_update>',
+        ].join('')
+        var um
+        try {
+            um = new GlideUpdateManager2()
+        } catch (first) {
+            um = new global.GlideUpdateManager2()
         }
-        gs.info('[bridge] metadata writer ' + (check.getValue('api_name') || WRITER) + ' scope=' + scope)
+        var result = um.loadXML(xml)
+        gs.info('[bridge] metadata writer loadXML result=' + result)
+    }
+
+    function verifyWriter(quiet) {
+        var gr = new GlideRecord('sys_script_include')
+        gr.addQuery('name', WRITER)
+        gr.addQuery('sys_scope', 'global')
+        gr.addQuery('api_name', 'global.' + WRITER)
+        gr.addQuery('access', 'public')
+        gr.setLimit(1)
+        gr.query()
+        if (!gr.next()) {
+            if (!quiet) {
+                gs.error(
+                    '[bridge] SyncBridgeMetadataWrite is not in global with api_name global.' +
+                        WRITER +
+                        ' and access public'
+                )
+            }
+            return false
+        }
+        try {
+            var writer = new global.SyncBridgeMetadataWrite()
+            if (!writer || typeof writer.write !== 'function') {
+                gs.error('[bridge] global.SyncBridgeMetadataWrite has no write()')
+                return false
+            }
+        } catch (e) {
+            gs.error('[bridge] global.SyncBridgeMetadataWrite is not callable: ' + e)
+            return false
+        }
+        gs.info(
+            '[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=' +
+                gr.getValue('api_name') +
+                ' access=public caller_access=' +
+                (gr.getValue('caller_access') || 'none')
+        )
+        return true
+    }
+
+    function deleteAppCopies() {
+        var gr = new GlideRecord('sys_script_include')
+        gr.addQuery('name', WRITER)
+        gr.addQuery('sys_scope', '!=', 'global')
+        gr.query()
+        while (gr.next()) {
+            var id = gr.getUniqueValue()
+            var scope = gr.getValue('sys_scope') || ''
+            if (gr.deleteRecord()) gs.info('[bridge] removed non-global metadata writer ' + id + ' scope=' + scope)
+            else gs.warn('[bridge] could not remove non-global metadata writer ' + id + ' scope=' + scope)
+        }
     }
 
     function metadataWriterScript() {

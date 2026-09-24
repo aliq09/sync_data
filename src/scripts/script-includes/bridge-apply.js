@@ -519,7 +519,12 @@ BridgeApply.prototype = {
             }
             return writer.write(op, table, sysId || '', payload, token) || { error: 'metadata writer returned nothing' }
         } catch (e) {
-            return { error: 'SyncBridgeMetadataWrite is not installed in global (' + e + ')' }
+            return {
+                error:
+                    'SyncBridgeMetadataWrite is not installed in global (' +
+                    e +
+                    '). Re-install and confirm the system log says metadata writer callable as global.SyncBridgeMetadataWrite.',
+            }
         } finally {
             try {
                 session.clearClientData(key)
