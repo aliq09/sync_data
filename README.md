@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.7 (software-instance apply on cmdb_software_instance; includes 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.4.8 (software-instance setValue; includes 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -246,6 +246,24 @@ Re-Execute of 0.4.6 on the live PDIs still failed as `sbridge.worker`. The Data 
 1. On PDI2, `cmdb_software_instance` has the 15 rows. The computer Software related list shows them. `installed_on` is the PDI2 computer sys_id. `name` is the outbox name. `software` is a PDI2 `cmdb_ci_spkg` (or the dictionary reference) when that package could be resolved, and is empty when it could not.
 2. The Data Execution is not left at selected 15 / sent 0 / cancelled. The outbox error is not `empty name, installed_on` with no payload-versus-held text. A remaining failure quotes the outbox values and the GlideRecord readback from before insert.
 3. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A computer fields still populate. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep policy condition and configuration filter `nameSTARTSWITHcase6_max_` as separate values.
+
+## Software instance apply (0.4.8)
+
+0.4.7 re-Execute still failed for all 15 rows. The outbox was rich. The new readback was not:
+
+`held before insert name=(empty) installed_on=(empty) software=(empty)`
+
+with `payload name=CASE1-COMP-DETAILED Chrome on 01 installed_on=23626c5d… software=5c62e85d…`. `canCreate` stayed true. `cmdb_sam_sw_install` is still absent. PDI2 computer DETAILED-01 is a different sys_id (`639268d5…`). The insert stayed on `cmdb_software_instance`.
+
+**Why the GlideRecord was empty.** The working copy already had the strings. `_setValues` called `setValue`, which is the call that sticks for NIC and storage. `_stampField` then did two more writes that a scoped app does not support: `gr[field] = text`, and `GlideElement.setValue`. Those ran after `setValue` and before the hold was read. The next `getValue` was empty for the string `name` as well as the two references, and `insert` stored that empty record. The before rule aborted. The payload line in the error is the outbox (`item.values`), not the sealed working copy, so `installed_on=23626c5d…` does not by itself mean Record Mapping failed to produce the PDI2 id.
+
+**Fix.** The stamp is `GlideRecord.setValue` only. Software inserts call `newRecord()` before that. `installed_on` still prefers the Record Mapping target, including when `cmdb_ci.get` cannot read the row, so the source sys_id is not put back in its place. The error now includes `sealed installed_on=` (the value actually passed to `setValue`) and, when the hold is still empty, each field's type, `canWrite`, `canRead`, and `changes`. No admin grant. `cmdb_sam_sw_install` is still not used.
+
+**Verify (do not deploy from this change set).** Install 0.4.8 on both peers. No new fix script. `now-sdk build` must succeed before that install. Re-Execute only the Path A software-instance movement, as `sbridge.worker`, after the computer Record Mapping exists.
+
+1. On PDI2, `cmdb_software_instance` has the 15 rows. `name` matches the outbox. `installed_on` is the PDI2 computer (`639268d5…` for DETAILED-01), not the payload source id `23626c5d…`.
+2. The Data Execution is not left at 15 selected / 0 sent / cancelled. A remaining failure shows `sealed installed_on=` different from the payload id when Record Mapping hit, and `held before insert name=` equal to the outbox name. It does not show all three held values empty after a scoped property assignment.
+3. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A still populates. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep its configuration filter.
 
 ## Operator runbook (stub)
 

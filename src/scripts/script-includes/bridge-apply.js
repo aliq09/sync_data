@@ -507,15 +507,17 @@ BridgeApply.prototype = {
         var gr = new GlideRecord(table)
         if (!gr.isValid()) return { error: 'invalid table ' + table }
         if (this._isSoftwareItem(item, table)) this._sealSoftwareInstance(item, values, this._maps, true)
-        gr.initialize()
+        // Software inserts use newRecord() before setValue. initialize() is what
+        // the other tables use; newRecord() is the scoped API that applies
+        // defaults and marks the buffer as an insert. NIC is unchanged.
+        if (this._isSoftwareItem(item, table)) item._bridge_record_init = this._beginNewRecord(gr)
+        else gr.initialize()
         this._setValues(gr, values)
         if (this._isSoftwareItem(item, table)) {
-            // Stamp the mandatory pair last. A dangling software setValue can
-            // clear name, and a failed insert often wipes the GlideRecord, which
-            // is why 0.4.6 reported "empty name, installed_on" after the outbox
-            // already had both. Read them back before insert. Skip the insert
-            // only when the working copy itself is missing one of them — that
-            // insert would abort and the cleared record would look the same.
+            // setValue only. 0.4.7 then did gr[field] = text and element.setValue().
+            // Both are unsupported on a scoped GlideRecord and ran AFTER setValue,
+            // so the hold read back empty for name as well as the references.
+            // The payload line in that error is the outbox, not the sealed value.
             this._stampSoftwareFields(gr, values)
             this._rememberSoftwareHold(item, gr)
             if (!values.name || !values.installed_on) {
@@ -652,7 +654,13 @@ BridgeApply.prototype = {
         var installed = this._resolveInstalledOn(item, values, maps)
         if (installed) {
             values.installed_on = installed
-            item._bridge_installed_on_note = ''
+            var payloadOn = String(payload.installed_on || '')
+            if (payloadOn && String(installed) !== payloadOn) {
+                item._bridge_installed_on_note = 'installed_on xref ' + payloadOn + ' -> ' + installed
+            } else {
+                item._bridge_installed_on_note =
+                    'installed_on left as ' + String(installed) + ' (no different Record Mapping target)'
+            }
         } else {
             var sourceOn = payload.installed_on || values.installed_on || ''
             var ciName = this._installedOnName(item)
@@ -676,6 +684,11 @@ BridgeApply.prototype = {
         }
 
         this._resolveSoftwareField(item, values, maps, !!createMissing)
+        item._bridge_sealed = {
+            name: values.name ? String(values.name) : '',
+            installed_on: values.installed_on ? String(values.installed_on) : '',
+            software: values.software ? String(values.software) : '',
+        }
     },
 
     _installedOnName: function (item) {
@@ -732,13 +745,20 @@ BridgeApply.prototype = {
             gr.addQuery('source_sys_id', sourceSysId)
             gr.setLimit(10)
             gr.query()
+            var unverified = ''
             while (gr.next()) {
                 var id = gr.getValue('target_sys_id') || ''
-                if (id && this._rowExists('cmdb_ci', id)) {
+                if (!id) continue
+                if (this._rowExists('cmdb_ci', id)) {
                     target = id
                     break
                 }
+                if (!unverified) unverified = id
             }
+            // get() can miss a CI the worker cannot read. The Record Mapping
+            // target is still the PDI2 sys_id. Keeping the source sys_id instead
+            // is what makes the reference element drop installed_on.
+            if (!target) target = unverified
         } catch (e) {
             target = ''
         }
@@ -858,31 +878,34 @@ BridgeApply.prototype = {
         }
     },
 
+    _beginNewRecord: function (gr) {
+        try {
+            var created = gr.newRecord()
+            if (created !== false && String(created) !== 'false') return 'newRecord'
+        } catch (e) {}
+        try {
+            gr.initialize()
+        } catch (e2) {}
+        return 'initialize'
+    },
+
     _stampSoftwareFields: function (gr, values) {
         if (!gr || !values) return
-        // Reference fields after the string name, then name again so a
-        // reference setValue cannot be the last write to the mandatory pair.
-        if (values.software) this._stampField(gr, 'software', values.software)
-        if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
+        // Name first and last. Only GlideRecord.setValue — the scoped API.
+        // gr[field] = text and GlideElement.setValue are not supported in a
+        // scoped app; 0.4.7 called both after setValue and the next getValue
+        // was empty for name, installed_on, and software.
         if (values.name) this._stampField(gr, 'name', values.name)
-        if (values.installed_on && !gr.getValue('installed_on')) this._stampField(gr, 'installed_on', values.installed_on)
-        if (values.name && !gr.getValue('name')) this._stampField(gr, 'name', values.name)
+        if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
+        if (values.software) this._stampField(gr, 'software', values.software)
+        if (values.name) this._stampField(gr, 'name', values.name)
+        if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
     },
 
     _stampField: function (gr, field, value) {
         if (!gr || !field || value === undefined || value === null || String(value) === '') return
         if (!gr.isValidField(field)) return
-        var text = String(value)
-        try {
-            gr.setValue(field, text)
-        } catch (e) {}
-        try {
-            gr[field] = text
-        } catch (e2) {}
-        try {
-            var element = gr.getElement(field)
-            if (element && element.setValue) element.setValue(text)
-        } catch (e3) {}
+        gr.setValue(field, String(value))
     },
 
     _rememberSoftwareHold: function (item, gr) {
@@ -891,12 +914,50 @@ BridgeApply.prototype = {
             name: '',
             installed_on: '',
             software: '',
+            probe: '',
         }
+        var fields = ['name', 'installed_on', 'software']
+        var probes = []
+        var i
+        for (i = 0; i < fields.length; i++) {
+            var raw = ''
+            try {
+                raw = gr.getValue(fields[i]) || ''
+            } catch (e) {}
+            item._bridge_held[fields[i]] = raw
+        }
+        if (item._bridge_held.name && item._bridge_held.installed_on) return
+        // Read-only probe. Do not setValue, assign, or setDisplayValue here.
+        for (i = 0; i < fields.length; i++) probes.push(fields[i] + ' ' + this._fieldProbe(gr, fields[i]))
+        item._bridge_held.probe = probes.join(', ')
+    },
+
+    _fieldProbe: function (gr, field) {
+        var type = ''
+        var canWrite = ''
+        var canRead = ''
+        var changes = ''
         try {
-            item._bridge_held.name = gr.getValue('name') || ''
-            item._bridge_held.installed_on = gr.getValue('installed_on') || ''
-            item._bridge_held.software = gr.getValue('software') || ''
-        } catch (e) {}
+            if (!gr.isValidField(field)) return 'invalid'
+            var element = gr.getElement(field)
+            var ed = element && element.getED()
+            if (ed && ed.getInternalType) type = String(ed.getInternalType() || '')
+            if (element && element.canWrite) canWrite = element.canWrite() ? 'true' : 'false'
+            if (element && element.canRead) canRead = element.canRead() ? 'true' : 'false'
+            if (element && element.changes) changes = element.changes() ? 'true' : 'false'
+        } catch (e) {
+            return 'probe-error'
+        }
+        return (
+            'type=' +
+            (type || '?') +
+            ' canWrite=' +
+            (canWrite || '?') +
+            ' canRead=' +
+            (canRead || '?') +
+            ' changes=' +
+            (changes || '?')
+        )
     },
 
     /**
@@ -1346,6 +1407,7 @@ BridgeApply.prototype = {
         if (!item || !this._isSoftwareItem(item, item.table)) return ''
         var payload = item.values || {}
         var held = item._bridge_held || {}
+        var sealed = item._bridge_sealed || {}
         var parts = []
         parts.push(
             'payload name=' +
@@ -1356,6 +1418,14 @@ BridgeApply.prototype = {
                 this._diag(payload.software)
         )
         parts.push(
+            'sealed name=' +
+                this._diag(sealed.name) +
+                ' installed_on=' +
+                this._diag(sealed.installed_on) +
+                ' software=' +
+                this._diag(sealed.software)
+        )
+        parts.push(
             'held before insert name=' +
                 this._diag(held.name) +
                 ' installed_on=' +
@@ -1363,6 +1433,8 @@ BridgeApply.prototype = {
                 ' software=' +
                 this._diag(held.software)
         )
+        if (item._bridge_record_init) parts.push('record init=' + item._bridge_record_init)
+        if (held.probe) parts.push(held.probe)
         if (phase === 'after' && gr) {
             var afterName = ''
             var afterOn = ''
