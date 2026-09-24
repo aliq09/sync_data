@@ -32,6 +32,16 @@ export const x_33764_sbridge_run = Table({
         failed: IntegerColumn({ label: 'Failed', default: 0 }),
         max_lag_seconds: IntegerColumn({ label: 'Max lag seconds', default: 0 }),
         seed_cursor: StringColumn({ label: 'Seed cursor', maxLength: 32 }),
+        seed_member: ReferenceColumn({
+            label: 'Seed pack member',
+            hint: 'Pack expand resume point. Empty on a Path A bulk seed.',
+            referenceTable: 'x_33764_sbridge_pack_member',
+        }),
+        seed_seq: IntegerColumn({
+            label: 'Seed pack sequence',
+            default: 0,
+            hint: 'Next pack_seq offset inside the current pack member. Path A leaves this at 0.',
+        }),
         seed_policy: ReferenceColumn({
             label: 'Seed policy',
             referenceTable: 'x_33764_sbridge_policy',

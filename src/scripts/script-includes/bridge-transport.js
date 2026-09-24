@@ -170,6 +170,9 @@ BridgeTransport.prototype = {
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.addQuery('peer', peerId)
         gr.addQuery('state', 'IN', 'pending,failed')
+        // Path A rows stay at pack_seq 0 and keep creation order among themselves.
+        // Pack rows use a higher pack_seq so parents drain before children.
+        if (gr.isValidField('pack_seq')) gr.orderBy('pack_seq')
         gr.orderBy('sys_created_on')
         // Over-read, because some failed rows will not be backoff-eligible yet and
         // filtering in the query would need a stored next-attempt time.
@@ -764,6 +767,7 @@ BridgeTransport.prototype = {
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.addQuery('peer', peerId)
         gr.addQuery('state', 'IN', 'pending,failed')
+        if (gr.isValidField('pack_seq')) gr.orderBy('pack_seq')
         gr.orderBy('sys_created_on')
         gr.setLimit(1)
         gr.query()

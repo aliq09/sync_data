@@ -27,6 +27,21 @@ export const x_33764_sbridge_movement_config = Table({
     schema: {
         name: StringColumn({ label: 'Name', mandatory: true, maxLength: 200 }),
         active: BooleanColumn({ label: 'Active', default: true }),
+        config_type: StringColumn({
+            label: 'Configuration type',
+            mandatory: true,
+            default: 'table',
+            hint: 'Table is one Path A table. Pack expands a Movement Pack into ordered child tables under one data execution.',
+            choices: {
+                table: 'Table',
+                pack: 'Pack',
+            },
+        }),
+        pack: ReferenceColumn({
+            label: 'Movement pack',
+            referenceTable: 'x_33764_sbridge_movement_pack',
+            hint: 'Used when Configuration type is Pack. Execute Now expands this pack. Path A table configurations leave this empty.',
+        }),
         direction: StringColumn({
             label: 'Direction',
             mandatory: true,

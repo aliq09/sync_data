@@ -187,13 +187,19 @@ BridgeSeed.prototype = {
         dex.update()
     },
 
-    _enqueueSeed: function (current, policy, localPeer, tableName, runId, executionId) {
+    _enqueueSeed: function (current, policy, localPeer, tableName, runId, executionId, extra) {
         // Reuse capture payload shaping; write outbox with mode=bulk_seed.
         // execution is a controller link. It is not a target field (apply reads payload.values).
+        // extra is set by BridgePackExpand. Path A callers omit it and pack_seq stays 0.
         var payload = this.capture._payload(current, policy, 'insert')
         payload.mode = policy.mode
         payload.bulk = true
         if (executionId) payload.execution = executionId
+        extra = extra || {}
+        if (extra.pack) payload.pack = extra.pack
+        if (extra.pack_member) payload.pack_member = extra.pack_member
+        if (extra.pack_order) payload.pack_order = extra.pack_order
+        if (extra.pack_fk) payload.pack_fk = extra.pack_fk
 
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.initialize()
@@ -206,6 +212,7 @@ BridgeSeed.prototype = {
         gr.setValue('state', 'pending')
         gr.setValue('attempts', 0)
         gr.setValue('mode', 'bulk_seed')
+        if (extra.pack_seq && gr.isValidField('pack_seq')) gr.setValue('pack_seq', extra.pack_seq)
         var id = gr.insert()
         if (id && runId) {
             try {

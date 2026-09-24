@@ -57,6 +57,21 @@ Record({
 })
 
 Record({
+    $id: Now.ID['mod-packs'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Packs',
+        hint: 'Ordered related-table packs. One Execute Now expands the pack.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_movement_pack',
+        roles: ['x_33764_sbridge.reader'],
+        active: true,
+        order: 112,
+    },
+})
+
+Record({
     $id: Now.ID['mod-schedules'],
     table: 'sys_app_module',
     data: {

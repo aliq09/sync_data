@@ -54,6 +54,8 @@ List({
     columns: [
         'name',
         'active',
+        'config_type',
+        'pack',
         'direction',
         'source_table',
         'target_table',
@@ -125,6 +127,18 @@ List({
     table: 'x_33764_sbridge_record_result',
     view: default_view,
     columns: ['source_table', 'source_sys_id', 'action', 'result', 'target_sys_id', 'execution'],
+})
+
+List({
+    table: 'x_33764_sbridge_movement_pack',
+    view: default_view,
+    columns: ['name', 'active', 'root_table', 'root_filter', 'version_note'],
+})
+
+List({
+    table: 'x_33764_sbridge_pack_member',
+    view: default_view,
+    columns: ['apply_order', 'name', 'active', 'source_table', 'expand_mode', 'parent_field', 'fk_remap_fields', 'graph_kind', 'pack'],
 })
 
 List({

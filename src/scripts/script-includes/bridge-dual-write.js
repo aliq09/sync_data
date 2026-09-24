@@ -94,7 +94,7 @@ BridgeDualWrite.prototype = {
             if (!dex.getValue('run')) dex.setValue('run', runId)
             var state = dex.getValue('execution_state') || ''
             if (state === 'draft' || state === 'queued' || state === 'validating' || state === 'preparing') {
-                this._transitionState(dex, 'reading_source', 'Execution controller started reading the source through BridgeSeed.')
+                this._transitionState(dex, 'reading_source', 'Execution controller started reading the source.')
             }
             dex.update()
         })

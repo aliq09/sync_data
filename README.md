@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.9 (software-instance write outside the scoped GlideRecord; includes 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.5.0 (Movement Pack / related-pack expand; includes 0.4.9 software-instance write, 0.4.8 setValue probe, 0.4.7 seal, 0.4.6 capture include-list, 0.4.5 global metadata writer, 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -278,6 +278,20 @@ with `payload name=CASE1-COMP-DETAILED Chrome on 01 installed_on=23626c5d… sof
 1. On PDI2, `cmdb_software_instance` has the 15 rows. `name` matches the outbox. `installed_on` is `639268d5…` for DETAILED-01. `software` is the sealed PDI2 package when that id was sent.
 2. The Data Execution is not left at 15 selected / 0 sent / cancelled. A remaining failure contains the literal `hold-after-setValue` with `isValidField`, `setValue=`, `canCreate=`, and `sameGr=`. The global writer or Table API error is on that same line.
 3. NIC and storage still apply. Cases 5, 6, 7, and 9 still pass as `sbridge.worker`. Gap A still populates. A drain poll still does not insert an empty Data Execution. `sbridge.worker` is not admin. Case 7 can keep its configuration filter.
+
+## Movement Pack (0.5.0)
+
+Path A is unchanged: one Data Movement Configuration still moves one table through `BridgeSeed.seedPolicy`, and `config_type` defaults to **Table**.
+
+Path B adds a **Movement Pack**. Data Movement → **Packs** opens `x_33764_sbridge_movement_pack`. Members live on `x_33764_sbridge_pack_member` (table, expand mode, parent field, FK remap fields, apply order, graph kind). `graph_kind` can store a later Flow step (`sys_hub_flow` and the other `sys_hub_*` kinds). This version skips those members and does not seed or execute Flow.
+
+The seeded pack **Case 1 DETAILED — Computer related pack** is active engine metadata. Its root is `cmdb_ci_computer` / `nameSTARTSWITHCASE1-COMP-DETAILED`. Member order is computer, `cmdb_ci_spkg` (`nameSTARTSWITHCASE1-SW-`), network adapter, serial number, storage device, memory module, software instance, file system, running process, tcp, and `cmdb_rel_ci` last. It does not contain platform CI rows.
+
+To run it, create or update a Data Movement Configuration with **Configuration type** = Pack, select that pack, set the source and target instances (the same peers as the Case 1 computer movement), and optionally link the existing outbound computer policy. **Execute Now** queues **one** controller Data Execution. `BridgePackExpand` writes one ordered outbox (`pack_seq`) under that execution. The existing drain sends it. Apply still runs as `sbridge.worker`. Declared child FKs use the Path A Record Mapping path. User and group fields stay on `user_name` / `group_name`. `cmdb_ci_file_system.provided_by` is included in that child map.
+
+Inbound policies and worker ACLs for these CMDB tables stay the ones Path A already proved. Global `SyncBridgeMetadataWrite` and `SyncBridgeSoftwareWrite` are not republished by this version.
+
+Do not deploy from this change set. Install 0.5.0 on PDI1, then PDI2, as admin through now-sdk. Then Execute the pack once from PDI1 and verify on PDI2.
 
 ## Operator runbook (stub)
 

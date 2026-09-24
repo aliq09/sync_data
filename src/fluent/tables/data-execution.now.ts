@@ -60,6 +60,12 @@ export const x_33764_sbridge_data_execution = Table({
             label: 'Configuration',
             referenceTable: 'x_33764_sbridge_movement_config',
         }),
+        pack: ReferenceColumn({
+            label: 'Movement pack',
+            hint: 'Set when this execution expanded a pack. Empty on a Path A single-table run. One pack execution is one controller row.',
+            referenceTable: 'x_33764_sbridge_movement_pack',
+            readOnly: true,
+        }),
         run: ReferenceColumn({
             label: 'Sync run',
             hint: 'Case 1 sync run this execution shadows.',

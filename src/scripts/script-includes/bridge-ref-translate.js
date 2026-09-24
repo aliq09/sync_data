@@ -69,6 +69,7 @@ var BRIDGE_CHILD_REFS = {
     cmdb_ci_file_system: {
         computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
         cmdb_ci: { reference: 'cmdb_ci', business_key: 'name' },
+        provided_by: { reference: 'cmdb_ci', business_key: 'name' },
     },
     cmdb_running_process: {
         computer: { reference: 'cmdb_ci_computer', business_key: 'name' },
@@ -126,7 +127,7 @@ var BRIDGE_CHILD_INCLUDE = {
         'normalized_version',
         'normalized_edition',
     ],
-    cmdb_ci_file_system: ['name', 'computer', 'cmdb_ci', 'size_bytes', 'mount_point'],
+    cmdb_ci_file_system: ['name', 'computer', 'cmdb_ci', 'provided_by', 'size_bytes', 'mount_point'],
     cmdb_running_process: ['name', 'computer', 'cmdb_ci', 'command', 'pid'],
     cmdb_tcp: ['computer', 'cmdb_ci', 'ip', 'port'],
     cmdb_rel_ci: ['parent', 'child', 'type'],
@@ -208,6 +209,13 @@ BridgeRefTranslate.prototype = {
         if (!maps.fieldKinds) maps.fieldKinds = {}
         var tableName = (item && item.table) || ''
         var handling = maps.referenceHandling || 'resolve'
+        this._loadPackRefs(item, maps)
+        if (maps.fieldKinds && maps.packRefs) {
+            for (var packField in maps.packRefs) {
+                if (!Object.prototype.hasOwnProperty.call(maps.packRefs, packField)) continue
+                delete maps.fieldKinds[tableName + '.' + packField]
+            }
+        }
 
         for (var field in src) {
             if (!Object.prototype.hasOwnProperty.call(src, field)) continue
@@ -373,6 +381,74 @@ BridgeRefTranslate.prototype = {
 
     isComputerGroupField: function (field) {
         return !!BRIDGE_COMPUTER_GROUP_FIELDS[field]
+    },
+
+    /**
+     * Merge pack-declared FK metadata into a ref map for tests and apply.
+     * user_name, group_name, identity, and preserve on the existing map win.
+     * A pack declaration cannot switch a user or group field onto xref.
+     * @returns {Object}
+     */
+    mergePackFk: function (refMap, packFk) {
+        var out = {}
+        var field
+        refMap = refMap || {}
+        for (field in refMap) {
+            if (!Object.prototype.hasOwnProperty.call(refMap, field)) continue
+            out[field] = refMap[field]
+        }
+        var maps = { packRefs: {} }
+        this._loadPackRefs({ pack_fk: packFk || {} }, maps)
+        for (field in maps.packRefs) {
+            if (!Object.prototype.hasOwnProperty.call(maps.packRefs, field)) continue
+            var existing = out[field] || {}
+            var strategy = existing.strategy || ''
+            if (
+                strategy === 'user_name' ||
+                strategy === 'group_name' ||
+                strategy === 'identity' ||
+                strategy === 'preserve'
+            ) {
+                continue
+            }
+            if (!out[field]) out[field] = {}
+            if (!out[field].reference && maps.packRefs[field].reference) out[field].reference = maps.packRefs[field].reference
+            if (!out[field].table && maps.packRefs[field].table) out[field].table = maps.packRefs[field].table
+            if (!out[field].business_key && maps.packRefs[field].business_key) {
+                out[field].business_key = maps.packRefs[field].business_key
+            }
+        }
+        return out
+    },
+
+    /**
+     * payload.pack_fk declares reference fields for this item.
+     * Stored on maps.packRefs so a missing dictionary element still remaps.
+     * User and group fields are ignored here.
+     */
+    _loadPackRefs: function (item, maps) {
+        maps.packRefs = {}
+        var declared = item && item.pack_fk
+        if (!declared || typeof declared !== 'object') return
+        for (var field in declared) {
+            if (!Object.prototype.hasOwnProperty.call(declared, field)) continue
+            if (this.isComputerUserField(field) || this.isComputerGroupField(field)) continue
+            var spec = declared[field] || {}
+            var strategy = spec.strategy || ''
+            if (
+                strategy === 'user_name' ||
+                strategy === 'group_name' ||
+                strategy === 'identity' ||
+                strategy === 'preserve'
+            ) {
+                continue
+            }
+            maps.packRefs[field] = {
+                reference: spec.reference || spec.table || '',
+                table: spec.table || spec.reference || '',
+                business_key: spec.business_key || '',
+            }
+        }
     },
 
     _withStampedKey: function (spec, item, field) {
@@ -544,6 +620,9 @@ BridgeRefTranslate.prototype = {
         }
         if (!kind.type || (kind.type !== 'reference' && kind.type !== 'glide_list')) {
             var known = this._knownReference(tableName, field)
+            if (!known && maps && maps.packRefs && maps.packRefs[field]) {
+                known = maps.packRefs[field].reference || maps.packRefs[field].table || ''
+            }
             if (known) kind = { type: 'reference', reference: known }
         }
         maps.fieldKinds[key] = kind

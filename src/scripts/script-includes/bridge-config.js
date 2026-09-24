@@ -52,6 +52,8 @@ BridgeConfig.TABLE = {
     processingError: 'x_33764_sbridge_processing_error',
     recordResult: 'x_33764_sbridge_record_result',
     executionSchedule: 'x_33764_sbridge_execution_schedule',
+    movementPack: 'x_33764_sbridge_movement_pack',
+    packMember: 'x_33764_sbridge_pack_member',
 }
 
 BridgeConfig.prototype = {

@@ -51,9 +51,15 @@ export const x_33764_sbridge_outbox = Table({
                 bulk_seed: 'Bulk seed',
             },
         }),
+        pack_seq: IntegerColumn({
+            label: 'Pack sequence',
+            default: 0,
+            hint: '0 for a Path A row. Pack expand sets a higher value so parents drain before children and cmdb_rel_ci is last.',
+        }),
     },
     index: [
         { name: 'idx_outbox_drain', unique: false, element: ['peer', 'state'] },
         { name: 'idx_outbox_source', unique: false, element: ['source_sys_id', 'peer'] },
+        { name: 'idx_outbox_pack', unique: false, element: ['peer', 'state', 'pack_seq'] },
     ],
 })

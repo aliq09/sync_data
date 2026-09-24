@@ -43,6 +43,7 @@ Test(
     assertEqual(refs.childRequiredFields('cmdb_software_instance').join(','), 'name,installed_on', 'software required fields');
     assertEqual(refs.childIncludeFields('cmn_department').length ? 'yes' : 'no', 'no', 'department has no child include list');
     assertEqual(refs.childReferenceSpec('cmdb_ci_file_system', 'computer').reference, 'cmdb_ci_computer', 'filesystem computer');
+    assertEqual(refs.childReferenceSpec('cmdb_ci_file_system', 'provided_by').reference, 'cmdb_ci', 'filesystem provided_by');
     assertEqual(refs.childReferenceSpec('cmdb_running_process', 'computer').reference, 'cmdb_ci_computer', 'process computer');
     assertEqual(refs.childReferenceSpec('cmdb_tcp', 'computer').reference, 'cmdb_ci_computer', 'tcp computer');
     assertEqual(refs.childReferenceSpec('cmdb_rel_ci', 'parent').reference, 'cmdb_ci', 'rel parent');

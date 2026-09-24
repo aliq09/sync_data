@@ -949,6 +949,14 @@ declare global {
                         table: 'sys_atf_step'
                         id: '717049a287a04d26a8a02cb1bab0b8b8'
                     }
+                    'atf-pack-expand': {
+                        table: 'sys_atf_test'
+                        id: 'f176e87bde484ac481a359b7a781155e'
+                    }
+                    'atf-pack-expand-step': {
+                        table: 'sys_atf_step'
+                        id: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                    }
                     'atf-staged-ack': {
                         table: 'sys_atf_test'
                         id: '2b519fca0b9042c3902dbbf3c8ec6f1d'
@@ -1030,6 +1038,10 @@ declare global {
                     BridgeDualWrite: {
                         table: 'sys_script_include'
                         id: 'cc9f9de280834c1c82679a0083769cb4'
+                    }
+                    BridgePackExpand: {
+                        table: 'sys_script_include'
+                        id: '7c2ef23a5dde4dcbb52d07397f7ff740'
                     }
                     BridgePolicyHelper: {
                         table: 'sys_script_include'
@@ -1243,6 +1255,10 @@ declare global {
                         table: 'sys_app_module'
                         id: '8d97b3cea55644fea9505b861389b898'
                     }
+                    'mod-packs': {
+                        table: 'sys_app_module'
+                        id: 'fd69b288f58d417a8b1860bd23aafe1d'
+                    }
                     'mod-peers': {
                         table: 'sys_app_module'
                         id: 'ee119c0145ec4f5680d6b3ad61827628'
@@ -1306,6 +1322,62 @@ declare global {
                     'mvcfg-related-list': {
                         table: 'sys_ui_related_list'
                         id: '0f92adc40be94db9bc0bb8b9363806ab'
+                    }
+                    'pack-case1-comp-detailed': {
+                        table: 'x_33764_sbridge_movement_pack'
+                        id: '3e531afea73f4065878f146296fda180'
+                    }
+                    'pack-m-case1-computer': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '9e3cdb16fe7d4eebb0289b1d2d891d87'
+                    }
+                    'pack-m-case1-fs': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'b175648740a94993b827af4deaef072e'
+                    }
+                    'pack-m-case1-memory': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '39454a494e3a47d8babc03150190ecba'
+                    }
+                    'pack-m-case1-nic': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'ed832bfb64ae497f830f00c7221b7759'
+                    }
+                    'pack-m-case1-process': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '98d283f928ac4a0c8c2f7b9db1987d09'
+                    }
+                    'pack-m-case1-rel': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'cb1546543e5446bfa1ea4e8789fc3fa5'
+                    }
+                    'pack-m-case1-serial': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '42b89aadd82040ec8a23466ced4dacf3'
+                    }
+                    'pack-m-case1-spkg': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '2f29f2a49d6d42869a5fc7ea87aef8d7'
+                    }
+                    'pack-m-case1-storage': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '019be9275cb842bf81b57d715ecd09a9'
+                    }
+                    'pack-m-case1-swinst': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'beb283475e0446208b55acef9ca2311c'
+                    }
+                    'pack-m-case1-tcp': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '83f60a86f44f44238cdf1a522340f3b7'
+                    }
+                    'pack-rel-members': {
+                        table: 'sys_ui_related_list_entry'
+                        id: 'dc11fb2469e14830aed3e1445f36fce2'
+                    }
+                    'pack-related-list': {
+                        table: 'sys_ui_related_list'
+                        id: 'ddcf27d1676649b490fd327fbb8425c0'
                     }
                     package_json: {
                         table: 'sys_module'
@@ -1679,6 +1751,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '0276c95bed9f4784a635c98f24ee7320'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '0286042aa11d490cb344789982b3f5f2'
                         key: {
@@ -1971,6 +2051,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '051648faa706451d810aed6fac9809ab'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'version_note'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '05280586f6aa42eba76cc48b2d508d84'
                         key: {
@@ -1989,6 +2077,29 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'comments_and_work_notes'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '058e2683d9f04fdb9fe3905ce76303b3'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'version_note'
                         }
                     },
                     {
@@ -2567,6 +2678,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice_set'
+                        id: '0a084209e6f442ed9135ca3c2a296c7f'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '0a23eea7edf14264966801fa0a9a3894'
                         key: {
@@ -2630,6 +2749,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '0ad0e1a20a6c4440a9b7cfc033c7c790'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'roots_and_prior'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '0b074d92b20340619564ad30ef8fe03b'
                         key: {
@@ -2683,6 +2813,15 @@ declare global {
                             }
                             element: '.end_split'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '0b169021b0bd4ced8d74db38fba524ee'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'NULL'
+                            language: 'en'
                         }
                     },
                     {
@@ -2918,6 +3057,29 @@ declare global {
                             value: 'sent'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '0e92466c71814d329705e6ebc2efc25b'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'expand_mode'
                         }
                     },
                     {
@@ -3163,6 +3325,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '11d2bba6890342b8ad20c07df2fa3099'
+                        key: {
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'root_filter'
+                            position: '1'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '11e2d28c3bb64882bbe7fd01d75e05ad'
                         key: {
@@ -3177,6 +3361,17 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_processing_error'
                             col_name_string: 'legacy_key'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '1226f17cbb6e4d4a9b4f4800b42cf321'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'parent_in'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -3280,6 +3475,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_element_mapping'
+                        id: '138ad2254f954be7934b9a5183c17d30'
+                        key: {
+                            id: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '1399fb03fb9a4fd1a070aeb704d79c63'
                         key: {
@@ -3307,6 +3511,23 @@ declare global {
                         id: '1426ab1b6b36498fad0b66d8848e018d'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list'
+                        id: '14530ccda7c048d1af42e0da7a52e70b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                            element: 'NULL'
+                            relationship: 'NULL'
+                            parent: 'NULL'
                         }
                     },
                     {
@@ -3472,6 +3693,17 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '1639f573e4a84507bf437ce552365903'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_variable'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -3645,6 +3877,28 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '17906f619b824979adcc4218c5afd6f0'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'parent_member'
+                            position: '4'
                         }
                     },
                     {
@@ -3835,6 +4089,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '1926d45297774e3bb349f07960f5b55a'
+                        key: {
+                            list_id: {
+                                id: '36a3b480e56f4d3d99ab9b259c624ed5'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'config_type'
+                        }
+                    },
+                    {
+                        table: 'sys_index'
+                        id: '1935e8298ea14d6bbdc13bdbc8e114f3'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_outbox'
+                            col_name_string: 'peer,state,pack_seq'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '19873e50fc0348aba81ad58d816d732b'
                         key: {
@@ -3872,6 +4157,17 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'previous_result'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '19f91fd27a3c4bfca1c057f09360d0cf'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'prior_records'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -4082,6 +4378,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '1bf4de6688bf461fae870103c394e025'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'graph_kind'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '1c01c3ca48094355a57697d80fa30cdb'
                         key: {
@@ -4195,6 +4514,15 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'started_at'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '1d2690daad4741b5979d28e4a9041dad'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            language: 'en'
                         }
                     },
                     {
@@ -4352,6 +4680,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '1e4e67cbea3f4ea2838c3b15f19b5bf3'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'record'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '1ed587884ff54db78d346265184120e0'
                         key: {
@@ -4402,6 +4741,28 @@ declare global {
                                 }
                             }
                             element: 'transaction_id'
+                            position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '1f6f17542bec4369adb60ce3431a027c'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'fk_remap_fields'
                             position: '5'
                         }
                     },
@@ -4670,6 +5031,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '2257c499717145389e88100b7d0edcd8'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'none'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '22a2cca41656455b9d63f3c0d0ef2e32'
                         key: {
@@ -4688,6 +5060,20 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'target_instance'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '22fc9f9d30554a48b4574de6fc7dc4ce'
+                        key: {
+                            ui_policy: {
+                                id: '5ec64b1d1b1b410aa6ecbcd413bb0765'
+                                key: {
+                                    table: 'x_33764_sbridge_movement_config'
+                                    short_description: 'Hide Movement Pack unless configuration type is Pack'
+                                }
+                            }
+                            field: 'pack'
                         }
                     },
                     {
@@ -4817,6 +5203,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '24b43ba4c84948589bd9a11f3769a9d3'
+                        key: {
+                            name: 'x_33764_sbridge_outbox'
+                            element: 'pack_seq'
+                        }
+                    },
+                    {
                         table: 'sys_variable_value'
                         id: '24cdb10cddbf44dabc9ee2cc481c29e7'
                         key: {
@@ -4866,6 +5260,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'outbox'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '257bfc605dbd46688993fc15f52dd4f8'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'description'
+                            position: '3'
                         }
                     },
                     {
@@ -5038,6 +5454,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '27bc3fd188dc41f19deba8982994367e'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '27cd0b5477324fe8915bb2869f3f2551'
                         key: {
@@ -5048,6 +5473,29 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '281c73c56a304c05b20930edff75aa5e'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'name'
                         }
                     },
                     {
@@ -5134,6 +5582,23 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_run'
                             element: 'peer'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '294017590b084a12886ebbc17f8e816a'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'pack'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '29647b4ea49d4c81b2eef5c4b276758a'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'pack'
                             language: 'en'
                         }
                     },
@@ -5278,6 +5743,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '2aa8a29ddc1241769430e4826ad45760'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'name'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '2ab8fd61b1774b09b8e7056b697dd291'
                         key: {
@@ -5323,6 +5796,15 @@ declare global {
                                     name: 'x_33764_sbridge.reader'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '2b09dbcd5b714d738ae6a7b130b3cc04'
+                        key: {
+                            name: 'x_33764_sbridge_outbox'
+                            element: 'pack_seq'
+                            language: 'en'
                         }
                     },
                     {
@@ -5390,6 +5872,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '2c418e71c9e647db9a2a6289feadb74f'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '2c4ab623a7c944189d682a38a4a0fe82'
                         key: {
                             sys_ui_section: {
@@ -5408,6 +5912,14 @@ declare global {
                             }
                             element: 'execution_completed_at'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '2c996cd575e74de4b68d61a1cff1af7b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'pack'
                         }
                     },
                     {
@@ -5983,6 +6495,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '320a2a2625f046d8937cfdeb86ef5726'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '3228a0c3efc344ce9ba039db5415df0c'
                         key: {
@@ -6125,6 +6645,35 @@ declare global {
                             }
                             element: 'last_successful_drain'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'ua_table_licensing_config'
+                        id: '33a9375a6a2a40e084f8953453421437'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '33acc23907f24f77aaf755aeaa37d4a1'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'flow_key'
+                            position: '6'
                         }
                     },
                     {
@@ -6328,6 +6877,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '3633d6cfa6014685b92a1107bbbc8f1b'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'graph_kind'
+                            position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '3635bed3b5064a309711306edda2371c'
                         key: {
                             sys_ui_section: {
@@ -6390,6 +6961,39 @@ declare global {
                             }
                             element: 'filter'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '369d21842c0b4a129a6e602a57f24e99'
+                        key: {
+                            sys_ui_form: {
+                                id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -6513,6 +7117,28 @@ declare global {
                                 }
                             }
                             field: 'acknowledged_at'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '3749ab0777c94814baf3f1c0f259b894'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '3'
                         }
                     },
                     {
@@ -6664,6 +7290,17 @@ declare global {
                             }
                             element: 'peer'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '390be39d6bd847aab20a06797213b1e1'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -6825,6 +7462,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '3a51c3a2c614411fb966a19c4ee6dfb5'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'filter_snapshot'
+                            position: '8'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '3a52376e76df48c0a5e505c1af4d9bf8'
                         deleted: true
                         key: {
@@ -6954,6 +7613,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '3c22444ad2144d618f9f0842cb9ebe89'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'source_table'
+                            position: '4'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '3c5d47700f7d4d899108a7349bc58a12'
                         key: {
@@ -7080,6 +7761,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '3d77902ac563434dbd788b46a2aa8df1'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'parent_field'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '3de80e6bf5814a99953fde496cc30323'
                         key: {
@@ -7144,6 +7848,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_form'
+                        id: '3e130d434afc41a6be786770c479e492'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '3e24e3554dfa4f099701088a1d4fa667'
                         key: {
@@ -7198,6 +7916,15 @@ declare global {
                             }
                             element: 'source_table'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '3eb517f602734e5abb9bc0b65761dbe7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'pack'
+                            language: 'en'
                         }
                     },
                     {
@@ -7309,6 +8036,28 @@ declare global {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'active'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '410f498385854e179af57140e3894863'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '3'
                         }
                     },
                     {
@@ -7803,6 +8552,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '46835d79270e40ea9e3b4885d903ee3b'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'source_table'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '468368c261a74a7e9e92108537907f2f'
                         key: {
@@ -8000,11 +8772,42 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '4852b9f5c7fe443397e517b2ab204292'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'name'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '48615ac9cfd94b45ab6f66d731786398'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'batch_size'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '486684c45ca14c8398c2eedcb0438b46'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'field_list'
                         }
                     },
                     {
@@ -8128,6 +8931,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '4b4e13191da04490ae81bef1dab890f7'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'active'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '4b51ee5e8e794248822ec26ef83e5b14'
                         deleted: true
@@ -8148,6 +8959,15 @@ declare global {
                             }
                             element: 'source_read_completed_at'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '4bd4c553a1e34a19acb1aa7dffd10d82'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'NULL'
+                            language: 'en'
                         }
                     },
                     {
@@ -8277,6 +9097,25 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '4c9bb5616a524ab9b8740f99ecf8a982'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'mapping'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '4cc343f05784471ab8da1a6a7be2789e'
+                        key: {
+                            document_key: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '4cd8fde4524a4f28b6dba9285866f00c'
                         key: {
@@ -8321,6 +9160,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '4d179e03c4eb4faab38129280b6a6cb0'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -8341,11 +9181,52 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '4d1ce54be5994c5db8d808e5fa26fbe5'
+                        key: {
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'root_table'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '4d521437c1bb415d8b74696e2efee937'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_trigger'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '4d94f00877a44663a3a562ded28360c4'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'comments'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '4d9560968f784f8b853436e67a7df864'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
                         }
                     },
                     {
@@ -8492,6 +9373,28 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '4fe009842e824b8187bf15c245394419'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'direction'
+                            position: '4'
                         }
                     },
                     {
@@ -8725,6 +9628,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '51c54d5b55cf425388aaebf9187c474a'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'name'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '51e5d4daaaca4143b8f3b2335cfd7816'
                         key: {
                             sys_ui_section: {
@@ -8821,6 +9746,14 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '52fc3390d743494d916a9c8b5dee8e5a'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'name'
                         }
                     },
                     {
@@ -8956,6 +9889,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '53bc698a01314829b195edf857cd2088'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'source_table'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '53c603c07acc4e74af3deb0372d701e3'
                         key: {
@@ -9006,6 +9947,21 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'skipped_count'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: '54bbddcc180c4f34bd72172ccd330797'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            caption: 'Expand'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -9146,6 +10102,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '55844f0f8f2249b2a541f80ab2f9e63d'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'business_key'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '558562fb98ee45fc9929f2f94d4cda42'
                         key: {
@@ -9255,6 +10222,15 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '565c0f66c3894ebfa2e9684fe90b0523'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            language: 'en'
                         }
                     },
                     {
@@ -9663,6 +10639,15 @@ declare global {
                     },
                     {
                         table: 'sys_documentation'
+                        id: '59e83e9a214b4181b82b910b36a16cb8'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_member'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
                         id: '59fac625d521482d9347d3b9f2da1166'
                         key: {
                             name: 'x_33764_sbridge_peer'
@@ -9767,6 +10752,15 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '5a5b39e877c0431fb06cb3339076e122'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            language: 'en'
                         }
                     },
                     {
@@ -10235,6 +11229,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy'
+                        id: '5ec64b1d1b1b410aa6ecbcd413bb0765'
+                        key: {
+                            table: 'x_33764_sbridge_movement_config'
+                            short_description: 'Hide Movement Pack unless configuration type is Pack'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '5edf9b4f473a422198044825a384682b'
                         key: {
@@ -10376,6 +11378,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '5ffeff06f6ee42529eecc21103e1ae4e'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'description'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '601138b7a17947dc9f4142f37df75160'
+                        key: {
+                            list_id: {
+                                id: '36a3b480e56f4d3d99ab9b259c624ed5'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'pack'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '60a4b56770184ed69c09129fa2ca9583'
                         key: {
@@ -10428,6 +11461,50 @@ declare global {
                             value: 'upsert'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '613e242522564f538710cb181d76e0bc'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'active'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '61630a59724b4bdd8d95695e63040487'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'field_list'
+                            position: '7'
                         }
                     },
                     {
@@ -10651,6 +11728,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '6398c2f8600943ddab2457e4d8c01ed7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'relationship'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '6399f12d326d4c35a8af0f6d0cec740d'
                         key: {
@@ -10788,6 +11876,14 @@ declare global {
                     },
                     {
                         table: 'sys_dictionary'
+                        id: '65331d17fa084cf48732e8f56691bfc5'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_seq'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
                         id: '656c8748304c482d82d32a5608fd301f'
                         key: {
                             name: 'x_33764_sbridge_transfer'
@@ -10826,6 +11922,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_xref'
                             element: 'source_table'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '660d78bc817f4d34badf8e51970432c3'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.split'
+                            position: '4'
                         }
                     },
                     {
@@ -11166,6 +12284,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '68d2cb871dfc4ad9806ab54e5a0ed8c8'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -11231,6 +12350,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice_set'
+                        id: '698600bb665947179698c24ba0bbe2be'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '69d91d878e8045d897e52bb13120078b'
                         key: {
@@ -11259,6 +12386,39 @@ declare global {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'http_status'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '6a39d499732d4708aa5625036e8e1130'
+                        key: {
+                            sys_ui_form: {
+                                id: '3e130d434afc41a6be786770c479e492'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -11732,6 +12892,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '6df01becc8f1468aa83ec40cfc129c6c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_action'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '6e08ef23adfe4232aaab911dabba6443'
                         key: {
@@ -11880,6 +13051,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '6fa1907733ba49c39da072b6024b1138'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'any_reference_in'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '6fa43cc511c845b6808621c04d07c929'
                         key: {
@@ -11935,6 +13117,14 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '6fe71135e1cc437096d85e58d80d2abf'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'apply_order'
                         }
                     },
                     {
@@ -12204,6 +13394,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '7320a5b710994fb694ee4b78983ee4cc'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'apply_order'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '735301a340314be7b7bce67c879e58ea'
                         key: {
@@ -12364,6 +13577,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '74e215300ed646418207eb4b5b4609dd'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'root_table'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '74f60a0d2a274ff29fc89c654d16a152'
                         key: {
@@ -12406,6 +13642,13 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_db_object'
+                        id: '7586e9a3d86b4438a855da1ebf1e13e5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
                         }
                     },
                     {
@@ -12731,6 +13974,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '77c92df3e97341ae98d874c46cb3e579'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'apply_order'
+                            position: '3'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '77dafdb83a834e0d96f5ad5206b6bfd8'
                         key: {
@@ -12784,6 +14049,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '78727db4b7ae4b09ac87cb42c6da7359'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '788439ba114f4b6ba84f9a23e4c15301'
                         key: {
@@ -12833,6 +14107,28 @@ declare global {
                                 }
                             }
                             element: 'source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '78bb6978620f4a798a0221ac41d2863d'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_instance'
+                            position: '5'
                         }
                     },
                     {
@@ -12998,6 +14294,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '7a69271f4e344ca4bde44e6b1b8c6a8f'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'active'
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: '7a7cfe9eb0a2435e8e38557aafc872c3'
                         key: {
@@ -13154,6 +14473,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '7b833f8c57e34b72a58e03980738718c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_member'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '7b8ee2bb827d47b1b5d7d107cd0d047e'
                         key: {
@@ -13173,6 +14500,15 @@ declare global {
                             }
                             element: 'error'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '7bb383bc422a4d12954b2df2400882fa'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'active'
+                            language: 'en'
                         }
                     },
                     {
@@ -13248,6 +14584,17 @@ declare global {
                                 }
                             }
                             element: 'transfer'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '7c9de146dfe245518066c050e0e29a48'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_step'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -13559,6 +14906,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '7edd81a19ddb4288ada826e895fd7b71'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'name'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '7ef6a6d388a54687aa95ec0190e39257'
                         key: {
@@ -13567,6 +14923,14 @@ declare global {
                             value: 'dry_run'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_index'
+                        id: '7f9477df1c7b48d392305717dc6e743e'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_pack_member'
+                            col_name_string: 'pack,apply_order'
                         }
                     },
                     {
@@ -13940,6 +15304,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '843ca330217e48879a086550195a73f5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_logic'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '843d4c14605a4425bd07d33d5cca8318'
                         key: {
@@ -14020,6 +15395,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '849c132ea2ab4c73995278b829c310a4'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '84c9ffacc010483c88e025577a943d23'
                         key: {
@@ -14081,6 +15464,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '8576b1a5a7d74da59bd5151b46cefa50'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -14175,6 +15559,17 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '866927b8783545e990eebbcd53e013f2'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'root_filter'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -14460,6 +15855,15 @@ declare global {
                                 }
                             }
                             field: 'transfer_sent_at'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '88b7b28d6603485cb27286248de32cfb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'fk_remap_fields'
+                            language: 'en'
                         }
                     },
                     {
@@ -15093,6 +16497,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '90a1c1e0c2bc43779d5c7703f683c19c'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'config_type'
+                            position: '2'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '90b1265be6ed4d2cb509befd1ef81af8'
                         deleted: true
@@ -15324,6 +16750,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '92db945733d94939b70916fd7b4f8b5c'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_table'
+                            position: '6'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '92f13a26a51d4f8a9d686f0ecb968fa4'
                         key: {
@@ -15486,6 +16934,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '94382280b92b4289a039b83464bda480'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'match_strategy'
+                            position: '6'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9438ee4be4bb4ac7b63d3991d1bf7892'
                         key: {
@@ -15598,6 +17068,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '961f52b4a8164376a43f8353d0fe96eb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'pill'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '9651f74eeaea4ddda03fdc68ac4faa55'
                         key: {
@@ -15665,6 +17146,39 @@ declare global {
                                 }
                             }
                             field: 'sent_count'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '9742865eee074862967aa6848ff297f5'
+                        key: {
+                            sys_ui_form: {
+                                id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -15812,6 +17326,39 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_form_section'
+                        id: '9a17c3eb91c6483eb624d6f4d6df0795'
+                        key: {
+                            sys_ui_form: {
+                                id: '3e130d434afc41a6be786770c479e492'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: '9a264c86dd7e4cdea2e0fe675057b27d'
                         key: {
@@ -15872,6 +17419,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '9a4a26ef40ba40129b3d84d02c8fc25b'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'parent_field'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '9a559ad43db24a62babd2398abf2ea5d'
                         key: {
                             sys_ui_section: {
@@ -15903,6 +17472,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '9a5d9ff799134f509d1728edee956ee4'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'af38a4f95475482d82e5c6af3fb6dff7'
@@ -15984,6 +17554,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '9b547e81b05640e5813045b04a10ac8a'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_query'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9bb344927fc046348f1f2aa11706acd7'
                         key: {
@@ -15997,6 +17576,14 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'transfer'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '9bcf69bcf84549bd9aa9fb1013304d82'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'pack'
                         }
                     },
                     {
@@ -16121,6 +17708,17 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_state'
                             value: 'finalising'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '9cd885eef6724fac8f7456df0bd7243b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'sys_id'
                             language: 'en'
                             dependent_value: 'NULL'
                         }
@@ -16608,6 +18206,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: 'a0edba3fcbc449aea591ddd2ebe63f82'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'pack'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'a0ffc7a1def04c6c90392331b7fba391'
                         key: {
@@ -16973,6 +18594,14 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_xref'
                             col_name_string: 'peer,source_table,source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'a44d4a3e74ce4a9684377355a2db1225'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
                         }
                     },
                     {
@@ -17345,6 +18974,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'a92c4cd2b8a24443b3d4226831dda91c'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'expand_mode'
+                            position: '0'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'a98d052839334e7eb94e0b36a6165a98'
                         key: {
@@ -17399,6 +19050,28 @@ declare global {
                         key: {
                             document_key: '303112dfbd494896bf0355b22f8c183a'
                             variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'aa54592b0fde4e57a72126450b673f42'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'description'
+                            position: '5'
                         }
                     },
                     {
@@ -17510,6 +19183,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'ac2020e79b5f4342b0befe77e9dc0f98'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'flow_key'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'ac312cc622f142998dcd3c0b7decadb0'
                         key: {
@@ -17542,6 +19224,15 @@ declare global {
                             }
                             element: 'sent_count'
                             position: '6'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'ac7f1529714e4183b3abf04fc459f612'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'version_note'
+                            language: 'en'
                         }
                     },
                     {
@@ -18035,7 +19726,30 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: 'b1cfee4bfb84415fbbf1ee9900b8e7cd'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'expand_query'
+                            position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: 'b1da34133c33477dbffdb831041c43d5'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -18092,6 +19806,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'b2292e4a4d5a4cb1bc6a3efae95b1be3'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_query'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'b229e271bbce4ea19ba1d3fd49db553c'
                         key: {
@@ -18113,6 +19835,20 @@ declare global {
                             value: 'rejected'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form'
+                        id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -18363,6 +20099,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'b4b3bc80d0bb41a4a3fa13e088cd90e4'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'active'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'b500fdeca6944d97974bd822d3c2bb28'
                         key: {
@@ -18373,6 +20117,23 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list'
+                        id: 'b513be8d40084d43b7ba709e0d72e43b'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                            element: 'NULL'
+                            relationship: 'NULL'
+                            parent: 'NULL'
                         }
                     },
                     {
@@ -18605,6 +20366,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'b89ae28e490b4f59a3bb624190b1f4cc'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'field_list'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form'
                         id: 'b89bb8a4914946b6b24227800b1070db'
                         key: {
@@ -18686,6 +20456,15 @@ declare global {
                             }
                             element: 'stage'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'b92a5f7fe23e49beb86293ae6b5a8256'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'name'
+                            language: 'en'
                         }
                     },
                     {
@@ -19096,6 +20875,24 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'bd549aca975a4168a9d2d5b061e61011'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_table'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'bd5f4c8067374399b5a25818a6f7dfda'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_field'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'bd6c22ce1b074d4facae4e3591b63c24'
                         key: {
@@ -19257,6 +21054,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: 'be473638689a464c8554faa44ff6a86d'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'name'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: 'be59cc7873164efb8a6817d407969933'
                         key: {
                             sys_ui_section: {
@@ -19314,6 +21133,21 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_section'
+                        id: 'bea510e712364fdd9c67742a1b9465eb'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            caption: 'Pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'bec754fa5e2245af87e4005fa1237b11'
                         key: {
@@ -19338,6 +21172,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'bed81785176a4418b2ea84d005e6272a'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'af38a4f95475482d82e5c6af3fb6dff7'
@@ -19355,6 +21190,14 @@ declare global {
                             }
                             element: 'direction'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'bedcf87db08744f9a5de671b417c9653'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'NULL'
                         }
                     },
                     {
@@ -19450,6 +21293,29 @@ declare global {
                             }
                             element: 'source_sys_id'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'c02c9990a3974759a8547d91d5daeb69'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'root_filter'
                         }
                     },
                     {
@@ -19655,6 +21521,28 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'inserted_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'c25aac3ba2b942439a67854ffd32fd3a'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'id_scope'
+                            position: '3'
                         }
                     },
                     {
@@ -19979,6 +21867,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'c5b9acf6275542efb6f88a17851deae1'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'description'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'c5ba2ba594214188a05797228eed37b9'
                         key: {
@@ -20117,6 +22014,29 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'c6f2fb154cee4590a1330d002217c8cb'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'fk_remap_fields'
                         }
                     },
                     {
@@ -20294,6 +22214,17 @@ declare global {
                             }
                             element: 'mode'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'c8c8c29fdeb04093ba206a057f2eae7b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'encoded_query'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -20630,6 +22561,28 @@ declare global {
                             }
                             element: '.split'
                             position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'cb32ecb0f6194a10984e71975de21cf2'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'version_note'
+                            position: '2'
                         }
                     },
                     {
@@ -20974,6 +22927,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: 'cd4c1f999bcf4e60a46a22609a248191'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'active'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'cd60bdb138764f8f8750f64540b195b3'
                         key: {
@@ -21012,6 +22988,14 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice_set'
+                        id: 'cdc93df83c9449128f1c6f54261d48d8'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
                         }
                     },
                     {
@@ -21444,6 +23428,21 @@ declare global {
                         }
                     },
                     {
+                        table: 'ua_table_licensing_config'
+                        id: 'd20ca43e4a474daebec180bd8688138c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'd218a12c988e41f8a0f43963959c0072'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'fk_remap_fields'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'd245aa240cf3495db9494aa3f4e58f5a'
                         key: {
@@ -21521,6 +23520,17 @@ declare global {
                                     name: 'x_33764_sbridge.operator'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'd3992d49f5d140bb94595f43f6daebcb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'roots'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -21679,6 +23689,13 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_db_object'
+                        id: 'd56dd4e813654cb98b526d00a263756e'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: 'd57db9641a23423db3b595778d01a02f'
                         key: {
@@ -21754,6 +23771,28 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_outbox'
                             col_name_string: 'source_sys_id,peer'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'd5f12a90030c4e48948356f42bdfc86b'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.end_split'
+                            position: '7'
                         }
                     },
                     {
@@ -21940,6 +23979,14 @@ declare global {
                             }
                             element: 'error'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'd9b8d2546bfe418585d2dea5cd2c8e82'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_member'
                         }
                     },
                     {
@@ -22190,6 +24237,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'dc9cb90804194bfb83df7303f1037166'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_member'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'dc9e07933c8f4a42b644987016705d2c'
                         key: {
@@ -22292,6 +24348,21 @@ declare global {
                             id: '828bd8e3134440018f6442652feee41c'
                             table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
                             field: 'script'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: 'dd21651738cb4734b095d3b36dc22a69'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            caption: 'Root'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -22630,6 +24701,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'e178182378e34b71a10d8f20479466f2'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'e1a38b025f91441884d5a7a54182d16e'
                         key: {
@@ -22714,6 +24793,14 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'table'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'e237cefd2e0b487889e2e17b7b9157a7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'flow_key'
                         }
                     },
                     {
@@ -23003,6 +25090,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: 'e4b675de422446938d1ae1f394d0490e'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'pack'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'e4bb14e1fb2d4bcab3bba1baf63055e3'
                         key: {
@@ -23046,6 +25147,15 @@ declare global {
                             value: 'once'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'e526fc0b2ae943728e2df7a0a236af87'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'pack'
+                            language: 'en'
                         }
                     },
                     {
@@ -23097,6 +25207,15 @@ declare global {
                         id: 'e61006dc76374da8a57a29cb7e2b82b4'
                         key: {
                             name: 'x_33764_sbridge_transfer'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'e63e2e70ebe34b24a0afaad8dac72238'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_filter'
+                            language: 'en'
                         }
                     },
                     {
@@ -23371,6 +25490,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'e7add8367dda43e2b6ad6f138acb1abf'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_filter'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'e7af59350dbe436cb46b78e9e398f485'
                         key: {
@@ -23411,6 +25538,14 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice_set'
+                        id: 'e83f56c1bd344ea0ac7509fe952f45a0'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
                         }
                     },
                     {
@@ -23868,6 +26003,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'edbab63262654d1d974121308418b8a7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'active'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: 'edde34115d764601a2ec926b35a2f38c'
                         key: {
@@ -24128,6 +26272,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice_set'
+                        id: 'f005442d1cda4b25a4db237c33f60fd5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'f00d0bf21d4b484b834566428a6e03ed'
                         key: {
@@ -24314,6 +26466,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'f11d9fa7537e441ca3344503642fc702'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_table'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f15af4f855c44f6480f10023467ee2b4'
                         key: {
@@ -24333,6 +26493,43 @@ declare global {
                             }
                             element: 'selected_count'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'f161f131ce444e8e812c8165266fd55d'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'active'
+                            position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: 'f17a6fbd57f7403982e34fe508d81835'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            caption: 'Member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -24377,6 +26574,15 @@ declare global {
                             }
                             element: 'source_table'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'f251872b17c4419bb599d2a3578b1752'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_seq'
+                            language: 'en'
                         }
                     },
                     {
@@ -24528,6 +26734,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f39bab998bc54d7bb9e8858b4deb2532'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -24737,6 +26944,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'f551bc752c424df0a0583a89cfd722d5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'source_table'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f55fc22fba304823a70abb01cae1dad3'
                         deleted: true
@@ -24757,6 +26973,15 @@ declare global {
                             }
                             element: 'initiated_by'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'f5dc9906540d4d07bbd6389317071610'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'apply_order'
+                            language: 'en'
                         }
                     },
                     {
@@ -24893,6 +27118,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'f6fbd8619b86470980c0b5515e761e87'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_field'
+                        }
+                    },
+                    {
                         table: 'sys_security_acl_role'
                         id: 'f7293dcfd1364265aafac544663f9d0c'
                         key: {
@@ -24910,6 +27143,17 @@ declare global {
                         id: 'f7634d55682347f997b83eb1198a05c9'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'f7e265bad2c841d89805a5649d6a93d1'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            value: 'pack'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -24998,6 +27242,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: 'f8e24c0fbf864e0d8f96f99ed4635a84'
+                        key: {
+                            document_key: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'f944f214ba104beaadb5b440c8f0790c'
                         key: {
@@ -25025,6 +27277,17 @@ declare global {
                                     name: 'x_33764_sbridge.worker'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'f9953246515f4eab9896bbea3ff74d09'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            value: 'table'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
