@@ -134,7 +134,9 @@ Apply the referenced table first (CI before hardware, catalog item before variab
 
 ## Empty Data Execution hygiene (0.4.2)
 
-0.4.1 worker ACLs and Record Mapping xref are unchanged. This patch only stops empty Data Execution rows.
+Kept on 0.4.3. These guards are in this build, so installing it on a 0.4.2 instance does not remove them.
+
+0.4.2 stopped empty Data Execution rows. It did not change the 0.4.1 Record Mapping xref.
 
 `BridgeTransport.drain` opens a new sync run on every poll. Dual-write treated that run like a movement and inserted `x_33764_sbridge_data_execution` with `legacy_key` `run:<drain run>`. A drain run has no seed policy, so **Configuration** stayed empty. Closing the run then set **State** = Completed and **Result** = Successful, often with the same selected count as the real execution a second earlier. The next poll inserted another shell. `continueQueued` does not insert a Data Execution; it only pages controller rows that already have a configuration.
 
