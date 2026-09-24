@@ -159,8 +159,9 @@ BridgeCapture.prototype = {
      * Other reference fields stay as sys_ids; apply remaps them when a mapping exists.
      * Path A children also union the child include-list (name, installed_on,
      * software, and the other foreign keys). payload.record_class is set when
-     * sys_class_name is a subclass, so apply can insert cmdb_sam_sw_install
-     * without changing the policy table on payload.table.
+     * sys_class_name is a subclass. Apply still inserts cmdb_software_instance
+     * when cmdb_sam_sw_install is not on the target. payload.table stays the
+     * policy table.
      *
      * Journal fields are read through getJournalEntry rather than copied as a field
      * value: work notes and comments live in `sys_journal_field`, and reading the

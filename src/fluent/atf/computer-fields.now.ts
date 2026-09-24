@@ -5,7 +5,7 @@ Test(
         $id: Now.ID['atf-computer-fields'],
         name: 'Bridge — computer include list and child reference map',
         description:
-            '0.4.6: Path A child capture includes installed_on and software. Computer include-list and Case 2 alm_hardware.ci stay as they were.',
+            '0.4.7: Path A child capture includes installed_on and software. Apply seals those fields onto cmdb_software_instance. Computer include-list and Case 2 alm_hardware.ci stay as they were.',
         active: true,
         failOnServerError: true,
     },

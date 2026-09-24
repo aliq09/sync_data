@@ -23,6 +23,11 @@
  * thin list still sends name, installed_on, and software. A software-instance
  * insert whose software value is a source sys_id the target does not have is
  * aborted by a before rule with no last error and canCreate still true.
+ *
+ * 0.4.7 does not retarget that insert onto cmdb_sam_sw_install. Apply seals
+ * name and the Record Mapping for installed_on onto cmdb_software_instance
+ * before insert. The software reference follows the dictionary (cmdb_ci_spkg
+ * when Software Asset Management is not installed).
  */
 var BRIDGE_CHILD_REFS = {
     cmdb_ci_network_adapter: {

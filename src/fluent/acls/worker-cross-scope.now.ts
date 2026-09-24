@@ -121,6 +121,60 @@ CrossScopePrivilege({
 })
 
 CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-software-instance-read'],
+    status: 'allowed',
+    operation: 'read',
+    targetName: 'cmdb_software_instance',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-software-instance-write'],
+    status: 'allowed',
+    operation: 'write',
+    targetName: 'cmdb_software_instance',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-software-instance-create'],
+    status: 'allowed',
+    operation: 'create',
+    targetName: 'cmdb_software_instance',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-ci-spkg-read'],
+    status: 'allowed',
+    operation: 'read',
+    targetName: 'cmdb_ci_spkg',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-ci-spkg-write'],
+    status: 'allowed',
+    operation: 'write',
+    targetName: 'cmdb_ci_spkg',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
+    $id: Now.ID['csp-cmdb-ci-spkg-create'],
+    status: 'allowed',
+    operation: 'create',
+    targetName: 'cmdb_ci_spkg',
+    targetScope: 'global',
+    targetType: 'sys_db_object',
+})
+
+CrossScopePrivilege({
     $id: Now.ID['csp-metadata-writer-execute'],
     status: 'allowed',
     operation: 'execute',

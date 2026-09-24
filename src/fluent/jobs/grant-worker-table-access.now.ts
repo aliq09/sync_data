@@ -56,3 +56,23 @@ Record({
         script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
     },
 })
+
+/**
+ * 0.4.6 had no new fix script, so an instance that already ran the
+ * metadata publisher will not re-run it. This record only opens
+ * application access for the software-instance insert. It does not grant
+ * admin and it does not publish the metadata writer again.
+ */
+Record({
+    $id: Now.ID['fix-open-software-instance-access'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Open software instance application access',
+        description:
+            '0.4.7. Open cross-scope read/create/update on cmdb_software_instance and cmdb_ci_spkg. Does not grant admin. Does not use cmdb_sam_sw_install.',
+        before: false,
+        unloadable: true,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/open-software-instance-access.js'),
+    },
+})

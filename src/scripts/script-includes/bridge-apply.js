@@ -111,6 +111,7 @@ BridgeApply.prototype = {
         var translated = null
         if (item.op !== 'delete') {
             maps = maps || this.refs.prepare(null, peerId)
+            this._maps = maps
             maps.referenceHandling = this._referenceHandling(policy, maps)
             translated = this.refs.translate(item, this.config.refMap(policy), maps)
             // Software-instance (and the other Path A children) need local FKs
@@ -479,59 +480,62 @@ BridgeApply.prototype = {
                 }
             }
             this._setValues(upd, values)
+            if (this._isSoftwareItem(item, table)) {
+                this._stampSoftwareFields(upd, values)
+                this._rememberSoftwareHold(item, upd)
+            }
             var updated = upd.update()
             if (updated) return { sys_id: updated, operation: 'update' }
             var updateFallback = this._metadataFallback(item, values, 'update', existing, upd)
             if (updateFallback) return updateFallback
-            return { error: this._writeError('update', upd.getTableName() || table, upd, existing) }
+            return { error: this._writeError('update', upd.getTableName() || table, upd, existing, item) }
         }
 
         return this._insert(item, policy, values)
     },
 
     _insert: function (item, policy, values) {
+        // cmdb_sam_sw_install is not required. PDIs without Software Asset
+        // Management do not have that table, and the inbound policy table is
+        // cmdb_software_instance. A second insert on another class only hid
+        // the first failure.
         var table = this._insertGlideTable(item)
-        var result = this._insertInto(table, item, policy, values)
-        if (result && result.sys_id) return result
-        if (result && result.error && String(result.error).indexOf('refusing to overwrite') !== -1) return result
-
-        // Parent cmdb_software_instance insert is what returns no sys_id with
-        // canCreate=true: a before rule aborts that class and the install
-        // belongs on cmdb_sam_sw_install. The metadata writer is not used.
-        // It is limited to the four metadata tables and would hit the same rule.
-        var alternate = ''
-        if (table === 'cmdb_sam_sw_install' && item.table && item.table !== table) alternate = item.table
-        else if (table === 'cmdb_software_instance' && this._tableValid('cmdb_sam_sw_install')) {
-            alternate = 'cmdb_sam_sw_install'
-        }
-        if (alternate) {
-            var other = this._insertInto(alternate, item, policy, values)
-            if (other && other.sys_id) return other
-            if (other && other.error && result && result.error) {
-                result = { error: result.error + '; ' + alternate + ': ' + other.error }
-            } else if (other && other.error) result = other
-        }
-
-        if (values && values.discovery_source && result && !result.sys_id && this._isSoftwareItem(item, table)) {
-            var stripped = this._copyValuesExcept(values, 'discovery_source')
-            var retryTable =
-                this._tableValid('cmdb_sam_sw_install') && this._isSoftwareItem(item, table)
-                    ? 'cmdb_sam_sw_install'
-                    : table
-            var retry = this._insertInto(retryTable, item, policy, stripped)
-            if (retry && retry.sys_id) return retry
-            if (retry && retry.error && result && result.error) {
-                return { error: result.error + '; without discovery_source: ' + retry.error }
-            }
-        }
-        return result
+        return this._insertInto(table, item, policy, values)
     },
 
     _insertInto: function (table, item, policy, values) {
         var gr = new GlideRecord(table)
         if (!gr.isValid()) return { error: 'invalid table ' + table }
+        if (this._isSoftwareItem(item, table)) this._sealSoftwareInstance(item, values, this._maps, true)
         gr.initialize()
         this._setValues(gr, values)
+        if (this._isSoftwareItem(item, table)) {
+            // Stamp the mandatory pair last. A dangling software setValue can
+            // clear name, and a failed insert often wipes the GlideRecord, which
+            // is why 0.4.6 reported "empty name, installed_on" after the outbox
+            // already had both. Read them back before insert. Skip the insert
+            // only when the working copy itself is missing one of them — that
+            // insert would abort and the cleared record would look the same.
+            this._stampSoftwareFields(gr, values)
+            this._rememberSoftwareHold(item, gr)
+            if (!values.name || !values.installed_on) {
+                var can = ''
+                try {
+                    can = gr.canCreate() ? 'canCreate=true' : 'canCreate=false'
+                } catch (ignore) {
+                    can = ''
+                }
+                return {
+                    error:
+                        'insert into ' +
+                        table +
+                        ' aborted before insert' +
+                        (can ? ' (' + can + ')' : '') +
+                        ': ' +
+                        this._softwareAbortDetail(item, null, 'before'),
+                }
+            }
+        }
 
         if (policy.preserve_sys_id) {
             /**
@@ -565,25 +569,26 @@ BridgeApply.prototype = {
             gr
         )
         if (insertFallback) return insertFallback
-        return { error: this._writeError('insert', table, gr) }
+        return { error: this._writeError('insert', table, gr, '', item) }
     },
 
     /**
      * Insert class for this payload. payload.table stays the policy table so
      * the inbound policy matches. record_class is used only when it extends
-     * that table (a software install queried through cmdb_software_instance).
+     * that table. cmdb_sam_sw_install is never selected: this has to succeed
+     * on cmdb_software_instance when that subclass is not installed.
      */
     _insertGlideTable: function (item) {
         var table = item && item.table ? item.table : ''
         var cls = item && item.record_class ? String(item.record_class) : ''
-        if (cls && cls !== table && this._tableValid(cls) && this._extendsTable(cls, table)) return cls
-        // Software installs are stored on cmdb_sam_sw_install. Inserting the
-        // parent class is the call that returns no sys_id while canCreate is true.
         if (
-            (table === 'cmdb_software_instance' || cls === 'cmdb_software_instance') &&
-            this._tableValid('cmdb_sam_sw_install')
+            cls &&
+            cls !== table &&
+            cls !== 'cmdb_sam_sw_install' &&
+            this._tableValid(cls) &&
+            this._extendsTable(cls, table)
         ) {
-            return 'cmdb_sam_sw_install'
+            return cls
         }
         return table
     },
@@ -621,15 +626,277 @@ BridgeApply.prototype = {
         return false
     },
 
-    _copyValuesExcept: function (values, skip) {
-        var out = {}
-        values = values || {}
-        for (var field in values) {
-            if (!Object.prototype.hasOwnProperty.call(values, field)) continue
-            if (field === skip) continue
-            out[field] = values[field]
+    /**
+     * Put name and a local installed_on back on the working copy.
+     *
+     * Translate can already have blanked installed_on: an explicit xref or
+     * null_and_flag miss stores '', and _localizeChildValues skips an empty
+     * raw value, so the outbox sys_id is never restored. An implicit miss
+     * keeps the source sys_id. That id is not a CI on this instance, so the
+     * reference element clears it and the before rule then clears name when
+     * software is also a source sys_id. The hardcoded software reference
+     * (cmdb_software_product_model) is not the dictionary target on a PDI
+     * without SAM; a cmdb_ci_spkg hit was discarded because it was not a row
+     * in that missing table.
+     *
+     * This does not create a CI for installed_on. It does not read or write
+     * cmdb_sam_sw_install.
+     */
+    _sealSoftwareInstance: function (item, values, maps, createMissing) {
+        if (!item || !values || !this._isSoftwareItem(item, item.table)) return
+        var payload = item.values || {}
+        if (!values.name && payload.name) values.name = String(payload.name).substr(0, 255)
+        this._coerceSoftwareIdentity(item, values)
+        if (!values.name && payload.display_name) values.name = String(payload.display_name).substr(0, 255)
+
+        var installed = this._resolveInstalledOn(item, values, maps)
+        if (installed) {
+            values.installed_on = installed
+            item._bridge_installed_on_note = ''
+        } else {
+            var sourceOn = payload.installed_on || values.installed_on || ''
+            var ciName = this._installedOnName(item)
+            var named = ciName ? this._ciNameLookup(ciName) : { id: '', count: 0 }
+            if (sourceOn && this._rowExists('cmdb_ci', sourceOn)) {
+                values.installed_on = String(sourceOn)
+                item._bridge_installed_on_note = ''
+            } else {
+                // A source sys_id that is not a local CI is what the before
+                // rule blanks. Leave it off the GlideRecord and say why.
+                delete values.installed_on
+                item._bridge_installed_on_note =
+                    'installed_on ' +
+                    (sourceOn || '(empty)') +
+                    ' is not a cmdb_ci on this instance' +
+                    (ciName ? ' (computer name ' + ciName + ')' : '') +
+                    (named.count > 1
+                        ? '; cmdb_ci name matched more than one row'
+                        : '; Record Mapping and cmdb_ci name lookup missed')
+            }
         }
-        return out
+
+        this._resolveSoftwareField(item, values, maps, !!createMissing)
+    },
+
+    _installedOnName: function (item) {
+        var keys = item && item.ref_keys && item.ref_keys.installed_on && item.ref_keys.installed_on.keys
+        if (!keys) return ''
+        return keys.name || keys.display_name || ''
+    },
+
+    /**
+     * PDI2 computer sys_id for installed_on.
+     * Prefers a value that is already a cmdb_ci row, then Record Mapping
+     * with no source_table filter (the computer row is stored under
+     * cmdb_ci_computer, not cmdb_ci), then a unique cmdb_ci name. An empty
+     * xref cache entry is not trusted: a miss cached under the wrong
+     * preferred table would otherwise stick.
+     */
+    _resolveInstalledOn: function (item, values, maps) {
+        var payload = (item && item.values) || {}
+        var payloadId = String(payload.installed_on || '').replace(/^\s+|\s+$/g, '')
+        var current = String((values && values.installed_on) || '').replace(/^\s+|\s+$/g, '')
+        var peerId = maps && maps.peerId ? maps.peerId : ''
+
+        // Record Mapping wins over a business-key guess. The computer row is
+        // stored with source_table = the policy class (cmdb_ci_computer or a
+        // subclass), so this lookup does not filter source_table and does not
+        // trust an empty xref cache entry.
+        if (payloadId) {
+            var mapped = this._lookupMappedCi(peerId, payloadId, maps)
+            if (mapped) return mapped
+            if (this._rowExists('cmdb_ci', payloadId)) return payloadId
+        }
+        if (current && current !== payloadId) {
+            var mappedCurrent = this._lookupMappedCi(peerId, current, maps)
+            if (mappedCurrent) return mappedCurrent
+            if (this._rowExists('cmdb_ci', current)) return current
+        }
+
+        var ciName = this._installedOnName(item)
+        if (!ciName) return ''
+        var named = this._ciNameLookup(ciName)
+        return named.count === 1 ? named.id : ''
+    },
+
+    _lookupMappedCi: function (peerId, sourceSysId, maps) {
+        if (!peerId || !sourceSysId) return ''
+        var cacheKey = peerId + '|' + sourceSysId
+        if (maps && maps.xrefHits && maps.xrefHits[cacheKey] && this._rowExists('cmdb_ci', maps.xrefHits[cacheKey])) {
+            return maps.xrefHits[cacheKey]
+        }
+        var target = ''
+        try {
+            var gr = new GlideRecord(BridgeConfig.TABLE.xref)
+            gr.addQuery('peer', peerId)
+            gr.addQuery('source_sys_id', sourceSysId)
+            gr.setLimit(10)
+            gr.query()
+            while (gr.next()) {
+                var id = gr.getValue('target_sys_id') || ''
+                if (id && this._rowExists('cmdb_ci', id)) {
+                    target = id
+                    break
+                }
+            }
+        } catch (e) {
+            target = ''
+        }
+        if (target && maps) {
+            if (!maps.xrefHits) maps.xrefHits = {}
+            maps.xrefHits[cacheKey] = target
+        }
+        return target
+    },
+
+    _ciNameLookup: function (name) {
+        if (!name || !this._tableValid('cmdb_ci')) return { id: '', count: 0 }
+        try {
+            var gr = new GlideRecord('cmdb_ci')
+            if (!gr.isValidField('name')) return { id: '', count: 0 }
+            gr.addQuery('name', name)
+            gr.setLimit(2)
+            gr.query()
+            if (!gr.next()) return { id: '', count: 0 }
+            var id = gr.getUniqueValue() || ''
+            if (gr.next()) return { id: '', count: 2 }
+            return { id: id, count: id ? 1 : 0 }
+        } catch (e) {
+            return { id: '', count: 0 }
+        }
+    },
+
+    /**
+     * Keep software only when the dictionary reference (cmdb_ci_spkg on a
+     * PDI without SAM, not the hardcoded product model) contains the row.
+     * Create that package as the integration user when the name is known.
+     * A dangling source sys_id is omitted so it cannot abort the install.
+     * name and installed_on are not cleared here.
+     */
+    _resolveSoftwareField: function (item, values, maps, createMissing) {
+        var payload = (item && item.values) || {}
+        var raw = values.software || payload.software || ''
+        raw = raw ? String(raw) : ''
+        var insertTable = this._insertGlideTable(item)
+        var dictRef =
+            this._dictionaryReference(insertTable, 'software') ||
+            this._dictionaryReference(item.table, 'software') ||
+            ''
+        if (!raw) {
+            delete values.software
+            item._bridge_software_note = ''
+            return
+        }
+        if (dictRef && this._rowExists(dictRef, raw)) {
+            values.software = raw
+            item._bridge_software_note = ''
+            return
+        }
+        var peerId = maps && maps.peerId ? maps.peerId : ''
+        var mapped = this._lookupMappedOnTable(peerId, raw, dictRef, maps)
+        if (mapped) {
+            values.software = mapped
+            item._bridge_software_note = ''
+            return
+        }
+        var byName = dictRef ? this._lookupSoftwareByName(item, 'software', dictRef) : ''
+        if (byName && (!dictRef || this._rowExists(dictRef, byName))) {
+            values.software = byName
+            item._bridge_software_note = ''
+            return
+        }
+        if (createMissing) {
+            var created = this._insertSoftwareDependency(item, 'software', { reference: dictRef }, raw, maps)
+            if (created && (!dictRef || this._rowExists(dictRef, created))) {
+                values.software = created
+                item._bridge_software_note = ''
+                return
+            }
+        }
+        delete values.software
+        item._bridge_software_note =
+            'software ' +
+            raw +
+            ' omitted (not a local ' +
+            (dictRef || 'software reference') +
+            ' row)'
+    },
+
+    _lookupMappedOnTable: function (peerId, sourceSysId, tableName, maps) {
+        if (!peerId || !sourceSysId || !tableName) return ''
+        var cacheKey = peerId + '|' + sourceSysId
+        if (maps && maps.xrefHits && maps.xrefHits[cacheKey] && this._rowExists(tableName, maps.xrefHits[cacheKey])) {
+            return maps.xrefHits[cacheKey]
+        }
+        try {
+            var gr = new GlideRecord(BridgeConfig.TABLE.xref)
+            gr.addQuery('peer', peerId)
+            gr.addQuery('source_sys_id', sourceSysId)
+            gr.setLimit(10)
+            gr.query()
+            while (gr.next()) {
+                var id = gr.getValue('target_sys_id') || ''
+                if (id && this._rowExists(tableName, id)) return id
+            }
+        } catch (e) {}
+        return ''
+    },
+
+    _dictionaryReference: function (tableName, field) {
+        if (!tableName || !field || !this._tableValid(tableName)) return ''
+        try {
+            var gr = new GlideRecord(tableName)
+            if (!gr.isValidField(field)) return ''
+            var element = gr.getElement(field)
+            var ed = element && element.getED()
+            if (!ed) return ''
+            var type = String(ed.getInternalType() || '')
+            if (type !== 'reference' && type !== 'glide_list') return ''
+            return String(ed.getReference() || '')
+        } catch (e) {
+            return ''
+        }
+    },
+
+    _stampSoftwareFields: function (gr, values) {
+        if (!gr || !values) return
+        // Reference fields after the string name, then name again so a
+        // reference setValue cannot be the last write to the mandatory pair.
+        if (values.software) this._stampField(gr, 'software', values.software)
+        if (values.installed_on) this._stampField(gr, 'installed_on', values.installed_on)
+        if (values.name) this._stampField(gr, 'name', values.name)
+        if (values.installed_on && !gr.getValue('installed_on')) this._stampField(gr, 'installed_on', values.installed_on)
+        if (values.name && !gr.getValue('name')) this._stampField(gr, 'name', values.name)
+    },
+
+    _stampField: function (gr, field, value) {
+        if (!gr || !field || value === undefined || value === null || String(value) === '') return
+        if (!gr.isValidField(field)) return
+        var text = String(value)
+        try {
+            gr.setValue(field, text)
+        } catch (e) {}
+        try {
+            gr[field] = text
+        } catch (e2) {}
+        try {
+            var element = gr.getElement(field)
+            if (element && element.setValue) element.setValue(text)
+        } catch (e3) {}
+    },
+
+    _rememberSoftwareHold: function (item, gr) {
+        if (!item) return
+        item._bridge_held = {
+            name: '',
+            installed_on: '',
+            software: '',
+        }
+        try {
+            item._bridge_held.name = gr.getValue('name') || ''
+            item._bridge_held.installed_on = gr.getValue('installed_on') || ''
+            item._bridge_held.software = gr.getValue('software') || ''
+        } catch (e) {}
     },
 
     /**
@@ -646,10 +913,17 @@ BridgeApply.prototype = {
     _prepareCmdbChild: function (item, values, maps, createMissing) {
         if (!item || !values) return
         var translator = this.refs
-        if (!translator || !translator.childReferenceFieldNames) return
-        if (!this._isCmdbChildItem(item)) return
+        if (!translator || !translator.childReferenceFieldNames) {
+            this._sealSoftwareInstance(item, values, maps, !!createMissing)
+            return
+        }
+        if (!this._isCmdbChildItem(item)) {
+            this._sealSoftwareInstance(item, values, maps, !!createMissing)
+            return
+        }
         this._coerceSoftwareIdentity(item, values)
         this._localizeChildValues(item, values, maps, !!createMissing)
+        this._sealSoftwareInstance(item, values, maps, !!createMissing)
     },
 
     _isCmdbChildItem: function (item) {
@@ -685,6 +959,14 @@ BridgeApply.prototype = {
                 translator.childReferenceSpec(item.record_class || item.table, field) ||
                 translator.childReferenceSpec(item.table, field)
             var refTable = (spec && spec.reference) || ''
+            // The live dictionary wins over the hardcoded product-model spec.
+            // On a PDI without SAM, software references cmdb_ci_spkg, and
+            // cmdb_software_product_model is not a table.
+            var dictRef =
+                this._dictionaryReference(item.record_class || item.table, field) ||
+                this._dictionaryReference(item.table, field)
+            if (dictRef) refTable = dictRef
+            else if (refTable && !this._tableValid(refTable)) refTable = ''
             if (refTable && this._rowExists(refTable, raw)) continue
             var sourceId = String(raw)
             var replacement = ''
@@ -699,7 +981,7 @@ BridgeApply.prototype = {
                 createMissing &&
                 (field === 'software' || field === 'software_model')
             ) {
-                replacement = this._insertSoftwareDependency(item, field, spec, sourceId, maps) || ''
+                replacement = this._insertSoftwareDependency(item, field, { reference: refTable }, sourceId, maps) || ''
             }
             if (replacement && refTable && !this._rowExists(refTable, replacement)) replacement = ''
             if (replacement) {
@@ -756,7 +1038,7 @@ BridgeApply.prototype = {
 
     _softwareTables: function (preferred, item, field) {
         var stamped = item.ref_keys && item.ref_keys[field] ? item.ref_keys[field].table : ''
-        var names = [preferred, stamped, 'cmdb_software_product_model', 'cmdb_ci_spkg']
+        var names = [preferred, stamped, 'cmdb_ci_spkg', 'cmdb_software_product_model']
         var seen = {}
         var out = []
         for (var i = 0; i < names.length; i++) {
@@ -888,8 +1170,9 @@ BridgeApply.prototype = {
      * including Deny-Unless rules that an extra Allow-If cannot override.
      * The fallback writes the same row as the same user from global scope.
      *
-     * cmdb_software_instance is not in this list. Its no-sys_id insert happens
-     * with canCreate=true, which is a before-rule abort, not a Deny-Unless ACL.
+     * cmdb_software_instance is not in this list. A global GlideRecord would
+     * still run the same before rules, and the worker is not granted admin.
+     * 0.4.7 seals name and installed_on and opens cross-scope create instead.
      */
     _isMetadataTable: function (table) {
         return (
@@ -934,7 +1217,7 @@ BridgeApply.prototype = {
             this._auditMetadataPrivilege(item, op, result.sys_id)
             return { sys_id: result.sys_id, operation: op, privilege: 'global_metadata_writer' }
         }
-        var first = this._writeError(op, item.table, gr, op === 'update' ? sysId : '')
+        var first = this._writeError(op, item.table, gr, op === 'update' ? sysId : '', item)
         var second = result && result.error ? result.error : 'metadata writer returned no sys_id'
         return { error: first + '; metadata writer: ' + second }
     },
@@ -1030,7 +1313,7 @@ BridgeApply.prototype = {
      * the only way to tell those apart. Metadata tables retry through the
      * global writer; every other table stays on this user with no privilege.
      */
-    _writeError: function (op, table, gr, sysId) {
+    _writeError: function (op, table, gr, sysId, item) {
         var detail = ''
         var can = ''
         try {
@@ -1046,9 +1329,64 @@ BridgeApply.prototype = {
         }
         var where = op + ' into ' + table
         if (sysId) where = op + ' of ' + table + ' ' + sysId
+        var sealed = this._softwareAbortDetail(item, gr, 'after')
+        if (sealed) detail = detail ? detail + '; ' + sealed : sealed
         var childDetail = this._childWriteDetail(gr)
         if (childDetail) detail = detail ? detail + '; ' + childDetail : childDetail
         return where + ' returned no sys_id' + (can ? ' (' + can + ')' : '') + (detail ? ': ' + detail : '')
+    },
+
+    /**
+     * payload vs the values read back from the GlideRecord before insert.
+     * Post-insert getValue is not enough: a failed insert often clears the
+     * record, so both mandatory fields look empty even when setValue held them
+     * and a before rule aborted.
+     */
+    _softwareAbortDetail: function (item, gr, phase) {
+        if (!item || !this._isSoftwareItem(item, item.table)) return ''
+        var payload = item.values || {}
+        var held = item._bridge_held || {}
+        var parts = []
+        parts.push(
+            'payload name=' +
+                this._diag(payload.name) +
+                ' installed_on=' +
+                this._diag(payload.installed_on) +
+                ' software=' +
+                this._diag(payload.software)
+        )
+        parts.push(
+            'held before insert name=' +
+                this._diag(held.name) +
+                ' installed_on=' +
+                this._diag(held.installed_on) +
+                ' software=' +
+                this._diag(held.software)
+        )
+        if (phase === 'after' && gr) {
+            var afterName = ''
+            var afterOn = ''
+            try {
+                afterName = gr.getValue('name') || ''
+                afterOn = gr.getValue('installed_on') || ''
+            } catch (e) {}
+            parts.push('after insert name=' + this._diag(afterName) + ' installed_on=' + this._diag(afterOn))
+            if ((held.name && !afterName) || (held.installed_on && !afterOn)) {
+                parts.push('before-rule cleared name or installed_on during insert')
+            }
+        }
+        if (!held.name || !held.installed_on) {
+            parts.push('name and installed_on were not both on the GlideRecord before insert')
+        }
+        if (item._bridge_installed_on_note) parts.push(item._bridge_installed_on_note)
+        if (item._bridge_software_note) parts.push(item._bridge_software_note)
+        return parts.join('; ')
+    },
+
+    _diag: function (value) {
+        if (value === undefined || value === null || String(value) === '') return '(empty)'
+        var text = String(value)
+        return text.length > 80 ? text.substr(0, 80) : text
     },
 
     /**
