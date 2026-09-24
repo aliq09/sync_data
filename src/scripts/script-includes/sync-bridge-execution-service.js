@@ -360,6 +360,11 @@ SyncBridgeExecutionService.prototype = {
      * Does not call BridgeTransport.
      */
     continueQueued: function () {
+        try {
+            new BridgeAck().sweepTimeouts()
+        } catch (e) {
+            gs.warn('[bridge] acknowledgement timeout sweep failed (ignored): ' + e)
+        }
         var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
         dex.addQuery('legacy_key', 'STARTSWITH', 'ctrl:')
         dex.addQuery('execution_state', 'IN', 'queued,validating,preparing,reading_source,sending')
@@ -908,7 +913,10 @@ SyncBridgeExecutionService.prototype = {
             updated_count: snap.updated_count,
             skipped_count: snap.skipped_count,
             failed_count: snap.failed_count,
-            ack_skipped: true,
+            received_count: snap.received_count,
+            acknowledged_count: snap.acknowledged_count,
+            ack_skipped: computed.ack_skipped !== false,
+            ack_detail: computed.ack_detail || '',
             concurrent_blocked: blocked,
             open: idle ? false : !terminal,
             indeterminate: idle ? false : !!computed.indeterminate,
@@ -934,11 +942,16 @@ SyncBridgeExecutionService.prototype = {
             updated_count: n('updated_count'),
             skipped_count: n('skipped_count'),
             failed_count: n('failed_count'),
+            received_count: n('received_count'),
+            acknowledged_count: n('acknowledged_count'),
             source_read_completed_at: dex.getValue('source_read_completed_at') || '',
             transfer_sent_at: dex.getValue('transfer_sent_at') || '',
             transfer_completed_at: dex.getValue('transfer_completed_at') || '',
             target_received_at: dex.getValue('target_received_at') || '',
             target_processing_completed_at: dex.getValue('target_processing_completed_at') || '',
+            acknowledged_at: dex.getValue('acknowledged_at') || '',
+            ack_enabled: this._ackEnabled(dex),
+            ack_stage: this._ackStage(dex),
             execution_completed_at: dex.getValue('execution_completed_at') || '',
             queued_at: dex.getValue('queued_at') || '',
             started_at: dex.getValue('started_at') || '',
@@ -1229,9 +1242,52 @@ SyncBridgeExecutionService.prototype = {
             reference_handling: cfg.getValue('reference_handling') || '',
             apply_mode: cfg.getValue('apply_mode') || '',
             batch_size: cfg.getValue('batch_size') || '',
+            ack_required: this._ackFlag(cfg),
             captured_at: new GlideDateTime().getValue(),
-            note: 'Frozen when the execution controller queued this run. Transfer still uses the sync policy, outbox, and /apply. Acknowledgement is not part of 0.3.0.',
+            note: 'Frozen when the execution controller queued this run. Transfer still uses the sync policy, outbox, and /apply. Acknowledgement is required only when ack_required was true at start.',
         })
+    },
+
+    _ackFlag: function (cfg) {
+        if (!cfg || !cfg.isValidField || !cfg.isValidField('ack_required')) return false
+        var raw = String(cfg.getValue('ack_required') || '')
+            .trim()
+            .toLowerCase()
+        return raw === '1' || raw === 'true'
+    },
+
+    _ackEnabled: function (dex) {
+        try {
+            if ((dex.getValue('execution_mode') || '') === 'dry_run') return false
+            return new BridgeAck().requiredForDex(dex)
+        } catch (e) {
+            return false
+        }
+    },
+
+    _ackStage: function (dex) {
+        var gr = new GlideRecord(BridgeConfig.TABLE.transfer)
+        if (!gr.isValid()) return ''
+        gr.addQuery('execution', dex.getUniqueValue())
+        gr.orderByDesc('sys_updated_on')
+        gr.setLimit(8)
+        gr.query()
+        var best = ''
+        var bestRank = -1
+        while (gr.next()) {
+            var stage = gr.getValue('stage') || ''
+            var rank = 0
+            if (stage === 'completed' || stage === 'failed' || stage === 'rejected') rank = 50
+            else if (stage === 'processed') rank = 40
+            else if (stage === 'received') rank = 10
+            else if (stage === 'sent') rank = 5
+            if (rank >= bestRank) {
+                bestRank = rank
+                best = stage
+            }
+        }
+        if (best === 'sent' || best === 'queued') return ''
+        return best
     },
 
     _queuedNote: function (dex, cfg, mode, options) {
@@ -1245,9 +1301,10 @@ SyncBridgeExecutionService.prototype = {
             (cfg.getValue('policy') || '(none)') +
             '. ' +
             (mode === 'dry_run'
-                ? 'Target business tables will not be changed and nothing will be enqueued.'
-                : 'BridgeSeed will enqueue the outbox. The existing drain performs the send.') +
-            ' Acknowledgement stays empty.'
+                ? 'Target business tables will not be changed and nothing will be enqueued. Acknowledgement is not used for a dry run.'
+                : this._ackFlag(cfg)
+                  ? 'BridgeSeed will enqueue the outbox. The existing drain performs the send. The result waits for acknowledgement.'
+                  : 'BridgeSeed will enqueue the outbox. The existing drain performs the send. Acknowledgement is not required.')
         )
     },
 

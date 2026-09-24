@@ -48,5 +48,15 @@ RestApi({
             authorization: true,
             script: Now.include('../../scripts/rest/ensure-capture.js'),
         },
+        {
+            $id: Now.ID['route-ack-v1'],
+            name: 'Ack v1',
+            method: 'POST',
+            path: '/v1/ack',
+            active: true,
+            authentication: true,
+            authorization: true,
+            script: Now.include('../../scripts/rest/ack.js'),
+        },
     ],
 })

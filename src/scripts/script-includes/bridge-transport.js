@@ -114,7 +114,7 @@ BridgeTransport.prototype = {
             if (rows.length) {
                 var response = this._post(peer, rows)
                 if (response.ok) {
-                    this._applyResults(rows, response.results, summary)
+                    this._applyResults(rows, response, summary)
                     this._markPeerReachable(peerId)
                 } else {
                     this._failAll(rows, response.error, summary)
@@ -195,7 +195,24 @@ BridgeTransport.prototype = {
                 continue
             }
 
-            rows.push({ sys_id: gr.getUniqueValue(), attempts: attempts, payload: payload })
+            var correlation = ''
+            var ackRequired = false
+            try {
+                var ack = new BridgeAck()
+                correlation = ack.stampPayload(gr, payload)
+                ackRequired = ack.requiredForPayload(payload)
+            } catch (stampErr) {
+                correlation = BridgeAck.correlationFor(gr.getUniqueValue())
+                if (correlation && !payload.correlation_id) payload.correlation_id = correlation
+                gs.warn('[bridge] correlation stamp failed, using stub: ' + stampErr)
+            }
+            if (ackRequired) payload.ack_required = true
+            rows.push({
+                sys_id: gr.getUniqueValue(),
+                attempts: attempts,
+                payload: payload,
+                correlation_id: correlation || payload.correlation_id || '',
+            })
         }
         return rows
     },
@@ -257,10 +274,15 @@ BridgeTransport.prototype = {
             }
 
             var parsed = JSON.parse(text)
-            var results = parsed.result ? parsed.result.results : parsed.results
+            var envelope = parsed && parsed.result && parsed.result.results ? parsed.result : parsed
+            var results = envelope ? envelope.results : null
             if (!results) return { ok: false, error: 'response carried no per-item results: ' + String(text).substr(0, 1000) }
 
-            return { ok: true, results: results }
+            var ackSupported = false
+            if (envelope) {
+                ackSupported = envelope.ack_supported === true || envelope.acknowledgement === 'received'
+            }
+            return { ok: true, results: results, ack_supported: ackSupported }
         } catch (e) {
             // A peer being unreachable is the expected case, not an exception worth
             // alarming about: the queue grows, and §7's week-5 acceptance test is
@@ -472,7 +494,10 @@ BridgeTransport.prototype = {
      * order across an HTTP boundary means a peer that reorders or drops one entry
      * silently marks the wrong rows sent.
      */
-    _applyResults: function (rows, results, summary) {
+    _applyResults: function (rows, response, summary) {
+        var results = response && response.results ? response.results : response
+        if (!results) results = []
+        var ackSupported = !!(response && response.ack_supported)
         var byId = {}
         for (var i = 0; i < results.length; i++) {
             if (results[i] && results[i].source_sys_id) byId[results[i].source_sys_id] = results[i]
@@ -491,12 +516,19 @@ BridgeTransport.prototype = {
 
             // 'skipped' and 'rejected' are both final answers from the target. The
             // target already wrote its own DLQ row for a rejection, so retrying here
-            // would only duplicate it.
+            // would only duplicate it. When acknowledgement is required, HTTP 200
+            // still settles the outbox (transport) but does not complete the execution.
             if (result.status === 'applied' || result.status === 'skipped' || result.status === 'rejected') {
                 gr.setValue('state', 'sent')
                 gr.update()
                 summary.processed++
                 var activeRun = this._activeRunId || ''
+                var ackRequired = false
+                try {
+                    ackRequired = new BridgeAck().requiredForPayload(row.payload)
+                } catch (ackErr) {
+                    gs.warn('[bridge] ack requirement check failed (treated as not required): ' + ackErr)
+                }
                 this._shadowDual('settle ' + row.sys_id, function (dw) {
                     dw.onOutboxSettled(row.sys_id, activeRun, {
                         status: result.status,
@@ -504,11 +536,37 @@ BridgeTransport.prototype = {
                         httpStatus: 200,
                         attempts: row.attempts,
                         targetSysId: result.target_sys_id || '',
+                        ackHold: ackRequired,
                     })
                 })
+                if (ackRequired) this._noteTransportAck(row, ackSupported)
             } else {
                 this._fail(gr, row, result.error || 'peer reported status ' + result.status, summary)
             }
+        }
+    },
+
+    /**
+     * RECEIVED from the additive apply response, then any terminal ACK that
+     * landed while this POST was still open.
+     */
+    _noteTransportAck: function (row, ackSupported) {
+        var correlation = row.correlation_id || (row.payload && row.payload.correlation_id) || ''
+        if (!correlation) return
+        try {
+            var ack = new BridgeAck()
+            if (ackSupported) {
+                ack.handleInboundAck({
+                    correlation_id: correlation,
+                    ack_stage: 'received',
+                    transaction_id: row.payload ? row.payload.source_sys_id || '' : '',
+                    record_count: 1,
+                    result: 'received',
+                })
+            }
+            ack.reconcile(correlation)
+        } catch (e) {
+            gs.warn('[bridge] local received ack failed (ignored): ' + e)
         }
     },
 

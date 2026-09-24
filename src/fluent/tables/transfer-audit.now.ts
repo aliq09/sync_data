@@ -9,8 +9,8 @@ import {
 
 /**
  * Transfer Audit — evidence a payload crossed the boundary. Absorbs delivery receipts
- * in the operator UX. Phase 1 records send/receive from the current apply contract.
- * ack_stage and acknowledged_at are reserved and not driven by a staged ACK protocol.
+ * in the operator UX. Send and receive rows come from /apply. message_type ack is the
+ * staged acknowledgement written on both instances in 0.4.0.
  */
 export const x_33764_sbridge_transfer_audit = Table({
     name: 'x_33764_sbridge_transfer_audit',
@@ -38,17 +38,18 @@ export const x_33764_sbridge_transfer_audit = Table({
             choices: {
                 send: 'Send',
                 receive: 'Receive',
+                ack: 'Ack',
             },
         }),
         result: StringColumn({ label: 'Result', maxLength: 40 }),
         correlation_id: StringColumn({
             label: 'Correlation ID',
-            hint: 'Copied from the source transfer stub when this instance created the transfer. Not a cross-instance protocol yet.',
+            hint: 'Same value on both instances. Sent on /apply and on every ACK.',
             maxLength: 80,
         }),
         ack_stage: StringColumn({
             label: 'ACK stage',
-            hint: 'Reserved for staged acknowledgement. Phase 1 does not write this field.',
+            hint: 'Staged acknowledgement. 0.4.0 writes received and the terminal stage (completed, failed, or rejected).',
             maxLength: 40,
             choices: {
                 received: 'Received',
@@ -79,14 +80,14 @@ export const x_33764_sbridge_transfer_audit = Table({
         remote_received_at: DateTimeColumn({ label: 'Remote received at' }),
         acknowledged_at: DateTimeColumn({
             label: 'Acknowledged at',
-            hint: 'Not set by Phase 1.',
+            hint: 'Set on the source when a terminal ACK is applied.',
         }),
         http_status: IntegerColumn({ label: 'HTTP status' }),
         error: StringColumn({ label: 'Error', maxLength: 4000 }),
         retry_count: IntegerColumn({ label: 'Retry count', default: 0 }),
         remote_audit_id: StringColumn({
             label: 'Remote audit ID',
-            hint: 'Reserved for the other instance audit sys_id. Not populated in Phase 1.',
+            hint: 'The other instance Transfer Audit sys_id, when the ACK body includes remote_audit_id.',
             maxLength: 32,
         }),
         transfer: ReferenceColumn({
@@ -112,5 +113,6 @@ export const x_33764_sbridge_transfer_audit = Table({
         { name: 'idx_aud_transfer', unique: false, element: 'transfer' },
         { name: 'idx_aud_exec', unique: false, element: 'execution' },
         { name: 'idx_aud_receipt', unique: false, element: 'receipt' },
+        { name: 'idx_aud_corr', unique: false, element: 'correlation_id' },
     ],
 })

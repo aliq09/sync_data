@@ -58,3 +58,21 @@ Property({
     description:
         'Phase 1 best-effort shadows: Data Execution, Transfer, and Transfer Audit. Failures are logged only and never fail capture, drain, seed, or apply. Set false to pause shadows. Case 1 outbox /apply path stays primary.',
 })
+
+Property({
+    $id: Now.ID['prop-ack-enabled'],
+    name: 'x_33764_sbridge.ack.enabled',
+    type: 'boolean',
+    value: true,
+    description:
+        'Staged acknowledgement code is installed. Per-configuration Require acknowledgement still defaults to false so existing Case 1 peers complete on /apply until an operator opts in.',
+})
+
+Property({
+    $id: Now.ID['prop-ack-timeout'],
+    name: 'x_33764_sbridge.ack.timeout_minutes',
+    type: 'integer',
+    value: 30,
+    description:
+        'Minutes a data execution may stay awaiting acknowledgement before it is failed with peer does not support ACK. Applies only when that configuration requires acknowledgement.',
+})

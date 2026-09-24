@@ -247,6 +247,7 @@ function sbridgeLiveRender(payload) {
         reading: 'Reading source',
         transfer: 'Transferring',
         target: 'Applying',
+        ack: 'Acknowledging',
         finalising: 'Finalising',
         completed: 'Completed',
         cancelled: 'Cancelled',
@@ -305,6 +306,19 @@ function sbridgeLiveRender(payload) {
             audit.style.display = 'none'
         }
     }
+    var ack = document.getElementById('sbridge_live_ack')
+    if (ack) {
+        if (payload.ack_skipped === false) {
+            ack.textContent = payload.ack_detail || 'Awaiting acknowledgement'
+            ack.style.color = '#155eef'
+        } else if (payload.execution_mode === 'dry_run') {
+            ack.textContent = 'Acknowledgement skipped for dry run'
+            ack.style.color = '#667085'
+        } else {
+            ack.textContent = 'Acknowledgement not enabled'
+            ack.style.color = '#667085'
+        }
+    }
 }
 
 function sbridgeLiveCounts(payload) {
@@ -316,6 +330,7 @@ function sbridgeLiveCounts(payload) {
     sbridgeLivePushCount(parts, 'updated', payload.updated_count)
     sbridgeLivePushCount(parts, 'skipped', payload.skipped_count)
     sbridgeLivePushCount(parts, 'failed', payload.failed_count)
+    sbridgeLivePushCount(parts, 'acknowledged', payload.acknowledged_count)
     return parts.join(' · ')
 }
 

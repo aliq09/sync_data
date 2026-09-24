@@ -57,6 +57,14 @@ declare global {
                         table: 'sys_atf_step'
                         id: '717049a287a04d26a8a02cb1bab0b8b8'
                     }
+                    'atf-staged-ack': {
+                        table: 'sys_atf_test'
+                        id: '2b519fca0b9042c3902dbbf3c8ec6f1d'
+                    }
+                    'atf-staged-ack-step': {
+                        table: 'sys_atf_step'
+                        id: 'e22d6d5beda546f6bc898060c240433c'
+                    }
                     bom_json: {
                         table: 'sys_module'
                         id: '38c6d9f0e8824a328db050ebb81ea0c0'
@@ -86,6 +94,10 @@ declare global {
                         table: 'sys_script'
                         id: '8c81d5c664de438e912870a618bc97b4'
                         deleted: false
+                    }
+                    BridgeAck: {
+                        table: 'sys_script_include'
+                        id: '1cceda4b1d434ce58f80b104fdd81373'
                     }
                     BridgeApi: {
                         table: 'sys_script_include'
@@ -283,6 +295,14 @@ declare global {
                         table: 'sys_module'
                         id: '1c478f472a3b442099982ee58f01bd3c'
                     }
+                    'prop-ack-enabled': {
+                        table: 'sys_properties'
+                        id: '0551c809d52d498f8ed51517dfa47d31'
+                    }
+                    'prop-ack-timeout': {
+                        table: 'sys_properties'
+                        id: 'dc63bcf7a614413387d2542de22ed7b2'
+                    }
                     'prop-batch': {
                         table: 'sys_properties'
                         id: 'fc451097fdb44e2087c26e8ac529de4e'
@@ -310,6 +330,10 @@ declare global {
                     'prop-max-attempts': {
                         table: 'sys_properties'
                         id: '36d7a85682724b33b4ec78f282d34c11'
+                    }
+                    'route-ack-v1': {
+                        table: 'sys_ws_operation'
+                        id: '932a4b1a10934667b68c485777a4b9fb'
                     }
                     'route-apply': {
                         table: 'sys_ws_operation'
@@ -1038,6 +1062,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_index'
+                        id: '08aa3b8ba41a4da3add4b046ee0100ab'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_transfer_audit'
+                            col_name_string: 'correlation_id'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '08d71da8cd134a4fbbeaed05a3d9799b'
                         deleted: true
@@ -1306,6 +1338,14 @@ declare global {
                             }
                             element: '.end_split'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '0b82966e99b44f4c8eadb3b891a2f97b'
+                        key: {
+                            document_key: 'e22d6d5beda546f6bc898060c240433c'
+                            variable: '989d9e235324220002c6435723dc3484'
                         }
                     },
                     {
@@ -2884,6 +2924,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '25b92a33fe3143bb83bbce4321963fd8'
+                        key: {
+                            sys_ui_section: {
+                                id: 'cea918834c344747a8a398836c02fc96'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'Transfer behaviour'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'ack_required'
+                            position: '5'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '25f1a99139f843bb91051407ac3db3b0'
                         key: {
@@ -3497,6 +3559,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '2ecf407de698480da12afd17cf2aa654'
+                        key: {
+                            name: 'x_33764_sbridge_transfer_audit'
+                            element: 'message_type'
+                            value: 'ack'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '2f0e5a86f9a7456ea950cbf85be6313a'
                         key: {
@@ -3651,6 +3724,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_index'
+                        id: '3169f10d783542449ccf95658c8166a8'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_transfer'
+                            col_name_string: 'correlation_id'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '319d7efe8d764ed29bc699121de6e266'
                         key: {
@@ -3768,6 +3849,7 @@ declare global {
                     {
                         table: 'sys_ui_policy'
                         id: '33344230880144c982d530dfb1b5cca6'
+                        deleted: true
                         key: {
                             table: 'x_33764_sbridge_transfer_audit'
                             short_description: 'Hide empty staged acknowledgement fields'
@@ -4106,6 +4188,7 @@ declare global {
                     {
                         table: 'sys_ui_policy_action'
                         id: '372e5f9002894880b2273bb8488b20aa'
+                        deleted: true
                         key: {
                             ui_policy: {
                                 id: '33344230880144c982d530dfb1b5cca6'
@@ -4115,6 +4198,20 @@ declare global {
                                 }
                             }
                             field: 'acknowledged_at'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '374e775e63f245e6816a14cf01c53fed'
+                        key: {
+                            ui_policy: {
+                                id: '683ce3d7f44a4cf690ed1001d182ad5d'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Inactive. Acknowledgement fields stay visible in 0.4.0.'
+                                }
+                            }
+                            field: 'ack_stage'
                         }
                     },
                     {
@@ -4741,6 +4838,29 @@ declare global {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'active'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '412b62069f9548cb924848a23b014a08'
+                        key: {
+                            list_id: {
+                                id: '7d554a8903c6493a97c93711b4a2f1a4'
+                                key: {
+                                    name: 'x_33764_sbridge_transfer_audit'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'acknowledged_at'
                         }
                     },
                     {
@@ -6281,6 +6401,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: '56c5b0df9b834250ac3051795263f0c1'
+                        key: {
+                            document_key: 'e22d6d5beda546f6bc898060c240433c'
+                            variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '57650166e632487fb060d792be3a7338'
                         key: {
@@ -7692,6 +7820,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy'
+                        id: '683ce3d7f44a4cf690ed1001d182ad5d'
+                        key: {
+                            table: 'x_33764_sbridge_transfer_audit'
+                            short_description: 'Inactive. Acknowledgement fields stay visible in 0.4.0.'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '68895778059b44128620bc7ae975ae68'
                         key: {
@@ -8473,6 +8609,7 @@ declare global {
                     {
                         table: 'sys_ui_policy_action'
                         id: '71dbf40619e741a78b0648a95dd2d437'
+                        deleted: true
                         key: {
                             ui_policy: {
                                 id: '33344230880144c982d530dfb1b5cca6'
@@ -8661,6 +8798,29 @@ declare global {
                             name: 'x_33764_sbridge_dlq'
                             element: 'resolved'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '74f7b6e1f76b4958b64b843bed4adf04'
+                        key: {
+                            list_id: {
+                                id: '7d554a8903c6493a97c93711b4a2f1a4'
+                                key: {
+                                    name: 'x_33764_sbridge_transfer_audit'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'remote_audit_id'
                         }
                     },
                     {
@@ -9974,6 +10134,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: '860f89c4a2524a3786e986675221d8ea'
+                        key: {
+                            ui_policy: {
+                                id: '683ce3d7f44a4cf690ed1001d182ad5d'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Inactive. Acknowledgement fields stay visible in 0.4.0.'
+                                }
+                            }
+                            field: 'acknowledged_at'
+                        }
+                    },
+                    {
                         table: 'sys_db_object'
                         id: '861c20b24a7d440f92fe55a1ab8e2876'
                         key: {
@@ -10588,6 +10762,7 @@ declare global {
                     {
                         table: 'sys_ui_policy_action'
                         id: '8f4f1238c69e42f0a30a5222b8d51305'
+                        deleted: true
                         key: {
                             ui_policy: {
                                 id: '33344230880144c982d530dfb1b5cca6'
@@ -12569,6 +12744,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'ae4990fd10e44ad399410146d3a5dae6'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'ack_required'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'ae5041da5b9e4711bc78067ca39ea9dd'
                         deleted: true
@@ -13700,6 +13883,29 @@ declare global {
                             }
                             element: 'owner_peer'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'be6338a7f64d4790af260c733c146694'
+                        key: {
+                            list_id: {
+                                id: '7d554a8903c6493a97c93711b4a2f1a4'
+                                key: {
+                                    name: 'x_33764_sbridge_transfer_audit'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'ack_stage'
                         }
                     },
                     {
@@ -16280,6 +16486,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: 'e0c855ab6ffa4e56a41bd66b00acb26f'
+                        key: {
+                            ui_policy: {
+                                id: '683ce3d7f44a4cf690ed1001d182ad5d'
+                                key: {
+                                    table: 'x_33764_sbridge_transfer_audit'
+                                    short_description: 'Inactive. Acknowledgement fields stay visible in 0.4.0.'
+                                }
+                            }
+                            field: 'remote_audit_id'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'e0d8e4fee6424d7bb6ef589b3c69a696'
                         deleted: true
@@ -16807,6 +17027,28 @@ declare global {
                             value: 'completed'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'e723a07186d1463ca37ce7484216f2c7'
+                        key: {
+                            sys_ui_section: {
+                                id: 'cea918834c344747a8a398836c02fc96'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'Transfer behaviour'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'policy'
+                            position: '6'
                         }
                     },
                     {
@@ -17436,6 +17678,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f0179982e24d47598ca80a32e73d24aa'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'cea918834c344747a8a398836c02fc96'
@@ -17497,6 +17740,15 @@ declare global {
                             value: 'monday'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'f0b3b608284341c2a25e000e3c52c5e0'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'ack_required'
+                            language: 'en'
                         }
                     },
                     {
@@ -18065,6 +18317,15 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'target_table'
+                        }
+                    },
+                    {
+                        table: 'sys_element_mapping'
+                        id: 'f95b80a8b3304027a355f4f8de6c9eaf'
+                        key: {
+                            id: 'e22d6d5beda546f6bc898060c240433c'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
                         }
                     },
                     {

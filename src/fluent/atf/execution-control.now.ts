@@ -41,7 +41,7 @@ Test(
     assertEqual(dex.isValidField('trigger_reference'), true, 'trigger reference');
     assertEqual(dex.isValidField('queued_at'), true, 'queued at');
     assertEqual(dex.isValidField('schedule'), true, 'schedule reference');
-    assertEqual(dex.isValidField('acknowledged_at'), true, 'ack column still unused');
+    assertEqual(dex.isValidField('acknowledged_at'), true, 'ack milestone column');
     var cfg = new GlideRecord('x_33764_sbridge_movement_config');
     assertEqual(cfg.isValidField('concurrent_execution_policy'), true, 'concurrent policy');
     assertEqual(cfg.isValidField('last_execution'), true, 'last execution');

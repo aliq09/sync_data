@@ -55,18 +55,18 @@ UiPolicy({
 })
 
 /**
- * Reserved staged-ACK columns on audit. Hidden while empty so the evidence
- * form does not look like Phase 3 already ran. They reappear once populated.
+ * 0.4.0 shows ack_stage, acknowledged_at, and remote_audit_id on the audit form.
+ * This policy stays installed and inactive so an upgrade does not recreate a hide rule.
  */
 UiPolicy({
     $id: Now.ID['uip-audit-hide-ack'],
     table: 'x_33764_sbridge_transfer_audit',
-    shortDescription: 'Hide empty staged acknowledgement fields',
+    shortDescription: 'Inactive. Acknowledgement fields stay visible in 0.4.0.',
     conditions: 'ack_stageISEMPTY^acknowledged_atISEMPTY^remote_audit_idISEMPTY',
     onLoad: true,
     reverseIfFalse: true,
     global: true,
-    active: true,
+    active: false,
     actions: [
         { field: 'ack_stage', visible: false },
         { field: 'acknowledged_at', visible: false },
