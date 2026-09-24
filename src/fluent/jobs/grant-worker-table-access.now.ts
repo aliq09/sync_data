@@ -22,8 +22,7 @@ Record({
 /**
  * New sys_id so an instance that already ran "Grant worker metadata access"
  * on 0.4.3 runs the publisher again. That record may not re-execute after
- * the 0.4.3 body change. This script calls the same loadXML / moveMetadata
- * publisher. It does not grant admin.
+ * the 0.4.3 body change. Does not grant admin.
  */
 Record({
     $id: Now.ID['fix-install-global-metadata-writer'],
@@ -31,9 +30,28 @@ Record({
     data: {
         name: 'Install global SyncBridgeMetadataWrite',
         description:
-            '0.4.4. Create or move SyncBridgeMetadataWrite into the Global application so apply can call global.SyncBridgeMetadataWrite. Does not grant admin.',
+            '0.4.4. Publish SyncBridgeMetadataWrite into Global. Does not grant admin.',
         before: false,
         unloadable: false,
+        record_for_rollback: true,
+        script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
+    },
+})
+
+/**
+ * 0.4.4's "Install global SyncBridgeMetadataWrite" already ran on the PDIs
+ * and will not run again. This new record publishes via the Table API
+ * (sysparm_transaction_scope=global) instead of UpdateManager2.
+ */
+Record({
+    $id: Now.ID['fix-publish-global-metadata-writer'],
+    table: 'sys_script_fix',
+    data: {
+        name: 'Publish global SyncBridgeMetadataWrite',
+        description:
+            '0.4.5. Publish SyncBridgeMetadataWrite into Global with the Table API transaction scope. Does not use UpdateManager2. Does not grant admin.',
+        before: false,
+        unloadable: true,
         record_for_rollback: true,
         script: Now.include('../../scripts/jobs/grant-worker-table-access.js'),
     },

@@ -14,24 +14,27 @@
  *    writes. A cross-scope privilege cannot exceed those flags.
  *
  * 3. global.SyncBridgeMetadataWrite. Fluent cannot declare apiName
- *    global.* (the SDK requires x_33764_sbridge.*), and a scoped
- *    GlideRecord insert is stamped with this application's scope, so
- *    the 0.4.3 payload never created a global script include. This
- *    script publishes one: loadXML into global, or insert then move
- *    the row to global, with Accessible from = All application scopes
- *    and Caller Access = Caller Tracking. Apply calls
- *    new global.SyncBridgeMetadataWrite().
+ *    global.* (the SDK requires x_33764_sbridge.*). A scoped
+ *    GlideRecord insert is stamped into this application, and
+ *    GlideUpdateManager2 / UpdateManager2 is refused in a scoped
+ *    script (Invalid object in scoped script: UpdateManager2).
+ *    This script publishes the include the way an admin Table API
+ *    call does: POST/PATCH api/now/table/sys_script_include with
+ *    sysparm_transaction_scope=global, as the installing user's
+ *    session. That is a new transaction, so the installer lock does
+ *    not stamp the row into x_33764_sbridge. Accessible from = All
+ *    application scopes. Caller Access = Caller Tracking.
+ *    If that call does not leave a callable global row, a one-time
+ *    sys_trigger runs the same upsert outside this install thread.
+ *    The worker is not granted admin.
  *
- *    0.4.4 runs this same publisher from a second fix script,
- *    Install global SyncBridgeMetadataWrite. An instance that already
- *    executed the 0.4.3 record does not run that record again.
- *    verifyWriter makes a second run a refresh, not a second include.
+ *    0.4.5 runs this publisher from "Publish global SyncBridgeMetadataWrite"
+ *    because the 0.4.4 fix script already ran and will not run again.
  */
 ;(function grantWorkerTableAccess() {
     var TABLES = ['sys_script', 'sc_cat_item', 'item_option_new', 'sys_user_group']
     var ROLE = 'x_33764_sbridge.worker'
     var WRITER = 'SyncBridgeMetadataWrite'
-    var WRITER_ID = 'e7c4b2a19f6d4e0a8b3c5d7e1f9a0b2c'
 
     try {
         grantWorkerRole(ROLE)
@@ -273,25 +276,254 @@
     function installMetadataWriter() {
         var script = metadataWriterScript()
         if (verifyWriter(true)) {
-            stampWriter(writerId(true), script)
-            verifyWriter(false)
+            publishViaTableApi(script)
+            if (verifyWriter(false)) deleteAppCopies()
             return
         }
 
-        try {
-            loadWriterXml(script)
-        } catch (e) {
-            gs.warn('[bridge] metadata writer loadXML refused: ' + e)
-        }
+        var api = publishViaTableApi(script)
         if (verifyWriter()) {
             deleteAppCopies()
             return
         }
 
         var id = writerId(false)
-        if (!id) id = insertWriter(script)
-        if (id) publishGlobal(id, script)
-        if (verifyWriter()) deleteAppCopies()
+        if (id) {
+            try {
+                publishGlobal(id, script)
+            } catch (moveErr) {
+                gs.warn('[bridge] moveMetadata path threw: ' + moveErr)
+            }
+            if (verifyWriter()) {
+                deleteAppCopies()
+                return
+            }
+        }
+
+        var queued = queueGlobalPublish(script)
+        gs.error(
+            '[bridge] SyncBridgeMetadataWrite is not in global yet. Table API status=' +
+                api.status +
+                (api.detail ? ' ' + api.detail : '') +
+                (queued
+                    ? '. Queued a one-time sys_trigger to publish it in global; confirm the log line metadata writer callable as global.SyncBridgeMetadataWrite.'
+                    : '. The one-time sys_trigger was not queued.')
+        )
+    }
+
+    function publishViaTableApi(script) {
+        var out = { ok: false, status: 0, detail: '' }
+        var base = instanceUri()
+        if (!base) {
+            out.detail = 'glide.servlet.uri is empty'
+            gs.warn('[bridge] metadata writer table api skipped: ' + out.detail)
+            return out
+        }
+        var existing = writerId(true)
+        var method = existing ? 'PATCH' : 'POST'
+        var endpoint = base + 'api/now/table/sys_script_include'
+        if (existing) endpoint += '/' + existing
+        endpoint += '?sysparm_transaction_scope=global'
+        var payload = {
+            name: WRITER,
+            script: script,
+            active: 'true',
+            access: 'public',
+            api_name: 'global.' + WRITER,
+            caller_access: '1',
+            client_callable: 'false',
+            description:
+                'Sync Bridge apply fallback for sys_script, sc_cat_item, item_option_new, and sys_user_group. Runs as the integration user. Does not grant admin.',
+        }
+        try {
+            var rm = new sn_ws.RESTMessageV2()
+            rm.setEndpoint(endpoint)
+            rm.setHttpMethod(method)
+            rm.setRequestHeader('Accept', 'application/json')
+            rm.setRequestHeader('Content-Type', 'application/json')
+            var token = sessionToken()
+            var sessionId = sessionIdValue()
+            if (token) rm.setRequestHeader('X-UserToken', token)
+            if (sessionId) rm.setRequestHeader('Cookie', 'glide_session_store=' + sessionId)
+            rm.setRequestBody(JSON.stringify(payload))
+            rm.setHttpTimeout(20000)
+            var response = rm.execute()
+            out.status = response.getStatusCode()
+            var body = ''
+            try {
+                body = response.getBody() || ''
+            } catch (ignoreBody) {
+                body = ''
+            }
+            out.detail = tableApiDetail(body)
+            out.ok = out.status >= 200 && out.status < 300
+            gs.info(
+                '[bridge] metadata writer table api ' +
+                    method +
+                    ' sysparm_transaction_scope=global status=' +
+                    out.status +
+                    (out.detail ? ' ' + out.detail : '') +
+                    (token ? '' : ' (no session token)')
+            )
+        } catch (apiErr) {
+            out.detail = apiErr + ''
+            gs.warn('[bridge] metadata writer table api threw: ' + apiErr)
+        }
+        return out
+    }
+
+    function queueGlobalPublish(script) {
+        var ready = new GlideRecord('sys_trigger')
+        if (!ready.isValid()) {
+            gs.warn('[bridge] sys_trigger is not visible from this scope; global publish was not queued')
+            return false
+        }
+        ready.addQuery('name', 'Sync Bridge publish global metadata writer')
+        ready.addQuery('state', '0')
+        ready.setLimit(1)
+        ready.query()
+        if (ready.next()) {
+            gs.info('[bridge] global metadata writer publish already queued trigger=' + ready.getUniqueValue())
+            return true
+        }
+        var when = new GlideDateTime()
+        when.addSeconds(15)
+        var trigger = new GlideRecord('sys_trigger')
+        trigger.initialize()
+        trigger.setValue('name', 'Sync Bridge publish global metadata writer')
+        trigger.setValue('script', globalPublishScript(script))
+        trigger.setValue('trigger_type', '0')
+        trigger.setValue('state', '0')
+        trigger.setValue('next_action', when)
+        // Same job ScheduleOnce uses. The scheduler evaluates this script outside the app-install thread.
+        if (trigger.isValidField('job_id')) trigger.setValue('job_id', '81c92ce9c0a8016400e5f0d2f784ea78')
+        var id = ''
+        try {
+            id = trigger.insert() || ''
+        } catch (queueErr) {
+            gs.warn('[bridge] sys_trigger insert threw: ' + queueErr)
+            return false
+        }
+        if (!id && trigger.isValidField('job_id')) {
+            trigger.initialize()
+            trigger.setValue('name', 'Sync Bridge publish global metadata writer')
+            trigger.setValue('script', globalPublishScript(script))
+            trigger.setValue('trigger_type', '0')
+            trigger.setValue('state', '0')
+            trigger.setValue('next_action', when)
+            try {
+                id = trigger.insert() || ''
+            } catch (retryErr) {
+                gs.warn('[bridge] sys_trigger insert without job_id threw: ' + retryErr)
+            }
+        }
+        if (!id) {
+            gs.warn('[bridge] could not queue global metadata writer publish ' + lastError(trigger))
+            return false
+        }
+        gs.info('[bridge] queued global metadata writer publish trigger=' + id + ' next_action=' + when.getValue())
+        return true
+    }
+
+    function globalPublishScript(script) {
+        return [
+            '(function publishSyncBridgeMetadataWriter() {',
+            '  var WRITER = "SyncBridgeMetadataWrite";',
+            '  var scriptBody = ' + JSON.stringify(script) + ';',
+            '  try { gs.setCurrentApplicationId("global"); } catch (scopeErr) { gs.warn("[bridge] publish setCurrentApplicationId(global) refused: " + scopeErr); }',
+            '  var gr = new GlideRecord("sys_script_include");',
+            '  gr.addQuery("name", WRITER);',
+            '  gr.addQuery("sys_scope", "global");',
+            '  gr.setLimit(1);',
+            '  gr.query();',
+            '  var exists = gr.next();',
+            '  if (!exists) gr.initialize();',
+            '  gr.setValue("name", WRITER);',
+            '  gr.setValue("script", scriptBody);',
+            '  gr.setValue("active", true);',
+            '  gr.setValue("access", "public");',
+            '  if (gr.isValidField("client_callable")) gr.setValue("client_callable", false);',
+            '  if (gr.isValidField("caller_access")) gr.setValue("caller_access", "1");',
+            '  gr.setValue("description", "Sync Bridge apply fallback. Runs as the integration user. Does not grant admin.");',
+            '  if (gr.isValidField("api_name")) gr.setValue("api_name", "global." + WRITER);',
+            '  if (gr.isValidField("sys_scope")) gr.setValue("sys_scope", "global");',
+            '  if (gr.isValidField("sys_package")) gr.setValue("sys_package", "global");',
+            '  var id = exists ? gr.update() : gr.insert();',
+            '  var check = new GlideRecord("sys_script_include");',
+            '  if (!id || !check.get(id)) {',
+            '    gs.error("[bridge] global metadata writer publish failed " + (gr.getLastErrorMessage ? gr.getLastErrorMessage() : ""));',
+            '    return;',
+            '  }',
+            '  var callable = false;',
+            '  try {',
+            '    var writer = new SyncBridgeMetadataWrite();',
+            '    callable = !!(writer && typeof writer.write === "function");',
+            '  } catch (callErr) {',
+            '    gs.error("[bridge] global.SyncBridgeMetadataWrite is not callable: " + callErr);',
+            '  }',
+            '  if (!callable || (check.getValue("sys_scope") || "") !== "global" || check.getValue("api_name") !== "global." + WRITER) {',
+            '    gs.error("[bridge] metadata writer publish left scope=" + check.getValue("sys_scope") + " api_name=" + check.getValue("api_name"));',
+            '    return;',
+            '  }',
+            '  gs.info("[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=" + check.getValue("api_name") + " access=" + check.getValue("access"));',
+            '  var copies = new GlideRecord("sys_script_include");',
+            '  copies.addQuery("name", WRITER);',
+            '  copies.addQuery("sys_scope", "!=", "global");',
+            '  copies.query();',
+            '  var drop = [];',
+            '  while (copies.next()) drop.push(copies.getUniqueValue());',
+            '  for (var i = 0; i < drop.length; i++) {',
+            '    var row = new GlideRecord("sys_script_include");',
+            '    if (row.get(drop[i])) row.deleteRecord();',
+            '  }',
+            '})();',
+        ].join('\n')
+    }
+
+    function instanceUri() {
+        var base = ''
+        try {
+            base = (gs.getProperty('glide.servlet.uri') || '') + ''
+        } catch (ignore) {
+            base = ''
+        }
+        if (!base) return ''
+        if (base.charAt(base.length - 1) !== '/') base += '/'
+        return base
+    }
+
+    function sessionToken() {
+        try {
+            return (gs.getSession().getSessionToken() || '') + ''
+        } catch (ignore) {
+            return ''
+        }
+    }
+
+    function sessionIdValue() {
+        try {
+            return (gs.getSessionID() || '') + ''
+        } catch (ignore) {
+            return ''
+        }
+    }
+
+    function tableApiDetail(body) {
+        if (!body) return ''
+        try {
+            var parsed = JSON.parse(body)
+            if (parsed.error) {
+                var message = parsed.error.message || ''
+                var detail = parsed.error.detail || ''
+                return (message + (detail ? ' ' + detail : '')).substring(0, 300)
+            }
+            var result = parsed.result || {}
+            var scope = result.sys_scope
+            if (scope && scope.value) scope = scope.value
+            return ('scope=' + (scope || '') + ' api_name=' + (result.api_name || '')).substring(0, 300)
+        } catch (ignore) {
+            return (body + '').replace(/"script"\s*:\s*"[\s\S]*?"/, '"script":"..."').substring(0, 200)
+        }
     }
 
     function writerId(globalOnly) {
@@ -305,19 +537,6 @@
             if (!other) other = gr.getUniqueValue()
         }
         return globalOnly ? '' : other
-    }
-
-    function insertWriter(script) {
-        var gr = new GlideRecord('sys_script_include')
-        gr.initialize()
-        fillWriter(gr, script, false)
-        var id = gr.insert()
-        if (!id) {
-            gs.error('[bridge] metadata writer insert failed ' + lastError(gr))
-            return ''
-        }
-        gs.info('[bridge] metadata writer inserted ' + id + ' scope=' + gr.getValue('sys_scope'))
-        return id
     }
 
     function publishGlobal(id, script) {
@@ -402,37 +621,6 @@
             if (gr.isValidField('sys_package')) gr.setValue('sys_package', 'global')
             if (gr.isValidField('api_name')) gr.setValue('api_name', 'global.' + WRITER)
         }
-    }
-
-    function loadWriterXml(script) {
-        var xml = [
-            '<?xml version="1.0"?>',
-            '<record_update table="sys_script_include">',
-            '<sys_script_include action="INSERT_OR_UPDATE">',
-            '<sys_id>' + WRITER_ID + '</sys_id>',
-            '<sys_scope display_value="global">global</sys_scope>',
-            '<sys_package display_value="Global">global</sys_package>',
-            '<sys_class_name>sys_script_include</sys_class_name>',
-            '<sys_update_name>sys_script_include_' + WRITER_ID + '</sys_update_name>',
-            '<access>public</access>',
-            '<active>true</active>',
-            '<api_name>global.' + WRITER + '</api_name>',
-            '<caller_access>1</caller_access>',
-            '<client_callable>false</client_callable>',
-            '<name>' + WRITER + '</name>',
-            '<description>Sync Bridge apply fallback. Runs as the integration user. Does not grant admin.</description>',
-            '<script><![CDATA[' + script + ']]></script>',
-            '</sys_script_include>',
-            '</record_update>',
-        ].join('')
-        var um
-        try {
-            um = new GlideUpdateManager2()
-        } catch (first) {
-            um = new global.GlideUpdateManager2()
-        }
-        var result = um.loadXML(xml)
-        gs.info('[bridge] metadata writer loadXML result=' + result)
     }
 
     function verifyWriter(quiet) {

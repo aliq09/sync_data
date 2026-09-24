@@ -1067,6 +1067,10 @@ declare global {
                         table: 'sys_script_fix'
                         id: 'e7b1c2d34a5f4e6b8c9d0a1b2c3d4e5f'
                     }
+                    'fix-publish-global-metadata-writer': {
+                        table: 'sys_script_fix'
+                        id: 'fd3f10757b3c4e798290a4b31465771d'
+                    }
                     'job-continue-executions': {
                         table: 'sysauto_script'
                         id: '569194e451a04084ae6d5017503747a9'

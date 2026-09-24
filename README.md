@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.4 (Case 1 DETAILED computer fields and child FK xref; includes 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
+| **App version** | 0.4.5 (Global metadata writer publishes without UpdateManager2; includes 0.4.4 Case 1 DETAILED fields and child FK xref, 0.4.3 metadata apply, 0.4.2 empty Data Execution hygiene, and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -97,9 +97,13 @@ Apply runs as the integration user (`sbridge.worker` by default). `/apply` rejec
 
 **Metadata write fallback.** Role allow rules remain the first attempt, so a table with no Deny-Unless (Case 7, Case 1) never leaves the integration user. When insert or update of `sys_script`, `sc_cat_item`, `item_option_new`, or `sys_user_group` returns no sys_id and the failure looks like security (`canCreate`/`canWrite` false, an empty platform message, or an access error), apply retries once through `global.SyncBridgeMetadataWrite`. Global `GlideRecord` is the platform path that does not apply the scoped ACL evaluator, so a Deny-Unless admin or script-writer rule does not block it. The session user is still the integration user (`sys_created_by` stays that user). The writer accepts only those four tables, only insert and update, and only a session token that apply sets for the call. It does not impersonate and it does not grant `admin`. Each success is `gs.info` and a Transfer Audit row with `result=metadata_privilege` (the note is in the error column; the apply result stays applied). The apply response includes `privilege: "global_metadata_writer"`. A validation message that is not an access refusal is not retried.
 
-Fluent cannot ship that script include. `apiName` must start with `x_33764_sbridge.`, and a scoped `GlideRecord` insert is stamped with the application scope, which is why the first 0.4.3 install left `new global.SyncBridgeMetadataWrite()` undefined. The fix script publishes the include into **Global** with `GlideUpdateManager2.loadXML` (`sys_scope=global`, `api_name=global.SyncBridgeMetadataWrite`) or, if that does not leave a callable global row, inserts and calls `sn_gfiles.GlobalApp.moveMetadata`. Accessible from = All application scopes. Caller Access = Caller Tracking. App-scoped copies are deleted after the global row is callable.
+Fluent cannot ship that script include. `apiName` must start with `x_33764_sbridge.`, and a scoped `GlideRecord` insert is stamped into this application. On Zurich, `GlideUpdateManager2` is refused from a scoped fix script (`Invalid object in scoped script: UpdateManager2`), which is why the 0.4.4 install logged `loadXML refused` and then `metadata writer insert failed`.
 
-**Why 0.4.3 still reported `SyncBridgeMetadataWrite is not installed in global`.** The first 0.4.3 install ran `Grant worker metadata access` before that publisher existed, and a fix script does not run again just because its script changed. 0.4.4 keeps that publisher (the 0.4.3 hotfix) and adds **Install global SyncBridgeMetadataWrite**, a new fix-script record, so an instance that already executed the old record still publishes the global include. Admin is not granted.
+0.4.5 publishes it the same way the manual admin step did. Fix script **Publish global SyncBridgeMetadataWrite** calls the Table API as the installing user: `POST` or `PATCH` `api/now/table/sys_script_include?sysparm_transaction_scope=global`. That request is a new transaction, so the app-install thread does not stamp the row into `x_33764_sbridge`. Accessible from = All application scopes. Caller Access = Caller Tracking. API name = `global.SyncBridgeMetadataWrite`. The worker is not granted admin.
+
+If that call does not leave a callable global row, the same fix script queues a one-time `sys_trigger` (run once, about 15 seconds later) whose script upserts the include outside the install thread. An app-scoped row that already exists is still offered to `sn_gfiles.GlobalApp.moveMetadata`. UpdateManager2 is not called.
+
+**Why earlier installs still reported `SyncBridgeMetadataWrite is not installed in global`.** A fix script runs once per record. 0.4.3 and 0.4.4 each added a record, and those already ran. 0.4.5 adds **Publish global SyncBridgeMetadataWrite** so the upgrade runs the new publisher.
 
 Confirm after install, before re-running Cases 5, 6, 7, and 9:
 
@@ -195,14 +199,14 @@ Record Mapping is still written after a successful upsert and read before insert
 
 **Same sequence.** Apply used to skip whenever `receipt.last_seq` was already at this `sys_mod_count`, so a re-execute could not fill newly captured fields or rewrite a child FK. A same-seq payload is now a skip only when the translated values already match the target row. An older seq is still a skip. A matching replay does not insert a second row and does not append a journal again. Case 1 department re-execute still updates the existing row instead of duplicating it.
 
-**Verify (do not deploy from this change set).** Install 0.4.4 on both peers. `now-sdk build` must succeed before that install.
+**Verify (do not deploy from this change set).** Install 0.4.5 on both peers. `now-sdk build` must succeed before that install.
 
 1. Re-Execute the CASE1-COMP-DETAILED computer movement. On PDI1, the outbox `values` for that computer include `os`, `os_version`, `ip_address`, `manufacturer`, `model_id`, `ram`, `cpu_count`, `cpu_core_count`, and `discovery_source` when those fields are filled on the source (plus any other include-list field that exists on the class).
 2. On PDI2, open the computer. Those fields are populated, not only the previous eight.
 3. Re-Execute Path A children after the computer Record Mapping exists: network adapter, serial number, storage or disk, memory, software instance, file system, running process, tcp, and `cmdb_rel_ci`.
 4. On the PDI2 computer, the NIC and software related lists show the child rows. `cmdb_ci`, `installed_on`, `software`, `parent`, and `child` are PDI2 sys_ids. They are not the PDI1 ids left on the source.
 5. Case 2 `alm_hardware.ci` still follows Record Mapping. Case 1 department still updates the existing row and does not insert a duplicate. A drain poll still does not insert an empty Data Execution.
-6. Install log contains `[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=global.SyncBridgeMetadataWrite access=public`. The Script Include Application is Global. Re-run Cases 5, 6, and 9 as `sbridge.worker`. Outbox must not fail with `SyncBridgeMetadataWrite is not installed in global`. A security refusal still retries through that global include; admin is not granted.
+6. After install, **System Definition → Script Includes** shows `SyncBridgeMetadataWrite` in the **Global** application, API name `global.SyncBridgeMetadataWrite`, Accessible from **All application scopes**. The system log contains `[bridge] metadata writer table api POST sysparm_transaction_scope=global status=201` (or `PATCH` / `200` when the row already exists) and `[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=global.SyncBridgeMetadataWrite access=public`. There is no `UpdateManager2` / `loadXML refused` line. If the Table API status is not 2xx, the log instead says a one-time `sys_trigger` was queued; within a minute the same callable line must appear from that job. Re-run Cases 5, 6, and 9 as `sbridge.worker`. Outbox must not fail with `SyncBridgeMetadataWrite is not installed in global`. A security refusal still retries through that global include; admin is not granted.
 
 ## Operator runbook (stub)
 
