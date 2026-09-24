@@ -372,6 +372,7 @@ Form({
                         { field: 'preserve_sys_id', type: 'table_field' },
                         { field: 'propagate_deletes', type: 'table_field' },
                         { field: 'batch_size', type: 'table_field' },
+                        { field: 'ack_required', type: 'table_field' },
                         { field: 'policy', type: 'table_field' },
                     ],
                 },

@@ -89,6 +89,11 @@ export const x_33764_sbridge_movement_config = Table({
         preserve_sys_id: BooleanColumn({ label: 'Preserve sys_id on target', default: false }),
         propagate_deletes: BooleanColumn({ label: 'Propagate deletes', default: false }),
         batch_size: IntegerColumn({ label: 'Batch size', default: 250 }),
+        ack_required: BooleanColumn({
+            label: 'Require acknowledgement',
+            hint: 'Default off. When true, a successful POST to /apply is transport only. The execution result is set from the staged ACK (RECEIVED, then COMPLETED, FAILED, or REJECTED). Leave false until both peers are on 0.4.0.',
+            default: false,
+        }),
         policy: ReferenceColumn({
             label: 'Sync policy',
             hint: 'Case 1 policy this configuration shadows. Capture still uses the policy. Execute resolves this policy for BridgeSeed.',

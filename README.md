@@ -8,7 +8,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.3.2 (live execution progress on the configuration form) |
+| **App version** | 0.4.0 (staged acknowledgement and correlation) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -21,6 +21,8 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
          Scheduled drain (only if outbox depth > 0) → BridgeTransport
                               ↓
               peer POST /api/x_33764_sbridge/sync/apply → BridgeApply
+                              ↓
+              optional POST /api/x_33764_sbridge/sync/v1/ack → BridgeAck
 ```
 
 ## Vertical slice (this repo)
@@ -41,7 +43,7 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 
 Operator navigation is Overview, Data Movement (Configurations, Data Executions), Monitoring (Transfers, Failed Transfers, Audit), and Administration (Instances, Connections, Mappings, Settings). Developer / Diagnostics is role-gated (`x_33764_sbridge.diagnostics`) and holds sync policies, sync runs, the payload inspector (outbound queue), technical logs, legacy receipt rows, lab test records, and API diagnostics.
 
-Case 1 is unchanged: capture still writes the outbox, drain still POSTs `/api/x_33764_sbridge/sync/apply` with the connection-alias Basic Auth path, and `/seed` plus `/ensure_capture` stay as they are. `x_33764_sbridge.dual_write` defaults to true and best-effort shadows Data Execution, Transfer, and Transfer Audit (plus processing errors and record results) from those same hooks. A shadow failure is logged and does not fail drain or apply. The peer table is relabeled Instance in place. There is no staged acknowledgement rewrite in this release.
+Case 1 is unchanged while **Require acknowledgement** is false (the default): capture still writes the outbox, drain still POSTs `/api/x_33764_sbridge/sync/apply` with the connection-alias Basic Auth path, and `/seed` plus `/ensure_capture` stay as they are. `x_33764_sbridge.dual_write` defaults to true and best-effort shadows Data Execution, Transfer, and Transfer Audit (plus processing errors and record results) from those same hooks. A shadow failure is logged and does not fail drain or apply. The peer table is relabeled Instance in place.
 
 ## Phase 2 — Data Execution record page (0.2.2)
 
@@ -71,7 +73,17 @@ The configuration form opens with a **Live execution** section (`last_execution`
 
 Execute Now still confirms in the 0.3.1 dialog. After the data execution is queued, the form stays open so the panel can show that run. A short job may already be finished on the first poll; the panel shows the final summary immediately. Result stays separate from percent: a finished run with warnings is 100% and `successful_with_warnings`. Dry run uses the same panel, with transfer and target weight folded into reading. When nothing is running, the panel shows the last execution and stops polling.
 
-Acknowledgement is not a stage yet (`ack_skipped: true`, weight 0) until 0.4.0. While Prevent is the concurrent policy and a data execution is still open, **Execute Now** becomes **Execution in progress** and opens that record. Dry Run is disabled. The server Prevent check still decides whether a second run may start. There is no Pause and no UI Builder page.
+While Prevent is the concurrent policy and a data execution is still open, **Execute Now** becomes **Execution in progress** and opens that record. Dry Run is disabled. The server Prevent check still decides whether a second run may start. There is no Pause and no UI Builder page.
+
+## Staged acknowledgement (0.4.0)
+
+`POST /api/x_33764_sbridge/sync/apply` is unchanged for Case 1. The request may include `correlation_id` on each item (`SB-` plus the outbox sys_id). The response adds `acknowledgement: "received"`, `ack_supported: true`, and `bridge_version`. Older peers ignore those fields.
+
+`POST /api/x_33764_sbridge/sync/v1/ack` is the inbound acknowledgement. It requires `correlation_id` and `ack_stage` (`received`, `completed`, `failed`, `rejected`, and the optional mid stages). The same correlation and stage posted twice is one outcome. The caller is the integration user (`sbridge.worker`), same as `/apply`.
+
+**Require acknowledgement** on the Data Movement Configuration defaults to **false**. Leave the department Case 1 configuration (`0c74f48953e78b50a88275e0a0490e03`) false until both peers are on 0.4.0. When the flag is true, a successful `/apply` sets the transfer to sent and the execution to Awaiting Acknowledgement. `execution_result` is set only from the terminal ACK. Dry run never waits. If the peer omits `ack_supported`, the continue job fails the execution after `x_33764_sbridge.ack.timeout_minutes` (default 30) with a note that the peer does not support ACK.
+
+Live progress uses acknowledgement weight **9** (reading 25, transfer 30, target 18) when the flag is on, and the 0.3.2 weights with `ack_skipped: true` when it is off. The configuration panel shows the ACK stage instead of “Acknowledgement not enabled”. Transfer Audit lists `message_type` (including Ack), `ack_stage`, `acknowledged_at`, and `remote_audit_id`. The Data Execution timeline already shows Acknowledged At.
 
 ## Operator runbook (stub)
 

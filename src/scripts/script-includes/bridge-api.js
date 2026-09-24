@@ -33,7 +33,32 @@ BridgeApi.prototype = {
         }
 
         var results = new BridgeApply().applyBatch(peerId, body.items)
-        return this._ok(response, { results: results })
+        // Additive. Older sources read results only. 0.4.0 sources treat this as RECEIVED.
+        return this._ok(response, {
+            results: results,
+            acknowledgement: 'received',
+            ack_supported: true,
+            bridge_version: BridgeAck.VERSION,
+        })
+    },
+
+    /**
+     * POST /v1/ack — source receives a staged acknowledgement.
+     * correlation_id is required. Same (correlation_id, ack_stage) is idempotent.
+     * Caller must be the integration user, same as /apply.
+     */
+    ack: function (request, response) {
+        var body = this._body(request, response)
+        if (!body) return
+
+        var guard = this._authorise(response)
+        if (!guard) return
+
+        var out = new BridgeAck().handleInboundAck(body)
+        if (!out || !out.ok) {
+            return this._fail(response, (out && out.status) || 400, (out && out.message) || 'acknowledgement was not accepted')
+        }
+        return this._ok(response, out)
     },
 
     /** POST /compare — the target half of §6.5's hash exchange. */

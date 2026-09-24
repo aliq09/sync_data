@@ -1,10 +1,13 @@
 /**
  * Deterministic live-progress math for one Data Execution snapshot.
  * Same fields always produce the same percent. No clock, no writes, no new columns.
- * Acknowledgement weight stays 0 until Phase 3 (0.4.0).
+ * Acknowledgement weight is 9 when the execution requires acknowledgement.
+ * Otherwise it stays 0 and ack_skipped is true (Case 1 and dry run).
  *
- * Execute weights (sum 100): queued 3, validating 5, preparing 5, reading 27,
- * transfer 35, target 20, acknowledgement 0, finalising 5.
+ * Execute, acknowledgement off (sum 100): queued 3, validating 5, preparing 5,
+ * reading 27, transfer 35, target 20, acknowledgement 0, finalising 5.
+ * Execute, acknowledgement on (sum 100): queued 3, validating 5, preparing 5,
+ * reading 25, transfer 30, target 18, acknowledgement 9, finalising 5.
  * Dry run folds transfer, target, and acknowledgement into reading (82).
  * Non-terminal percents clamp to 0..99. Completed is 100. Result is not a percent.
  */
@@ -24,12 +27,21 @@ SyncBridgeProgress.prototype = {
             skipped: this._n(snap.skipped_count),
             failed: this._n(snap.failed_count),
         }
-        var weights = this._weights(mode)
+        var ackEnabled = snap.ack_enabled === true && mode !== 'dry_run'
+        var weights = this._weights(mode, ackEnabled)
         var number = snap.number || 'execution'
+        var ackDetail = this._ackDetail(snap, ackEnabled)
 
         if (state === 'completed') {
             var doneLabel = this._resultLabel(snap.execution_result)
-            return this._out(100, 'completed', doneLabel ? 'Completed — ' + doneLabel : 'Completed', false)
+            return this._out(
+                100,
+                'completed',
+                doneLabel ? 'Completed — ' + doneLabel : 'Completed',
+                false,
+                ackEnabled,
+                ackDetail
+            )
         }
 
         if (state === 'cancelled') {
@@ -38,22 +50,26 @@ SyncBridgeProgress.prototype = {
                 this._percentFor(inferred.stage, inferred.ratio, weights),
                 'cancelled',
                 'Cancelled — ' + number,
-                false
+                false,
+                ackEnabled,
+                ackDetail
             )
         }
 
-        if (state === 'awaiting_acknowledgement') {
+        if (state === 'awaiting_acknowledgement' && !ackEnabled) {
             return this._out(
                 this._percentFor('finalising', 1, weights),
                 'finalising',
                 'Acknowledgement skipped (not enabled)',
-                false
+                false,
+                false,
+                ''
             )
         }
 
         if (!state || state === 'draft') {
-            if (state === 'draft') return this._out(0, 'draft', this._prefix(mode) + 'Draft ' + number, false)
-            return this._out(0, 'idle', 'No execution yet', false)
+            if (state === 'draft') return this._out(0, 'draft', this._prefix(mode) + 'Draft ' + number, false, ackEnabled, ackDetail)
+            return this._out(0, 'idle', 'No execution yet', false, false, '')
         }
 
         var stage = this._stageForState(state)
@@ -65,8 +81,10 @@ SyncBridgeProgress.prototype = {
         return this._out(
             this._percentFor(stage, intra.ratio, weights),
             stage,
-            this._message(stage, counts, number, mode, intra),
-            !!intra.indeterminate
+            this._message(stage, counts, number, mode, intra, snap, ackEnabled),
+            !!intra.indeterminate,
+            ackEnabled,
+            stage === 'ack' ? this._ackDetail(snap, true) : ackDetail
         )
     },
 
@@ -74,17 +92,18 @@ SyncBridgeProgress.prototype = {
         return this._resultLabel(result)
     },
 
-    _out: function (percent, stageKey, message, indeterminate) {
+    _out: function (percent, stageKey, message, indeterminate, ackEnabled, ackDetail) {
         return {
             percent: percent,
             stage_key: stageKey,
             message: message,
             indeterminate: indeterminate,
-            ack_skipped: true,
+            ack_skipped: !ackEnabled,
+            ack_detail: ackDetail || '',
         }
     },
 
-    _weights: function (mode) {
+    _weights: function (mode, ackEnabled) {
         if (mode === 'dry_run') {
             return {
                 queued: 3,
@@ -94,6 +113,18 @@ SyncBridgeProgress.prototype = {
                 transfer: 0,
                 target: 0,
                 ack: 0,
+                finalising: 5,
+            }
+        }
+        if (ackEnabled) {
+            return {
+                queued: 3,
+                validating: 5,
+                preparing: 5,
+                reading: 25,
+                transfer: 30,
+                target: 18,
+                ack: 9,
                 finalising: 5,
             }
         }
@@ -163,7 +194,6 @@ SyncBridgeProgress.prototype = {
                 found = true
                 break
             }
-            if (order[i] === 'ack') continue
             base += weights[order[i]] || 0
         }
         if (!found) return 0
@@ -211,7 +241,7 @@ SyncBridgeProgress.prototype = {
         return { stage: stage, ratio: ratio }
     },
 
-    _message: function (stage, counts, number, mode, intra) {
+    _message: function (stage, counts, number, mode, intra, snap) {
         var prefix = this._prefix(mode)
         if (stage === 'queued') return prefix + 'Queued ' + number
         if (stage === 'validating') return prefix + 'Validating ' + number
@@ -226,8 +256,35 @@ SyncBridgeProgress.prototype = {
             if (outcomes > 0) return prefix + 'Applied — ' + counts.updated + ' updated, ' + counts.failed + ' failed'
             return prefix + 'Processing target'
         }
+        if (stage === 'ack') return this._ackDetail(snap, true) || prefix + 'Awaiting acknowledgement'
         if (stage === 'finalising') return prefix + 'Finalising ' + number
         return prefix + number
+    },
+
+    _ackDetail: function (snap, ackEnabled) {
+        if (!ackEnabled) return ''
+        snap = snap || {}
+        var stage = String(snap.ack_stage || '').toLowerCase()
+        var updated = this._n(snap.updated_count)
+        var inserted = this._n(snap.inserted_count)
+        var error = snap.ack_error ? String(snap.ack_error) : ''
+        if (stage === 'completed') {
+            return 'Acknowledgement COMPLETED — ' + updated + ' updated, ' + inserted + ' inserted'
+        }
+        if (stage === 'failed') return 'Acknowledgement FAILED' + (error ? ' — ' + error : '')
+        if (stage === 'rejected') return 'Acknowledgement REJECTED' + (error ? ' — ' + error : '')
+        if (stage === 'processed' || stage === 'validated' || stage === 'accepted') {
+            return 'Awaiting acknowledgement — ' + stage.toUpperCase()
+        }
+        if (stage === 'received' || snap.execution_state === 'awaiting_acknowledgement' || snap.target_received_at) {
+            return 'Awaiting acknowledgement — RECEIVED'
+        }
+        if (snap.execution_state === 'completed') {
+            var result = snap.execution_result || ''
+            if (result === 'failed') return 'Acknowledgement FAILED'
+            return 'Acknowledgement COMPLETED — ' + updated + ' updated, ' + inserted + ' inserted'
+        }
+        return 'Awaiting acknowledgement'
     },
 
     _prefix: function (mode) {

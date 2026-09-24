@@ -11,8 +11,9 @@ import {
  * Numbering is autoNumber (prefix TRN, 6 digits) plus the number column default
  * javascript:getNextObjNumberPadded(). The before-insert rule assigns when the field is still nil.
  * Dual-written from the physical outbox. The outbox remains the Case 1 queue.
- * correlation_id and stage are present for a later acknowledgement phase.
- * Case 1 writes only queued / sent / failed / dead / rejected from today's apply result.
+ * correlation_id is SB- plus the outbox sys_id and is sent on /apply.
+ * When acknowledgement is not required, Case 1 still writes queued / sent / failed / dead / rejected.
+ * When it is required, sent means transport succeeded and completed / failed / rejected arrive on ACK.
  */
 export const x_33764_sbridge_transfer = Table({
     name: 'x_33764_sbridge_transfer',
@@ -50,13 +51,13 @@ export const x_33764_sbridge_transfer = Table({
         }),
         correlation_id: StringColumn({
             label: 'Correlation ID',
-            hint: 'Local stub (SB- plus outbox sys_id). Not sent on the Case 1 /apply contract.',
+            hint: 'SB- plus the outbox sys_id. Placed on the /apply payload and on every ACK.',
             maxLength: 80,
         }),
         stage: StringColumn({
             label: 'Stage',
             default: 'queued',
-            hint: 'Case 1 sets queued, sent, failed, dead, or rejected. Later ACK stages are reserved and unused.',
+            hint: 'Case 1 without acknowledgement uses queued, sent, failed, dead, or rejected. With acknowledgement required, sent is transport-only until a terminal ACK.',
             choices: {
                 queued: 'Queued',
                 sent: 'Sent',
@@ -107,5 +108,6 @@ export const x_33764_sbridge_transfer = Table({
         { name: 'idx_trn_key', unique: false, element: 'legacy_key' },
         { name: 'idx_trn_exec', unique: false, element: 'execution' },
         { name: 'idx_trn_stage', unique: false, element: 'stage' },
+        { name: 'idx_trn_corr', unique: false, element: 'correlation_id' },
     ],
 })

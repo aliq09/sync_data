@@ -17,7 +17,9 @@ import {
  * Numbering is autoNumber (prefix DEX, 6 digits) plus the number column default
  * javascript:getNextObjNumberPadded(). A before-insert rule assigns the same counter
  * when the field is still nil. Never prefix + epoch milliseconds.
- * acknowledged_at and acknowledged_count stay empty until a later acknowledgement phase.
+ * When the configuration requires acknowledgement, received_count, acknowledged_count,
+ * target_received_at, and acknowledged_at are written by the staged ACK protocol.
+ * They stay empty when acknowledgement is not required.
  */
 export const x_33764_sbridge_data_execution = Table({
     name: 'x_33764_sbridge_data_execution',
@@ -154,7 +156,7 @@ export const x_33764_sbridge_data_execution = Table({
         failed_count: IntegerColumn({ label: 'Failed', default: 0 }),
         acknowledged_count: IntegerColumn({
             label: 'Acknowledged',
-            hint: 'Left empty until staged acknowledgement. Phase 2 does not write a count here.',
+            hint: 'Transfers whose terminal ACK has been applied. Empty when acknowledgement is not required.',
         }),
         started_at: DateTimeColumn({ label: 'Started at' }),
         source_read_completed_at: DateTimeColumn({ label: 'Source read completed at' }),
@@ -163,7 +165,7 @@ export const x_33764_sbridge_data_execution = Table({
         target_processing_completed_at: DateTimeColumn({ label: 'Target processing completed at' }),
         acknowledged_at: DateTimeColumn({
             label: 'Acknowledged at',
-            hint: 'Left empty until staged acknowledgement. Shown blank on the timeline.',
+            hint: 'Set when the terminal ACK is applied. Blank when acknowledgement is not required.',
         }),
         transfer_completed_at: DateTimeColumn({ label: 'Transfer completed at' }),
         execution_completed_at: DateTimeColumn({ label: 'Execution completed at' }),

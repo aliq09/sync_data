@@ -17,6 +17,8 @@ BridgeConfig.PROP = {
     lagAlert: 'x_33764_sbridge.lag_alert_seconds',
     dlqAlert: 'x_33764_sbridge.dlq_alert_depth',
     dualWrite: 'x_33764_sbridge.dual_write',
+    ackEnabled: 'x_33764_sbridge.ack.enabled',
+    ackTimeout: 'x_33764_sbridge.ack.timeout_minutes',
 }
 
 BridgeConfig.TABLE = {

@@ -14,10 +14,11 @@
  *   record result  outbox:<id>  or  apply:<peer>:<source>:<seq>
  *
  * config_snapshot is written once and never replaced.
- * Correlation ID is a local stub (SB- + outbox sys_id). It is not added to the apply payload.
+ * Correlation ID is SB- + outbox sys_id and is copied onto the /apply payload.
  * DEX/TRN inserts use newRecord() and never set number. The before-insert rule (or the
  * number column default) assigns DEX###### / TRN###### from sys_number. Epoch numbers are not written.
- * acknowledged_at / acknowledged_count / target receipt milestones stay empty — no staged ACK.
+ * When movement_config.ack_required is false, acknowledgement milestones stay empty and
+ * HTTP 200 still completes the execution. When it is true, the result waits for ACK.
  */
 var BridgeDualWrite = Class.create()
 
@@ -136,6 +137,30 @@ BridgeDualWrite.prototype = {
         })
     },
 
+    /**
+     * Source-side staged ACK. Idempotent advancement of one transfer and its execution.
+     * A configuration that does not require acknowledgement keeps the Case 1 result.
+     */
+    onAckReceived: function (body) {
+        this._lastAck = { ok: true, pending: true }
+        this._guard('onAckReceived', function () {
+            this._lastAck = this._applyAck(body || {}) || { ok: true, pending: true }
+        })
+        return this._lastAck
+    },
+
+    /**
+     * Target-side terminal ACK audit. Returns the audit sys_id for remote_audit_id.
+     * Does not change the /apply item result.
+     */
+    onAckSent: function (peerId, item, out, built) {
+        var id = ''
+        this._guard('onAckSent', function () {
+            id = this._writeTargetAck(peerId, item, built || {})
+        })
+        return id
+    },
+
     /** Target-side evidence after BridgeApply finishes one item. Does not write the apply response. */
     onApplyOutcome: function (peerId, item, out) {
         this._guard('onApplyOutcome', function () {
@@ -151,6 +176,8 @@ BridgeDualWrite.prototype = {
                 direction: 'inbound',
                 message_type: 'receive',
                 result: status,
+                correlation_id: item.correlation_id || '',
+                ack_stage: 'received',
                 local_instance: localId,
                 remote_instance: peerId || '',
                 transaction_id: item.source_sys_id,
@@ -370,7 +397,10 @@ BridgeDualWrite.prototype = {
                         'sending',
                         'Source read finished. ' +
                             enqueuedCtrl +
-                            ' row(s) are in the outbox. The existing drain sends them. Acknowledgement stays empty.'
+                            ' row(s) are in the outbox. The existing drain sends them.' +
+                            (this._ackRequired(dex)
+                                ? ' The result waits for acknowledgement.'
+                                : ' Acknowledgement is not required.')
                     )
                 }
             } else {
@@ -398,7 +428,35 @@ BridgeDualWrite.prototype = {
             }
         }
 
-        if (phase === 'close') {
+        if (phase === 'close' && this._ackRequired(dex)) {
+            var ackState = dex.getValue('execution_state') || ''
+            if (ackState !== 'completed' && ackState !== 'cancelled') {
+                var ackProcessed = parseInt(run.getValue('processed'), 10) || 0
+                var ackFailed = parseInt(run.getValue('failed'), 10) || 0
+                if (summary && typeof summary.processed === 'number') ackProcessed = summary.processed
+                if (summary && typeof summary.failed === 'number') ackFailed = summary.failed
+                if (!dex.getValue('selected_count')) dex.setValue('selected_count', ackProcessed + ackFailed)
+                if (ackProcessed > 0) dex.setValue('sent_count', ackProcessed)
+                if (ackFailed > 0) dex.setValue('failed_count', ackFailed)
+                if (ackProcessed > 0 && !dex.getValue('transfer_sent_at')) {
+                    dex.setValue('transfer_sent_at', new GlideDateTime().getValue())
+                }
+                if (
+                    ackState === 'sending' ||
+                    ackState === 'reading_source' ||
+                    ackState === 'awaiting_receipt' ||
+                    ackState === 'preparing' ||
+                    ackState === 'draft'
+                ) {
+                    this._transitionState(
+                        dex,
+                        'awaiting_acknowledgement',
+                        'Transport finished. Waiting for staged acknowledgement. HTTP 200 is not completion.'
+                    )
+                }
+                this._completeWhenAcknowledged(dex)
+            }
+        } else if (phase === 'close') {
             var processed = parseInt(run.getValue('processed'), 10) || 0
             var failed = parseInt(run.getValue('failed'), 10) || 0
             if (summary && typeof summary.processed === 'number') processed = summary.processed
@@ -551,6 +609,7 @@ BridgeDualWrite.prototype = {
                 snap.batch_size = cfg.getValue('batch_size') || ''
                 snap.preserve_sys_id = cfg.getValue('preserve_sys_id') || ''
                 snap.apply_mode = cfg.getValue('apply_mode') || ''
+                snap.ack_required = this._truthy(cfg.getValue('ack_required'))
             }
         }
         return JSON.stringify(snap)
@@ -587,10 +646,11 @@ BridgeDualWrite.prototype = {
         var policyId = this._policyFromPayload(payloadText)
         if (dexId && policyId) this._attachConfigOnce(dexId, policyId)
 
+        var correlation = this._correlation(payloadText, outboxId)
         var transferId = this._upsertByKey(BridgeConfig.TABLE.transfer, 'outbox:' + outboxId, {
             outbox: outboxId,
             execution: dexId,
-            correlation_id: 'SB-' + outboxId,
+            correlation_id: correlation,
             stage: mapped.stage,
             transport_status: mapped.transport,
             http_status: mapped.httpStatus,
@@ -609,7 +669,7 @@ BridgeDualWrite.prototype = {
             direction: 'outbound',
             message_type: 'send',
             result: mapped.result,
-            correlation_id: 'SB-' + outboxId,
+            correlation_id: correlation,
             local_instance: localId,
             remote_instance: outboxGr.getValue('peer') || '',
             transaction_id: outboxId,
@@ -781,6 +841,11 @@ BridgeDualWrite.prototype = {
             }
         }
         var attempts = outcome && typeof outcome.attempts === 'number' ? outcome.attempts : parseInt(outboxGr.getValue('attempts'), 10) || 0
+        // Transport succeeded. Keep stage at sent until the terminal ACK when required.
+        if (outcome && outcome.ackHold && (stage === 'sent' || stage === 'rejected')) {
+            stage = 'sent'
+            transport = 'success'
+        }
         return {
             stage: stage,
             transport: transport || 'pending',
@@ -792,6 +857,23 @@ BridgeDualWrite.prototype = {
             dlqId: outcome && outcome.dlqId ? outcome.dlqId : '',
             targetSysId: outcome && outcome.targetSysId ? outcome.targetSysId : '',
         }
+    },
+
+    _correlation: function (payloadText, outboxId) {
+        try {
+            var parsed = JSON.parse(payloadText || '{}')
+            if (parsed && parsed.correlation_id) return String(parsed.correlation_id).substr(0, 80)
+        } catch (e) {
+            // Fall through to the outbox stub.
+        }
+        return BridgeAck.correlationFor(outboxId)
+    },
+
+    _truthy: function (value) {
+        var raw = String(value == null ? '' : value)
+            .trim()
+            .toLowerCase()
+        return raw === '1' || raw === 'true'
     },
 
     _outcomeFromOutbox: function (row) {
@@ -938,6 +1020,7 @@ BridgeDualWrite.prototype = {
         var state = dex.getValue('execution_state') || ''
         if (state === 'completed' || state === 'cancelled') return false
         if (!dex.getValue('source_read_completed_at')) return false
+        if (this._ackRequired(dex)) return this._completeWhenAcknowledged(dex)
         byStage = byStage || {}
         var selected = parseInt(dex.getValue('selected_count'), 10) || 0
         var open = (byStage.queued || 0) + (byStage.failed || 0)
@@ -963,6 +1046,229 @@ BridgeDualWrite.prototype = {
         )
         this._setDuration(dex)
         return true
+    },
+
+    _ackRequired: function (dex) {
+        try {
+            return new BridgeAck().requiredForDex(dex)
+        } catch (e) {
+            gs.warn('[bridge] ack requirement check failed (treated as not required): ' + e)
+            return false
+        }
+    },
+
+    /**
+     * Rank transfer stages so a late RECEIVED cannot undo a terminal ACK.
+     * Transport-retry `failed` stays below sent. ACK `failed` has transport success.
+     */
+    _stageRank: function (stage, transport) {
+        if (stage === 'completed' || stage === 'rejected' || stage === 'dead') return 50
+        if (stage === 'failed' && transport === 'success') return 50
+        if (stage === 'processed') return 40
+        if (stage === 'accepted') return 30
+        if (stage === 'validated') return 20
+        if (stage === 'received') return 10
+        if (stage === 'sent') return 5
+        if (stage === 'failed') return 4
+        return 0
+    },
+
+    _terminalAck: function (stage) {
+        return stage === 'completed' || stage === 'failed' || stage === 'rejected'
+    },
+
+    _applyAck: function (body) {
+        var correlation = body.correlation_id || ''
+        var stage = body.ack_stage || ''
+        var transfer = new GlideRecord(BridgeConfig.TABLE.transfer)
+        var found = false
+        if (body.transfer_id && transfer.get(body.transfer_id)) found = true
+        if (!found) {
+            transfer = new GlideRecord(BridgeConfig.TABLE.transfer)
+            transfer.addQuery('correlation_id', correlation)
+            transfer.setLimit(1)
+            transfer.query()
+            found = transfer.next()
+        }
+        if (!found) return { ok: true, pending: true }
+
+        var dexId = transfer.getValue('execution') || body.execution_id || ''
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dexId || !dex.get(dexId)) {
+            return { ok: true, pending: false, transfer: transfer.getUniqueValue(), execution: '' }
+        }
+        if (!this._ackRequired(dex)) {
+            return {
+                ok: true,
+                pending: false,
+                ignored: true,
+                transfer: transfer.getUniqueValue(),
+                execution: dexId,
+            }
+        }
+
+        var transport = transfer.getValue('transport_status') || ''
+        var currentStage = transfer.getValue('stage') || ''
+        var advanced = this._stageRank(stage, 'success') > this._stageRank(currentStage, transport)
+        if (advanced) {
+            transfer.setValue('stage', stage)
+            if (body.error && (stage === 'failed' || stage === 'rejected')) {
+                transfer.setValue('error', String(body.error).substr(0, 4000))
+            }
+            if (!transfer.getValue('transport_status')) transfer.setValue('transport_status', 'success')
+            transfer.update()
+        }
+
+        var now = new GlideDateTime().getValue()
+        var changed = false
+        if (!dex.getValue('target_received_at')) {
+            dex.setValue('target_received_at', now)
+            changed = true
+        }
+        if (this._terminalAck(stage)) {
+            if (!dex.getValue('target_processing_completed_at')) {
+                dex.setValue('target_processing_completed_at', now)
+                changed = true
+            }
+            if (!dex.getValue('acknowledged_at')) {
+                dex.setValue('acknowledged_at', now)
+                changed = true
+            }
+        }
+        if (this._recountAck(dex)) changed = true
+
+        if (advanced) {
+            var note = 'Sync Bridge: acknowledgement ' + String(stage).toUpperCase() + ' for ' + correlation + '.'
+            var counts = body.counts || {}
+            if (stage === 'completed' && (counts.updated || counts.inserted || counts.skipped)) {
+                note +=
+                    ' ' +
+                    (parseInt(counts.inserted, 10) || 0) +
+                    ' inserted, ' +
+                    (parseInt(counts.updated, 10) || 0) +
+                    ' updated, ' +
+                    (parseInt(counts.skipped, 10) || 0) +
+                    ' skipped.'
+            }
+            if (body.error && (stage === 'failed' || stage === 'rejected')) {
+                note += ' ' + String(body.error).substr(0, 240)
+            }
+            dex.work_notes = note
+            changed = true
+        }
+
+        var state = dex.getValue('execution_state') || ''
+        if (!this._terminalAck(stage) && state !== 'completed' && state !== 'cancelled') {
+            var next = stage === 'processed' || stage === 'validated' || stage === 'accepted' ? 'processing_target' : 'awaiting_acknowledgement'
+            if (state !== next && state !== 'finalising') {
+                this._transitionState(dex, next, 'Correlation ' + correlation + ' is at ' + stage + '.')
+                changed = true
+            }
+        }
+
+        if (this._isControllerDex(dex)) {
+            if (this._maybeCompleteController(dex)) changed = true
+        } else if (this._completeWhenAcknowledged(dex)) changed = true
+
+        if (changed) dex.update()
+        if ((dex.getValue('execution_state') || '') === 'completed') this._touchConfigFromDex(dex)
+        return { ok: true, pending: false, transfer: transfer.getUniqueValue(), execution: dexId }
+    },
+
+    _recountAck: function (dex) {
+        var received = 0
+        var acked = 0
+        var gr = new GlideRecord(BridgeConfig.TABLE.transfer)
+        gr.addQuery('execution', dex.getUniqueValue())
+        gr.query()
+        while (gr.next()) {
+            var rank = this._stageRank(gr.getValue('stage') || '', gr.getValue('transport_status') || '')
+            if (rank >= 10) received++
+            if (rank >= 50) acked++
+        }
+        var changed = false
+        changed = this._setCount(dex, 'received_count', received) || changed
+        changed = this._setCount(dex, 'acknowledged_count', acked) || changed
+        return changed
+    },
+
+    /**
+     * Close only when every transfer is terminal under acknowledgement.
+     * sent + HTTP 200 is not enough. Does not set a successful result before that.
+     */
+    _completeWhenAcknowledged: function (dex) {
+        var state = dex.getValue('execution_state') || ''
+        if (state === 'completed' || state === 'cancelled') return false
+        var selected = parseInt(dex.getValue('selected_count'), 10) || 0
+        if (!(selected > 0)) return false
+        var gr = new GlideRecord(BridgeConfig.TABLE.transfer)
+        gr.addQuery('execution', dex.getUniqueValue())
+        gr.query()
+        var waiting = 0
+        var completed = 0
+        var failed = 0
+        var retrying = 0
+        while (gr.next()) {
+            var stage = gr.getValue('stage') || ''
+            var transport = gr.getValue('transport_status') || ''
+            var rank = this._stageRank(stage, transport)
+            if (rank >= 50) {
+                if (stage === 'completed') completed++
+                else failed++
+            } else if (rank >= 5) waiting++
+            else retrying++
+        }
+        if (retrying > 0) return false
+        if (waiting > 0 || completed + failed < selected) {
+            if (waiting > 0 && (state === 'sending' || state === 'reading_source' || state === 'awaiting_receipt' || state === 'preparing' || state === 'queued')) {
+                return this._transitionState(
+                    dex,
+                    'awaiting_acknowledgement',
+                    'Transport succeeded. The result waits for acknowledgement. HTTP 200 is not completion.'
+                )
+            }
+            return false
+        }
+        var result = 'successful'
+        if (failed > 0 && completed > 0) result = 'partially_completed'
+        else if (failed > 0) result = 'failed'
+        dex.setValue('execution_result', result)
+        var now = new GlideDateTime().getValue()
+        if (!dex.getValue('acknowledged_at')) dex.setValue('acknowledged_at', now)
+        if (!dex.getValue('target_processing_completed_at')) dex.setValue('target_processing_completed_at', now)
+        if (!dex.getValue('transfer_completed_at')) dex.setValue('transfer_completed_at', now)
+        if (!dex.getValue('execution_completed_at')) dex.setValue('execution_completed_at', now)
+        this._transitionState(dex, 'finalising', 'Applying the terminal acknowledgement.')
+        this._transitionState(dex, 'completed', 'Acknowledgement finished. Result: ' + this._resultLabel(result) + '.')
+        this._setDuration(dex)
+        return true
+    },
+
+    _writeTargetAck: function (peerId, item, built) {
+        if (!item || !item.correlation_id || !built || !built.ack_stage) return ''
+        var now = new GlideDateTime().getValue()
+        var localId = this.config.localPeerId() || ''
+        return this._upsertByKey(
+            BridgeConfig.TABLE.transferAudit,
+            'ack:' + item.correlation_id + ':' + built.ack_stage,
+            {
+                direction: 'outbound',
+                message_type: 'ack',
+                result: built.result || built.ack_stage,
+                correlation_id: item.correlation_id,
+                ack_stage: built.ack_stage,
+                local_instance: localId,
+                remote_instance: peerId || '',
+                transaction_id: item.source_sys_id || '',
+                sequence: item.seq || 0,
+                record_count: 1,
+                source_table: item.table || '',
+                source_sys_id: item.source_sys_id || '',
+                target_sys_id: '',
+                acknowledged_at: now,
+                error: built.error || '',
+            }
+        )
     },
 
     _touchConfigFromDex: function (dex) {

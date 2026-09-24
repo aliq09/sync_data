@@ -51,6 +51,11 @@ BridgeApply.prototype = {
                 results.push(failed)
             }
         }
+        try {
+            new BridgeAck().sendTerminalAcks(peerId, items, results)
+        } catch (ackErr) {
+            gs.warn('[bridge] terminal ack dispatch failed (apply result unchanged): ' + ackErr)
+        }
         return results
     },
 
@@ -60,6 +65,8 @@ BridgeApply.prototype = {
      */
     apply: function (peerId, item, maps) {
         var out = this._applyItem(peerId, item, maps)
+        if (item && item.correlation_id) out.correlation_id = item.correlation_id
+        out.acknowledgement = 'received'
         this._shadowApply(peerId, item, out)
         return out
     },
