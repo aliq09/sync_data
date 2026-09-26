@@ -327,6 +327,8 @@ Form({
                     elements: [
                         { field: 'name', type: 'table_field' },
                         { field: 'active', type: 'table_field' },
+                        { field: 'config_type', type: 'table_field' },
+                        { field: 'pack', type: 'table_field' },
                         { field: 'direction', type: 'table_field' },
                         { field: 'description', type: 'table_field' },
                     ],
@@ -444,6 +446,7 @@ Form({
                     leftElements: [
                         { field: 'source_instance', type: 'table_field' },
                         { field: 'source_table', type: 'table_field' },
+                        { field: 'pack', type: 'table_field' },
                     ],
                     rightElements: [
                         { field: 'target_instance', type: 'table_field' },
@@ -741,6 +744,81 @@ Form({
                         { field: 'work_notes', type: 'table_field' },
                         { field: 'comments', type: 'table_field' },
                         { type: 'formatter', formatterRef: 'Activities_Filtered' },
+                    ],
+                },
+            ],
+        },
+    ],
+})
+
+Form({
+    table: 'x_33764_sbridge_movement_pack',
+    view: default_view,
+    sections: [
+        {
+            caption: 'Pack',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'name', type: 'table_field' },
+                        { field: 'active', type: 'table_field' },
+                        { field: 'version_note', type: 'table_field' },
+                        { field: 'description', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+        {
+            caption: 'Root',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'root_table', type: 'table_field' },
+                        { field: 'root_filter', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+    ],
+})
+
+Form({
+    table: 'x_33764_sbridge_pack_member',
+    view: default_view,
+    sections: [
+        {
+            caption: 'Member',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'pack', type: 'table_field' },
+                        { field: 'name', type: 'table_field' },
+                        { field: 'active', type: 'table_field' },
+                        { field: 'apply_order', type: 'table_field' },
+                        { field: 'source_table', type: 'table_field' },
+                        { field: 'graph_kind', type: 'table_field' },
+                        { field: 'flow_key', type: 'table_field' },
+                    ],
+                },
+            ],
+        },
+        {
+            caption: 'Expand',
+            content: [
+                {
+                    layout: 'one-column',
+                    elements: [
+                        { field: 'expand_mode', type: 'table_field' },
+                        { field: 'parent_field', type: 'table_field' },
+                        { field: 'expand_query', type: 'table_field' },
+                        { field: 'id_scope', type: 'table_field' },
+                        { field: 'parent_member', type: 'table_field' },
+                        { field: 'fk_remap_fields', type: 'table_field' },
+                        { field: 'match_strategy', type: 'table_field' },
+                        { field: 'field_list', type: 'table_field' },
                     ],
                 },
             ],

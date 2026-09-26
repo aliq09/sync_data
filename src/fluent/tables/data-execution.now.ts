@@ -11,6 +11,8 @@ import {
 
 /**
  * Data Execution (DEX…) — one run of a configuration.
+ * 0.4.2 does not insert a row, and does not mark it Completed/Successful, unless
+ * configuration is set. The default list filter is configurationISNOTEMPTY.
  * config_snapshot is written once at start and not revised when the configuration changes.
  * State and Result stay separate. Case 1 still closes from the current /apply contract.
  *
@@ -57,6 +59,12 @@ export const x_33764_sbridge_data_execution = Table({
         configuration: ReferenceColumn({
             label: 'Configuration',
             referenceTable: 'x_33764_sbridge_movement_config',
+        }),
+        pack: ReferenceColumn({
+            label: 'Movement pack',
+            hint: 'Set when this execution expanded a pack. Empty on a Path A single-table run. One pack execution is one controller row.',
+            referenceTable: 'x_33764_sbridge_movement_pack',
+            readOnly: true,
         }),
         run: ReferenceColumn({
             label: 'Sync run',
@@ -154,6 +162,16 @@ export const x_33764_sbridge_data_execution = Table({
         updated_count: IntegerColumn({ label: 'Updated', default: 0 }),
         skipped_count: IntegerColumn({ label: 'Skipped', default: 0 }),
         failed_count: IntegerColumn({ label: 'Failed', default: 0 }),
+        expand_claim: StringColumn({
+            label: 'Expand claim',
+            maxLength: 40,
+            readOnly: true,
+            hint: 'Token held while one controller expands this execution. Empty when no expand is in progress.',
+        }),
+        expand_claimed_at: DateTimeColumn({
+            label: 'Expand claimed at',
+            readOnly: true,
+        }),
         acknowledged_count: IntegerColumn({
             label: 'Acknowledged',
             hint: 'Transfers whose terminal ACK has been applied. Empty when acknowledgement is not required.',

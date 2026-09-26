@@ -17,11 +17,11 @@ Record({
     table: 'sys_app_module',
     data: {
         title: 'Overview',
-        hint: 'In-flight data executions',
+        hint: 'In-flight data executions with a configuration',
         application: menu,
         link_type: 'LIST',
         name: 'x_33764_sbridge_data_execution',
-        filter: 'execution_state!=completed^execution_state!=cancelled',
+        filter: 'configurationISNOTEMPTY^execution_state!=completed^execution_state!=cancelled',
         roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 10,
@@ -57,6 +57,21 @@ Record({
 })
 
 Record({
+    $id: Now.ID['mod-packs'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Packs',
+        hint: 'Ordered related-table packs. One Execute Now expands the pack.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_movement_pack',
+        roles: ['x_33764_sbridge.reader'],
+        active: true,
+        order: 112,
+    },
+})
+
+Record({
     $id: Now.ID['mod-schedules'],
     table: 'sys_app_module',
     data: {
@@ -76,13 +91,30 @@ Record({
     table: 'sys_app_module',
     data: {
         title: 'Data Executions',
-        hint: 'One execution of a configuration (DEX)',
+        hint: 'One execution of a configuration (DEX). Empty configuration rows are hidden.',
         application: menu,
         link_type: 'LIST',
         name: 'x_33764_sbridge_data_execution',
+        filter: 'configurationISNOTEMPTY',
         roles: ['x_33764_sbridge.reader'],
         active: true,
         order: 120,
+    },
+})
+
+Record({
+    $id: Now.ID['mod-orphan-executions'],
+    table: 'sys_app_module',
+    data: {
+        title: 'Orphan executions',
+        hint: 'Badge for admins: configurationISEMPTY rows are not successful movements. Review only — Sync Bridge does not delete them.',
+        application: menu,
+        link_type: 'LIST',
+        name: 'x_33764_sbridge_data_execution',
+        filter: 'configurationISEMPTY',
+        roles: ['x_33764_sbridge.admin'],
+        active: true,
+        order: 122,
     },
 })
 

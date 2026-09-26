@@ -17,6 +17,890 @@ declare global {
                         table: 'sys_security_acl'
                         id: '70470d95c30d4dfaafa7c5d59d3f3fbd'
                     }
+                    'acl-worker-cmdb-ci-spkg-create': {
+                        table: 'sys_security_acl'
+                        id: '761f334a3ef548acbd3e4ea70854f24f'
+                    }
+                    'acl-worker-cmdb-ci-spkg-read': {
+                        table: 'sys_security_acl'
+                        id: '215d51e7bb834262a2a2862d47c6c420'
+                    }
+                    'acl-worker-cmdb-ci-spkg-star-create': {
+                        table: 'sys_security_acl'
+                        id: '16b2e288f2ef4281a5863db5db5e5805'
+                    }
+                    'acl-worker-cmdb-ci-spkg-star-read': {
+                        table: 'sys_security_acl'
+                        id: '8e73d1b1d4674023b6d4d954c6c872e8'
+                    }
+                    'acl-worker-cmdb-ci-spkg-star-write': {
+                        table: 'sys_security_acl'
+                        id: '13e2a1e9c90549b99ceb7c70ca2c24b5'
+                    }
+                    'acl-worker-cmdb-ci-spkg-write': {
+                        table: 'sys_security_acl'
+                        id: '4bac95f670c64269909fb7659ccfe766'
+                    }
+                    'acl-worker-cmdb-software-instance-create': {
+                        table: 'sys_security_acl'
+                        id: 'eae7b3b93e314565bd59c68bec4bfc1c'
+                    }
+                    'acl-worker-cmdb-software-instance-installed-on-create': {
+                        table: 'sys_security_acl'
+                        id: '82c31e4631d04fdd991a7b85c551958f'
+                    }
+                    'acl-worker-cmdb-software-instance-installed-on-read': {
+                        table: 'sys_security_acl'
+                        id: 'f34710ee430e4c9d9c202aefe6cd2a7a'
+                    }
+                    'acl-worker-cmdb-software-instance-installed-on-write': {
+                        table: 'sys_security_acl'
+                        id: '5331bca1d99143b196e5e58417ff036c'
+                    }
+                    'acl-worker-cmdb-software-instance-name-create': {
+                        table: 'sys_security_acl'
+                        id: '1c5e08df04ec41eaa66f366978e897a6'
+                    }
+                    'acl-worker-cmdb-software-instance-name-read': {
+                        table: 'sys_security_acl'
+                        id: '55096513a0504499bca5ddee34533017'
+                    }
+                    'acl-worker-cmdb-software-instance-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'ecf716d1dd3449aab82b976027d44ba5'
+                    }
+                    'acl-worker-cmdb-software-instance-read': {
+                        table: 'sys_security_acl'
+                        id: '85f98d0f094a4c6690f8b1210d9232df'
+                    }
+                    'acl-worker-cmdb-software-instance-software-create': {
+                        table: 'sys_security_acl'
+                        id: '9c658210adb440bb9d3cddad0eb9fabd'
+                    }
+                    'acl-worker-cmdb-software-instance-software-read': {
+                        table: 'sys_security_acl'
+                        id: '12ef8cf0acc843b585d97b1d3b7f2219'
+                    }
+                    'acl-worker-cmdb-software-instance-software-write': {
+                        table: 'sys_security_acl'
+                        id: '3794b1a4906542f8b2c80dc0b724eac8'
+                    }
+                    'acl-worker-cmdb-software-instance-star-create': {
+                        table: 'sys_security_acl'
+                        id: '95fc6fe7318a449aa089c33b4e010bba'
+                    }
+                    'acl-worker-cmdb-software-instance-star-read': {
+                        table: 'sys_security_acl'
+                        id: '8063de7c55bb4f8b8d4c6172e6808e75'
+                    }
+                    'acl-worker-cmdb-software-instance-star-write': {
+                        table: 'sys_security_acl'
+                        id: '2af74a91d4d9465b8b4e2f1ca1b0bd46'
+                    }
+                    'acl-worker-cmdb-software-instance-write': {
+                        table: 'sys_security_acl'
+                        id: '3751bf3c54df431fac814a6796d8a7d3'
+                    }
+                    'acl-worker-item-option-new-active-read': {
+                        table: 'sys_security_acl'
+                        id: 'fd2f2fc5b35f49639a6da56306eb599d'
+                    }
+                    'acl-worker-item-option-new-active-write': {
+                        table: 'sys_security_acl'
+                        id: 'fd6655baac8d444c80f62da8a7153045'
+                    }
+                    'acl-worker-item-option-new-cat-item-read': {
+                        table: 'sys_security_acl'
+                        id: '011a0e8ec29b4352858d06a8e686a396'
+                    }
+                    'acl-worker-item-option-new-cat-item-write': {
+                        table: 'sys_security_acl'
+                        id: '348cd8d06b9a4b17be89669560bb961f'
+                    }
+                    'acl-worker-item-option-new-create': {
+                        table: 'sys_security_acl'
+                        id: '991f7ad0e2ca4c0997e2dfbb8c984f9f'
+                    }
+                    'acl-worker-item-option-new-default-value-read': {
+                        table: 'sys_security_acl'
+                        id: 'c6de8e92eb654e67a0298fd7617add03'
+                    }
+                    'acl-worker-item-option-new-default-value-write': {
+                        table: 'sys_security_acl'
+                        id: 'f7b27c82577349629942cd1b1034818a'
+                    }
+                    'acl-worker-item-option-new-description-read': {
+                        table: 'sys_security_acl'
+                        id: '677f792ea2ce4df28ac723061b0505a7'
+                    }
+                    'acl-worker-item-option-new-description-write': {
+                        table: 'sys_security_acl'
+                        id: '51135d84143046719490ff665765850b'
+                    }
+                    'acl-worker-item-option-new-mandatory-read': {
+                        table: 'sys_security_acl'
+                        id: '21f3c0271a0241a6bbc65801fcef23ad'
+                    }
+                    'acl-worker-item-option-new-mandatory-write': {
+                        table: 'sys_security_acl'
+                        id: '3f523221fec8457280166dd089404ead'
+                    }
+                    'acl-worker-item-option-new-name-read': {
+                        table: 'sys_security_acl'
+                        id: '48f3abccbd8f4fd6a01454956125a82b'
+                    }
+                    'acl-worker-item-option-new-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'cf974adbc863465ca8188b6821535f76'
+                    }
+                    'acl-worker-item-option-new-order-read': {
+                        table: 'sys_security_acl'
+                        id: '1a4c8200d1c844ce8663afdb205abe01'
+                    }
+                    'acl-worker-item-option-new-order-write': {
+                        table: 'sys_security_acl'
+                        id: '87ca87c079494f729bbaa381d8767c1d'
+                    }
+                    'acl-worker-item-option-new-question-text-read': {
+                        table: 'sys_security_acl'
+                        id: '51c74ed7f7014bc0b4fc0a890304d56b'
+                    }
+                    'acl-worker-item-option-new-question-text-write': {
+                        table: 'sys_security_acl'
+                        id: 'aa51beff8ccc4c3183cd47a09b70fca6'
+                    }
+                    'acl-worker-item-option-new-read': {
+                        table: 'sys_security_acl'
+                        id: 'dcb387673bf542c89a5cb760c88d4a7c'
+                    }
+                    'acl-worker-item-option-new-reference-read': {
+                        table: 'sys_security_acl'
+                        id: '1db9b32f7daa4da2b6ce685fd85d1897'
+                    }
+                    'acl-worker-item-option-new-reference-write': {
+                        table: 'sys_security_acl'
+                        id: 'e9cdf4e708774bff93b8ed0097e0ac72'
+                    }
+                    'acl-worker-item-option-new-star-read': {
+                        table: 'sys_security_acl'
+                        id: '8e6e275c6c0d4bc69b93fdbe51734b7d'
+                    }
+                    'acl-worker-item-option-new-star-write': {
+                        table: 'sys_security_acl'
+                        id: '3df23c71d535423ea3a8e4a4f76a1526'
+                    }
+                    'acl-worker-item-option-new-type-read': {
+                        table: 'sys_security_acl'
+                        id: 'c322e24ed25949e6b1c32153d798bafc'
+                    }
+                    'acl-worker-item-option-new-type-write': {
+                        table: 'sys_security_acl'
+                        id: '77a85fa0aff8446e89f1fafa7d5009b3'
+                    }
+                    'acl-worker-item-option-new-variable-set-read': {
+                        table: 'sys_security_acl'
+                        id: 'fc693fe1b63e4a4ab0e7647471835148'
+                    }
+                    'acl-worker-item-option-new-variable-set-write': {
+                        table: 'sys_security_acl'
+                        id: '8fa4bd7e8f4f43de8c10fcc989dfa014'
+                    }
+                    'acl-worker-item-option-new-write': {
+                        table: 'sys_security_acl'
+                        id: 'c977f8719a1d4d239f78c76c2e189a2f'
+                    }
+                    'acl-worker-sc-cat-item-access-type-read': {
+                        table: 'sys_security_acl'
+                        id: 'bff2beed6f734cf0b29ad423e25d1cfb'
+                    }
+                    'acl-worker-sc-cat-item-access-type-write': {
+                        table: 'sys_security_acl'
+                        id: 'ee1aed0ed5a8426dacb6860f71c91b35'
+                    }
+                    'acl-worker-sc-cat-item-active-read': {
+                        table: 'sys_security_acl'
+                        id: '2571c1dafc4642bd8da1322cb13f1cb6'
+                    }
+                    'acl-worker-sc-cat-item-active-write': {
+                        table: 'sys_security_acl'
+                        id: '06b73283fdcc401da70f30debb39bb41'
+                    }
+                    'acl-worker-sc-cat-item-availability-read': {
+                        table: 'sys_security_acl'
+                        id: 'df84a66f8439469e84e10ce9f05b5478'
+                    }
+                    'acl-worker-sc-cat-item-availability-write': {
+                        table: 'sys_security_acl'
+                        id: '4e7196a29f234dceb967e2534acd738d'
+                    }
+                    'acl-worker-sc-cat-item-billable-read': {
+                        table: 'sys_security_acl'
+                        id: '91dc2ba04acb49d6a7bbab81d9e504ee'
+                    }
+                    'acl-worker-sc-cat-item-billable-write': {
+                        table: 'sys_security_acl'
+                        id: 'efbeaf4fa4dc45ad9536445ccd8d217d'
+                    }
+                    'acl-worker-sc-cat-item-category-read': {
+                        table: 'sys_security_acl'
+                        id: '0b34fa98e9414b2a8e4f410172effd24'
+                    }
+                    'acl-worker-sc-cat-item-category-write': {
+                        table: 'sys_security_acl'
+                        id: '51e4089928d64632a5a50a651b5a961f'
+                    }
+                    'acl-worker-sc-cat-item-cost-read': {
+                        table: 'sys_security_acl'
+                        id: '4dc068c52aeb4dc18a1944cc1c05a595'
+                    }
+                    'acl-worker-sc-cat-item-cost-write': {
+                        table: 'sys_security_acl'
+                        id: '7a0ba87baba849d48e19d6e8904385b4'
+                    }
+                    'acl-worker-sc-cat-item-create': {
+                        table: 'sys_security_acl'
+                        id: '6a13db90f9b947bfb4299699eba1a1a9'
+                    }
+                    'acl-worker-sc-cat-item-delivery-plan-read': {
+                        table: 'sys_security_acl'
+                        id: 'a6521c8641e14338a0e126d6317e0d12'
+                    }
+                    'acl-worker-sc-cat-item-delivery-plan-write': {
+                        table: 'sys_security_acl'
+                        id: 'efa673635fa644df9710da5c1c2e53df'
+                    }
+                    'acl-worker-sc-cat-item-description-read': {
+                        table: 'sys_security_acl'
+                        id: '415717acb62447a2968cefaf4929c949'
+                    }
+                    'acl-worker-sc-cat-item-description-write': {
+                        table: 'sys_security_acl'
+                        id: '10e5fe990f1e442696c8af35f6e86c86'
+                    }
+                    'acl-worker-sc-cat-item-entitlement-script-read': {
+                        table: 'sys_security_acl'
+                        id: '89712d9b0587480492d4ad3aeb74201d'
+                    }
+                    'acl-worker-sc-cat-item-entitlement-script-write': {
+                        table: 'sys_security_acl'
+                        id: 'f4a0f2a39bb84262bdf43e8faeb7bba0'
+                    }
+                    'acl-worker-sc-cat-item-flow-designer-flow-read': {
+                        table: 'sys_security_acl'
+                        id: '67c861668e9c4682a8c18052748e4846'
+                    }
+                    'acl-worker-sc-cat-item-flow-designer-flow-write': {
+                        table: 'sys_security_acl'
+                        id: '37b3128ddf43409ba6881dbe554df439'
+                    }
+                    'acl-worker-sc-cat-item-ignore-price-read': {
+                        table: 'sys_security_acl'
+                        id: '5afe1b2c67874cc2b166fb46a362a9ac'
+                    }
+                    'acl-worker-sc-cat-item-ignore-price-write': {
+                        table: 'sys_security_acl'
+                        id: '19316d93e1234fac9a7cb97e80608883'
+                    }
+                    'acl-worker-sc-cat-item-list-price-read': {
+                        table: 'sys_security_acl'
+                        id: 'a12025811efb4114b068029c285b06d4'
+                    }
+                    'acl-worker-sc-cat-item-list-price-write': {
+                        table: 'sys_security_acl'
+                        id: '67066dcfd7f74f16a0a2e315b6ef7bc4'
+                    }
+                    'acl-worker-sc-cat-item-meta-read': {
+                        table: 'sys_security_acl'
+                        id: '4a64e657634e45ebb639924966a39466'
+                    }
+                    'acl-worker-sc-cat-item-meta-write': {
+                        table: 'sys_security_acl'
+                        id: 'd7a10d363fd1476783dd3399941633b6'
+                    }
+                    'acl-worker-sc-cat-item-model-read': {
+                        table: 'sys_security_acl'
+                        id: '314caf3c4cd64a74bf7a811e6b6fd85b'
+                    }
+                    'acl-worker-sc-cat-item-model-write': {
+                        table: 'sys_security_acl'
+                        id: '2a33535925ae45b984d3b4be90097cfe'
+                    }
+                    'acl-worker-sc-cat-item-name-read': {
+                        table: 'sys_security_acl'
+                        id: '4bf1ecc985ae44f695e1f920bda0a68c'
+                    }
+                    'acl-worker-sc-cat-item-name-write': {
+                        table: 'sys_security_acl'
+                        id: '2fcee3dac1c8406f9f944701ebe35891'
+                    }
+                    'acl-worker-sc-cat-item-no-cart-read': {
+                        table: 'sys_security_acl'
+                        id: '55160966ee53408b891a7fb411e7ba89'
+                    }
+                    'acl-worker-sc-cat-item-no-cart-write': {
+                        table: 'sys_security_acl'
+                        id: '7bde104712e74406a84fbd515b9dc2f8'
+                    }
+                    'acl-worker-sc-cat-item-no-order-read': {
+                        table: 'sys_security_acl'
+                        id: '33d1314894164916bb114f8c71f8a6fe'
+                    }
+                    'acl-worker-sc-cat-item-no-order-write': {
+                        table: 'sys_security_acl'
+                        id: 'be3989866e3444d4803e471f961f9731'
+                    }
+                    'acl-worker-sc-cat-item-no-quantity-read': {
+                        table: 'sys_security_acl'
+                        id: '674d307cce1d4fe0a60736253215b529'
+                    }
+                    'acl-worker-sc-cat-item-no-quantity-write': {
+                        table: 'sys_security_acl'
+                        id: '543d3b3e12834920940aca370a488615'
+                    }
+                    'acl-worker-sc-cat-item-omit-price-read': {
+                        table: 'sys_security_acl'
+                        id: '19c25ae6aaaa4086a45814837e4b5f83'
+                    }
+                    'acl-worker-sc-cat-item-omit-price-write': {
+                        table: 'sys_security_acl'
+                        id: '4495207bd5c74704bf82a8b3bf135d0f'
+                    }
+                    'acl-worker-sc-cat-item-owner-read': {
+                        table: 'sys_security_acl'
+                        id: '1f4ba56886d34ebba86dbdc1e0e55b29'
+                    }
+                    'acl-worker-sc-cat-item-owner-write': {
+                        table: 'sys_security_acl'
+                        id: '09c54aa2c45f4a3ea40c15b6b9e42c4c'
+                    }
+                    'acl-worker-sc-cat-item-picture-read': {
+                        table: 'sys_security_acl'
+                        id: '3ca92915b319472b9a99be47e52ac21e'
+                    }
+                    'acl-worker-sc-cat-item-picture-write': {
+                        table: 'sys_security_acl'
+                        id: '34cc455476684a8ba92cf155640bc89e'
+                    }
+                    'acl-worker-sc-cat-item-price-read': {
+                        table: 'sys_security_acl'
+                        id: '8da0afc5435c45be92dc27a98f1ef746'
+                    }
+                    'acl-worker-sc-cat-item-price-write': {
+                        table: 'sys_security_acl'
+                        id: 'f54ed2f1010043beaab9af9c7fba2371'
+                    }
+                    'acl-worker-sc-cat-item-read': {
+                        table: 'sys_security_acl'
+                        id: '2165bd33b1d040a38559b3d369cd4543'
+                    }
+                    'acl-worker-sc-cat-item-recurring-price-read': {
+                        table: 'sys_security_acl'
+                        id: '0d056b97c4d64a0ba90ccd5675639db4'
+                    }
+                    'acl-worker-sc-cat-item-recurring-price-write': {
+                        table: 'sys_security_acl'
+                        id: 'e2046ea1e288438ea991e9fe95a76ac0'
+                    }
+                    'acl-worker-sc-cat-item-roles-read': {
+                        table: 'sys_security_acl'
+                        id: '05fc270471544edab584a845cfd3b576'
+                    }
+                    'acl-worker-sc-cat-item-roles-write': {
+                        table: 'sys_security_acl'
+                        id: '4170c51297e44bc1b9604a7a13adfb06'
+                    }
+                    'acl-worker-sc-cat-item-sc-catalogs-read': {
+                        table: 'sys_security_acl'
+                        id: '504fd757b48e4488b7dd30f73215cbfb'
+                    }
+                    'acl-worker-sc-cat-item-sc-catalogs-write': {
+                        table: 'sys_security_acl'
+                        id: 'adcad465a03c46c2b66ec8188b18af9a'
+                    }
+                    'acl-worker-sc-cat-item-short-description-read': {
+                        table: 'sys_security_acl'
+                        id: '117f1a0d21174a358e4ffb30296041bb'
+                    }
+                    'acl-worker-sc-cat-item-short-description-write': {
+                        table: 'sys_security_acl'
+                        id: 'f0f794904e7541c49cdbec95378485a1'
+                    }
+                    'acl-worker-sc-cat-item-star-read': {
+                        table: 'sys_security_acl'
+                        id: 'e757baea7c45465d8a6e0985f30d81c0'
+                    }
+                    'acl-worker-sc-cat-item-star-write': {
+                        table: 'sys_security_acl'
+                        id: 'c1d077f630e743408956a599e130edad'
+                    }
+                    'acl-worker-sc-cat-item-sys-class-name-read': {
+                        table: 'sys_security_acl'
+                        id: '601365d2f6794da8b0e922b66a5d6e64'
+                    }
+                    'acl-worker-sc-cat-item-sys-class-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'bf82af8495474a7686136ac1a87b67a5'
+                    }
+                    'acl-worker-sc-cat-item-sys-name-read': {
+                        table: 'sys_security_acl'
+                        id: 'a97e1aadbc944d59ac3f12370adad48d'
+                    }
+                    'acl-worker-sc-cat-item-sys-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'dfb39ea83e1f400fb73ca73158008ed9'
+                    }
+                    'acl-worker-sc-cat-item-sys-package-read': {
+                        table: 'sys_security_acl'
+                        id: '9c8c7f479e2043d897b6c191efd85c57'
+                    }
+                    'acl-worker-sc-cat-item-sys-package-write': {
+                        table: 'sys_security_acl'
+                        id: '5b2f542318634577984badba6e4be626'
+                    }
+                    'acl-worker-sc-cat-item-sys-policy-read': {
+                        table: 'sys_security_acl'
+                        id: '06264563489e4514a68693c58b79d6a1'
+                    }
+                    'acl-worker-sc-cat-item-sys-policy-write': {
+                        table: 'sys_security_acl'
+                        id: '3e06b76ecb9941f798d99ed0cd438baf'
+                    }
+                    'acl-worker-sc-cat-item-sys-scope-read': {
+                        table: 'sys_security_acl'
+                        id: '038b1451ada74d79be54c4e2ae9d6ce4'
+                    }
+                    'acl-worker-sc-cat-item-sys-scope-write': {
+                        table: 'sys_security_acl'
+                        id: '15937be654f244958b22e0f9f8241ba7'
+                    }
+                    'acl-worker-sc-cat-item-sys-update-name-read': {
+                        table: 'sys_security_acl'
+                        id: '3e0aec5bf40542dea7effb0f561eeaab'
+                    }
+                    'acl-worker-sc-cat-item-sys-update-name-write': {
+                        table: 'sys_security_acl'
+                        id: '42de8dcb55404e3c8881ee96e0e29e28'
+                    }
+                    'acl-worker-sc-cat-item-template-read': {
+                        table: 'sys_security_acl'
+                        id: '98d0bb8e4d13421299df010982d2fbda'
+                    }
+                    'acl-worker-sc-cat-item-template-write': {
+                        table: 'sys_security_acl'
+                        id: 'd1fc35c0f0a14471bbc323a44bdcd6c4'
+                    }
+                    'acl-worker-sc-cat-item-type-read': {
+                        table: 'sys_security_acl'
+                        id: '41b48d526ac4478d9c336f6b8e4b7207'
+                    }
+                    'acl-worker-sc-cat-item-type-write': {
+                        table: 'sys_security_acl'
+                        id: '75791d68956a43d3a77d985202756fa1'
+                    }
+                    'acl-worker-sc-cat-item-workflow-read': {
+                        table: 'sys_security_acl'
+                        id: 'f9f2a8f0420644e4adc3991e05aa6ad1'
+                    }
+                    'acl-worker-sc-cat-item-workflow-write': {
+                        table: 'sys_security_acl'
+                        id: 'ea57e4a7b977461b873ea9d45a507da7'
+                    }
+                    'acl-worker-sc-cat-item-write': {
+                        table: 'sys_security_acl'
+                        id: '6d79cb9a1db64c1da2cb02db69f3e762'
+                    }
+                    'acl-worker-sys-script-abort-action-read': {
+                        table: 'sys_security_acl'
+                        id: 'e5d8a9c40bca48888030bdf56e4dc179'
+                    }
+                    'acl-worker-sys-script-abort-action-write': {
+                        table: 'sys_security_acl'
+                        id: '6d1fb7802518418383488a941a839a65'
+                    }
+                    'acl-worker-sys-script-access-read': {
+                        table: 'sys_security_acl'
+                        id: 'eb12dc23d22c48de92281feb76466832'
+                    }
+                    'acl-worker-sys-script-access-write': {
+                        table: 'sys_security_acl'
+                        id: '243d5420f9f1498cb122675fc5fef1bb'
+                    }
+                    'acl-worker-sys-script-action-delete-read': {
+                        table: 'sys_security_acl'
+                        id: '997832897fe146f3833645dd403a7a18'
+                    }
+                    'acl-worker-sys-script-action-delete-write': {
+                        table: 'sys_security_acl'
+                        id: 'f11e8fff1f284a2c9376b7cad3891ddf'
+                    }
+                    'acl-worker-sys-script-action-insert-read': {
+                        table: 'sys_security_acl'
+                        id: 'd541ebf5fea04159ae032007437da23b'
+                    }
+                    'acl-worker-sys-script-action-insert-write': {
+                        table: 'sys_security_acl'
+                        id: 'af08f09872554b399bed13c1efdadd73'
+                    }
+                    'acl-worker-sys-script-action-query-read': {
+                        table: 'sys_security_acl'
+                        id: '9587a64a326e4964985a65e312e5fba5'
+                    }
+                    'acl-worker-sys-script-action-query-write': {
+                        table: 'sys_security_acl'
+                        id: 'ba5fb50f621a41baa273e23e4327f89e'
+                    }
+                    'acl-worker-sys-script-action-update-read': {
+                        table: 'sys_security_acl'
+                        id: '9f2654bdfa32424db3d9db9692b1efe8'
+                    }
+                    'acl-worker-sys-script-action-update-write': {
+                        table: 'sys_security_acl'
+                        id: 'bff77ae46c6c497fa7e06c6c79bcfa14'
+                    }
+                    'acl-worker-sys-script-active-read': {
+                        table: 'sys_security_acl'
+                        id: 'f7cc50650a034ac1ad8a62781fc04326'
+                    }
+                    'acl-worker-sys-script-active-write': {
+                        table: 'sys_security_acl'
+                        id: 'f4087acaa73842edb01a8a41bb3b4961'
+                    }
+                    'acl-worker-sys-script-add-message-read': {
+                        table: 'sys_security_acl'
+                        id: 'd7992dcae6f54e91bf71ea4451c6a4ff'
+                    }
+                    'acl-worker-sys-script-add-message-write': {
+                        table: 'sys_security_acl'
+                        id: '94173f923a0c4bc5bbf19997ff0bb358'
+                    }
+                    'acl-worker-sys-script-advanced-read': {
+                        table: 'sys_security_acl'
+                        id: '820a2ecb0c69494f9729528fa3ba53dd'
+                    }
+                    'acl-worker-sys-script-advanced-write': {
+                        table: 'sys_security_acl'
+                        id: '8da621430dd14d5883fdc028817f4dc2'
+                    }
+                    'acl-worker-sys-script-change-fields-read': {
+                        table: 'sys_security_acl'
+                        id: '43c8465ed9be40848a0ae2792ae2ce40'
+                    }
+                    'acl-worker-sys-script-change-fields-write': {
+                        table: 'sys_security_acl'
+                        id: 'd0b33b0e00b94fe59caa485041c32ddc'
+                    }
+                    'acl-worker-sys-script-client-callable-read': {
+                        table: 'sys_security_acl'
+                        id: '95d5f93d43164e7288a67e73a113166e'
+                    }
+                    'acl-worker-sys-script-client-callable-write': {
+                        table: 'sys_security_acl'
+                        id: '9e50d62c354645db8b794d04c9581cac'
+                    }
+                    'acl-worker-sys-script-collection-read': {
+                        table: 'sys_security_acl'
+                        id: '88f401e1a048406ca8b2c504013272c6'
+                    }
+                    'acl-worker-sys-script-collection-write': {
+                        table: 'sys_security_acl'
+                        id: 'c977d351e1a04815b12c1363f5754d0e'
+                    }
+                    'acl-worker-sys-script-condition-read': {
+                        table: 'sys_security_acl'
+                        id: '96110404b0654660bf6294d5c60f8bea'
+                    }
+                    'acl-worker-sys-script-condition-write': {
+                        table: 'sys_security_acl'
+                        id: 'ad40d671f51e438888494638f7684b6a'
+                    }
+                    'acl-worker-sys-script-create': {
+                        table: 'sys_security_acl'
+                        id: '572102a5f4ae4ed799f4f5dd0960394c'
+                    }
+                    'acl-worker-sys-script-description-read': {
+                        table: 'sys_security_acl'
+                        id: 'a2b3b42c8c644c728bc6b33b417926b5'
+                    }
+                    'acl-worker-sys-script-description-write': {
+                        table: 'sys_security_acl'
+                        id: '9d3a3e43e7a6442cac3c2c783d26603b'
+                    }
+                    'acl-worker-sys-script-execute-function-read': {
+                        table: 'sys_security_acl'
+                        id: '794915f294c0465b81b28efa1740db61'
+                    }
+                    'acl-worker-sys-script-execute-function-write': {
+                        table: 'sys_security_acl'
+                        id: 'ad0f10d2145942cdbb8f8a2edac56137'
+                    }
+                    'acl-worker-sys-script-filter-read': {
+                        table: 'sys_security_acl'
+                        id: '34e5130201504f5987d857ac270ec30e'
+                    }
+                    'acl-worker-sys-script-filter-write': {
+                        table: 'sys_security_acl'
+                        id: 'a253281cf26243f681cfad9274cbc884'
+                    }
+                    'acl-worker-sys-script-is-rest-read': {
+                        table: 'sys_security_acl'
+                        id: '0e43309408034658b28e34add7df010a'
+                    }
+                    'acl-worker-sys-script-is-rest-write': {
+                        table: 'sys_security_acl'
+                        id: '521c272bf1cb4420bad9cd766ac794a5'
+                    }
+                    'acl-worker-sys-script-message-read': {
+                        table: 'sys_security_acl'
+                        id: '8949ec3a5c934f0092ab706ef1c62d82'
+                    }
+                    'acl-worker-sys-script-message-write': {
+                        table: 'sys_security_acl'
+                        id: '3ad146c7c3a0428b84b8931191595277'
+                    }
+                    'acl-worker-sys-script-name-read': {
+                        table: 'sys_security_acl'
+                        id: '4b6e56fc2a3844c5845b25ef98e3f62c'
+                    }
+                    'acl-worker-sys-script-name-write': {
+                        table: 'sys_security_acl'
+                        id: '7c979404ce194ac186c2f14fbefc3815'
+                    }
+                    'acl-worker-sys-script-order-read': {
+                        table: 'sys_security_acl'
+                        id: '79bf4fc06e104f2c9c362ecd576104fb'
+                    }
+                    'acl-worker-sys-script-order-write': {
+                        table: 'sys_security_acl'
+                        id: '73e322753478460cb6c7d86096298064'
+                    }
+                    'acl-worker-sys-script-priority-read': {
+                        table: 'sys_security_acl'
+                        id: '01578017217e41dbb6a28b7d93ada77b'
+                    }
+                    'acl-worker-sys-script-priority-write': {
+                        table: 'sys_security_acl'
+                        id: '9ff5c3b12af243fb90519c6cc985ad1b'
+                    }
+                    'acl-worker-sys-script-read': {
+                        table: 'sys_security_acl'
+                        id: '49ee2fc8c62249e4b974ac774a580192'
+                    }
+                    'acl-worker-sys-script-role-conditions-read': {
+                        table: 'sys_security_acl'
+                        id: 'ac67e7e0f2e741ccbf1a37b605a543aa'
+                    }
+                    'acl-worker-sys-script-role-conditions-write': {
+                        table: 'sys_security_acl'
+                        id: '54d1f2a87af0469e9816f323d9b65945'
+                    }
+                    'acl-worker-sys-script-script-read': {
+                        table: 'sys_security_acl'
+                        id: '505896c626924555b0bbb65ede5de1d3'
+                    }
+                    'acl-worker-sys-script-script-write': {
+                        table: 'sys_security_acl'
+                        id: '843ce1680f394e87a42c3fa70fd41135'
+                    }
+                    'acl-worker-sys-script-star-read': {
+                        table: 'sys_security_acl'
+                        id: 'd45225aed9c04f00ab5a369b3856ce3f'
+                    }
+                    'acl-worker-sys-script-star-write': {
+                        table: 'sys_security_acl'
+                        id: '89e704baec8d46ebbfd24d9b28f89ae1'
+                    }
+                    'acl-worker-sys-script-sys-class-name-read': {
+                        table: 'sys_security_acl'
+                        id: '4bd2d3ae42b8414dae299f8679449126'
+                    }
+                    'acl-worker-sys-script-sys-class-name-write': {
+                        table: 'sys_security_acl'
+                        id: '794454677b4f4da8a42c8fb656a31e33'
+                    }
+                    'acl-worker-sys-script-sys-name-read': {
+                        table: 'sys_security_acl'
+                        id: 'f5bd363d70a3473699c79c316d952f7a'
+                    }
+                    'acl-worker-sys-script-sys-name-write': {
+                        table: 'sys_security_acl'
+                        id: '40c87870c791430189b01eaba4c6bc5f'
+                    }
+                    'acl-worker-sys-script-sys-package-read': {
+                        table: 'sys_security_acl'
+                        id: '77d847f86a5547cca1fb6cdce302e7b3'
+                    }
+                    'acl-worker-sys-script-sys-package-write': {
+                        table: 'sys_security_acl'
+                        id: '575b862f7e6e46728260c4b39d21a3de'
+                    }
+                    'acl-worker-sys-script-sys-policy-read': {
+                        table: 'sys_security_acl'
+                        id: '7a4ec2d237f34e42846984b0bbc4b0b0'
+                    }
+                    'acl-worker-sys-script-sys-policy-write': {
+                        table: 'sys_security_acl'
+                        id: '65f6146e3373400f8ab5c7febf8526eb'
+                    }
+                    'acl-worker-sys-script-sys-scope-read': {
+                        table: 'sys_security_acl'
+                        id: '140156419bd341f09edbd7c23973bd38'
+                    }
+                    'acl-worker-sys-script-sys-scope-write': {
+                        table: 'sys_security_acl'
+                        id: 'b62396fb95c5400da3bf7b7069f2a265'
+                    }
+                    'acl-worker-sys-script-sys-update-name-read': {
+                        table: 'sys_security_acl'
+                        id: '4da3ec3793ab450abf4edc68f44c1035'
+                    }
+                    'acl-worker-sys-script-sys-update-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'b7582b42cbc94e3a9c9a41d304823c4d'
+                    }
+                    'acl-worker-sys-script-template-read': {
+                        table: 'sys_security_acl'
+                        id: '29dfb593a11a44aab40c510f9dadd11f'
+                    }
+                    'acl-worker-sys-script-template-write': {
+                        table: 'sys_security_acl'
+                        id: '5fd65c012c5640319837e3da3ebdcae3'
+                    }
+                    'acl-worker-sys-script-when-read': {
+                        table: 'sys_security_acl'
+                        id: '45013bfd2ab647869c26d5042efdc6ee'
+                    }
+                    'acl-worker-sys-script-when-write': {
+                        table: 'sys_security_acl'
+                        id: '421eb10b29be403bacd097cb822ffac8'
+                    }
+                    'acl-worker-sys-script-write': {
+                        table: 'sys_security_acl'
+                        id: '8fd660138cc8445390b64a7a9f4bc9bb'
+                    }
+                    'acl-worker-sys-user-group-active-read': {
+                        table: 'sys_security_acl'
+                        id: 'fa4fd1f7ce3c487bb255663d54391136'
+                    }
+                    'acl-worker-sys-user-group-active-write': {
+                        table: 'sys_security_acl'
+                        id: '9aa1dc153fe845f18178082f377a6445'
+                    }
+                    'acl-worker-sys-user-group-cost-center-read': {
+                        table: 'sys_security_acl'
+                        id: 'f0bbb35388f54faeaccfc39ff261fe89'
+                    }
+                    'acl-worker-sys-user-group-cost-center-write': {
+                        table: 'sys_security_acl'
+                        id: '1ee453069fa84616bfb93a76b7147b7c'
+                    }
+                    'acl-worker-sys-user-group-create': {
+                        table: 'sys_security_acl'
+                        id: 'cc31348701334f6d9994ec45c25c402e'
+                    }
+                    'acl-worker-sys-user-group-default-assignee-read': {
+                        table: 'sys_security_acl'
+                        id: 'acb5ab93c5ec4bfd93b4391213230d8c'
+                    }
+                    'acl-worker-sys-user-group-default-assignee-write': {
+                        table: 'sys_security_acl'
+                        id: 'cb79889fd6ef4cb7be1b9607f0760d0f'
+                    }
+                    'acl-worker-sys-user-group-description-read': {
+                        table: 'sys_security_acl'
+                        id: '0f3d170514da4ad7bc05c3f1c7ac5832'
+                    }
+                    'acl-worker-sys-user-group-description-write': {
+                        table: 'sys_security_acl'
+                        id: '85f1fddd6f0e4b25abbea6efc6fcc61b'
+                    }
+                    'acl-worker-sys-user-group-email-read': {
+                        table: 'sys_security_acl'
+                        id: 'a8585428dc6f44fdb452072b68105b63'
+                    }
+                    'acl-worker-sys-user-group-email-write': {
+                        table: 'sys_security_acl'
+                        id: '22012232f498432c85008e5f6554c831'
+                    }
+                    'acl-worker-sys-user-group-exclude-manager-read': {
+                        table: 'sys_security_acl'
+                        id: '78769570725f4c72a56650914d39e576'
+                    }
+                    'acl-worker-sys-user-group-exclude-manager-write': {
+                        table: 'sys_security_acl'
+                        id: 'a9f81f001c8d4d2991e3340dead143dd'
+                    }
+                    'acl-worker-sys-user-group-include-members-read': {
+                        table: 'sys_security_acl'
+                        id: '57d610abcaa442df8fe4a7d0719f3306'
+                    }
+                    'acl-worker-sys-user-group-include-members-write': {
+                        table: 'sys_security_acl'
+                        id: 'caece0b7f25c49889a39d53861da2323'
+                    }
+                    'acl-worker-sys-user-group-manager-read': {
+                        table: 'sys_security_acl'
+                        id: '0be67570a668472596e18065ce0844ae'
+                    }
+                    'acl-worker-sys-user-group-manager-write': {
+                        table: 'sys_security_acl'
+                        id: '99eb560f07964b15b5323beac0dc2d2f'
+                    }
+                    'acl-worker-sys-user-group-name-read': {
+                        table: 'sys_security_acl'
+                        id: '21c0701c892946e78019c3abb57b4882'
+                    }
+                    'acl-worker-sys-user-group-name-write': {
+                        table: 'sys_security_acl'
+                        id: 'df263ee4435649688c48c352dcd871a2'
+                    }
+                    'acl-worker-sys-user-group-parent-read': {
+                        table: 'sys_security_acl'
+                        id: 'c32ca2eb6a004a43858ec413ad90adee'
+                    }
+                    'acl-worker-sys-user-group-parent-write': {
+                        table: 'sys_security_acl'
+                        id: '80915857c7b24878bcd0d77b71cf3b8d'
+                    }
+                    'acl-worker-sys-user-group-read': {
+                        table: 'sys_security_acl'
+                        id: '16fe0737a1d74661836b98a3032f882c'
+                    }
+                    'acl-worker-sys-user-group-roles-read': {
+                        table: 'sys_security_acl'
+                        id: '6d69400754a9468aac9cbb59d0782c34'
+                    }
+                    'acl-worker-sys-user-group-roles-write': {
+                        table: 'sys_security_acl'
+                        id: 'ccd9ca76d2614e6aa2702394a563c815'
+                    }
+                    'acl-worker-sys-user-group-source-read': {
+                        table: 'sys_security_acl'
+                        id: '0deda4e04f234f96a79ca1b9440c16e9'
+                    }
+                    'acl-worker-sys-user-group-source-write': {
+                        table: 'sys_security_acl'
+                        id: 'f79a0d184dd647de947db791bb18894f'
+                    }
+                    'acl-worker-sys-user-group-star-read': {
+                        table: 'sys_security_acl'
+                        id: '430ca2aa3f8940cba89ac981b23038e1'
+                    }
+                    'acl-worker-sys-user-group-star-write': {
+                        table: 'sys_security_acl'
+                        id: '7845447bc0034adcb7af9a0199954235'
+                    }
+                    'acl-worker-sys-user-group-type-read': {
+                        table: 'sys_security_acl'
+                        id: 'd660acd2bac8408ba1ddade92bd2161b'
+                    }
+                    'acl-worker-sys-user-group-type-write': {
+                        table: 'sys_security_acl'
+                        id: 'e96da69487244c599ddf4d6273d377a8'
+                    }
+                    'acl-worker-sys-user-group-write': {
+                        table: 'sys_security_acl'
+                        id: 'd47465295fb54d0bb44b939681a8c6ac'
+                    }
                     'atf-capture-skip-integration': {
                         table: 'sys_atf_test'
                         id: 'd395eeceef2b41d08017aed42850fde0'
@@ -24,6 +908,14 @@ declare global {
                     'atf-capture-skip-step': {
                         table: 'sys_atf_step'
                         id: '018c4d343d5547fe82d8f436bc678abc'
+                    }
+                    'atf-computer-fields': {
+                        table: 'sys_atf_test'
+                        id: 'a9c3e4b15d7f4a0e8c2b6f1d0e9a7c35'
+                    }
+                    'atf-computer-fields-step': {
+                        table: 'sys_atf_step'
+                        id: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
                     }
                     'atf-dual-write-shadow': {
                         table: 'sys_atf_test'
@@ -57,6 +949,22 @@ declare global {
                         table: 'sys_atf_step'
                         id: '717049a287a04d26a8a02cb1bab0b8b8'
                     }
+                    'atf-pack-expand': {
+                        table: 'sys_atf_test'
+                        id: 'f176e87bde484ac481a359b7a781155e'
+                    }
+                    'atf-pack-expand-step': {
+                        table: 'sys_atf_step'
+                        id: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                    }
+                    'atf-software-update': {
+                        table: 'sys_atf_test'
+                        id: '7219dcf5723f4890a7e9a06c596bb03f'
+                    }
+                    'atf-software-update-step': {
+                        table: 'sys_atf_step'
+                        id: '3266ce906b8f4a39bd03d10038ee894e'
+                    }
                     'atf-staged-ack': {
                         table: 'sys_atf_test'
                         id: '2b519fca0b9042c3902dbbf3c8ec6f1d'
@@ -69,10 +977,30 @@ declare global {
                         table: 'sys_module'
                         id: '38c6d9f0e8824a328db050ebb81ea0c0'
                     }
+                    'br-config-orphan-badge': {
+                        table: 'sys_script'
+                        id: 'f16955e33f364c9282e8da840cb29fdd'
+                    }
+                    'br-dex-hide-orphans': {
+                        table: 'sys_script'
+                        id: '561c56b7ff494502825478a21e5eefaa'
+                    }
                     'br-dex-number': {
                         table: 'sys_script'
                         id: 'ab994e35f10a44c6922ea26e22c75581'
                         deleted: false
+                    }
+                    'br-dex-orphan-badge': {
+                        table: 'sys_script'
+                        id: '5cb89f700af344a9bed3441a6e67846b'
+                    }
+                    'br-dex-require-configuration-insert': {
+                        table: 'sys_script'
+                        id: '9be0c994c9c74769a36ff168602195f2'
+                    }
+                    'br-dex-require-configuration-update': {
+                        table: 'sys_script'
+                        id: '684fce28cf304bc5a1bd01517a3ccabb'
                     }
                     'br-policy-ensure-capture': {
                         table: 'sys_script'
@@ -119,6 +1047,10 @@ declare global {
                         table: 'sys_script_include'
                         id: 'cc9f9de280834c1c82679a0083769cb4'
                     }
+                    BridgePackExpand: {
+                        table: 'sys_script_include'
+                        id: '7c2ef23a5dde4dcbb52d07397f7ff740'
+                    }
                     BridgePolicyHelper: {
                         table: 'sys_script_include'
                         id: '1a9bba09a6004d9dbedb36f2e271c8a3'
@@ -146,6 +1078,86 @@ declare global {
                     'cs-live-execution-progress': {
                         table: 'sys_script_client'
                         id: 'f64c65a9e0774ae89f889de6a15aa134'
+                    }
+                    'csp-cmdb-ci-spkg-create': {
+                        table: 'sys_scope_privilege'
+                        id: 'e640b2fb1e0d4175862c766885b65a0e'
+                    }
+                    'csp-cmdb-ci-spkg-read': {
+                        table: 'sys_scope_privilege'
+                        id: '19dcb10d67374d65bad53f723679fb4e'
+                    }
+                    'csp-cmdb-ci-spkg-write': {
+                        table: 'sys_scope_privilege'
+                        id: '782b1ecbdfcd47d2b9ec5d8001d61f36'
+                    }
+                    'csp-cmdb-software-instance-create': {
+                        table: 'sys_scope_privilege'
+                        id: 'a76b94e16a7744a3b0ba75535fcd33ca'
+                    }
+                    'csp-cmdb-software-instance-read': {
+                        table: 'sys_scope_privilege'
+                        id: '08cc08c0120d4b8f8d86351ec921c00e'
+                    }
+                    'csp-cmdb-software-instance-write': {
+                        table: 'sys_scope_privilege'
+                        id: '5945707b35674854a09994f9bc872c43'
+                    }
+                    'csp-item-option-new-create': {
+                        table: 'sys_scope_privilege'
+                        id: 'e0392f8427ec453896385091315e3624'
+                    }
+                    'csp-item-option-new-read': {
+                        table: 'sys_scope_privilege'
+                        id: '03dd3d0c41054371aec0a1868199cc83'
+                    }
+                    'csp-item-option-new-write': {
+                        table: 'sys_scope_privilege'
+                        id: 'ea4e307d01a64b52a09b8f8d735bbe75'
+                    }
+                    'csp-metadata-writer-execute': {
+                        table: 'sys_scope_privilege'
+                        id: 'dfc4a554e7154f38bd05d160f4f3c1a7'
+                    }
+                    'csp-sc-cat-item-create': {
+                        table: 'sys_scope_privilege'
+                        id: '0972314e118246bda4c35ab6165379aa'
+                    }
+                    'csp-sc-cat-item-read': {
+                        table: 'sys_scope_privilege'
+                        id: '3e91a76f11ed47d08ed0fdd42885bf93'
+                    }
+                    'csp-sc-cat-item-write': {
+                        table: 'sys_scope_privilege'
+                        id: '48b58d5435d24f54a8a2d5be7200a347'
+                    }
+                    'csp-software-writer-execute': {
+                        table: 'sys_scope_privilege'
+                        id: 'a6c6f7d47c914961abb69faaf4eba7d3'
+                    }
+                    'csp-sys-script-create': {
+                        table: 'sys_scope_privilege'
+                        id: '25b784b66c0c433cac881f22bdeb2cf6'
+                    }
+                    'csp-sys-script-read': {
+                        table: 'sys_scope_privilege'
+                        id: 'a14261db3d6c441cafc9d7740bc46520'
+                    }
+                    'csp-sys-script-write': {
+                        table: 'sys_scope_privilege'
+                        id: 'e020645d329c4213957d4477bba6fc5a'
+                    }
+                    'csp-sys-user-group-create': {
+                        table: 'sys_scope_privilege'
+                        id: 'fee567a865ba44f3925d5122a63b21e6'
+                    }
+                    'csp-sys-user-group-read': {
+                        table: 'sys_scope_privilege'
+                        id: 'a55565fc53eb416a9f4b8b064d37a822'
+                    }
+                    'csp-sys-user-group-write': {
+                        table: 'sys_scope_privilege'
+                        id: 'c224e104620b4d6d94325731063cf463'
                     }
                     'dex-rel-audit': {
                         table: 'sys_ui_related_list_entry'
@@ -178,6 +1190,34 @@ declare global {
                     'fix-dex-snapshot-section': {
                         table: 'sys_script_fix'
                         id: '92a5895da553408f931fb924bcfc3480'
+                    }
+                    'fix-grant-worker-table-access': {
+                        table: 'sys_script_fix'
+                        id: 'f240c4e6957049628840653b990ab068'
+                    }
+                    'fix-install-global-metadata-writer': {
+                        table: 'sys_script_fix'
+                        id: 'e7b1c2d34a5f4e6b8c9d0a1b2c3d4e5f'
+                    }
+                    'fix-open-software-instance-access': {
+                        table: 'sys_script_fix'
+                        id: '30586e6920404b558287e1a5c42eb5e8'
+                    }
+                    'fix-publish-global-metadata-writer': {
+                        table: 'sys_script_fix'
+                        id: 'fd3f10757b3c4e798290a4b31465771d'
+                    }
+                    'fix-publish-global-software-writer': {
+                        table: 'sys_script_fix'
+                        id: '9844bda11f5f4408a780747471acbcfe'
+                    }
+                    'fix-republish-software-writer-052': {
+                        table: 'sys_script_fix'
+                        id: 'dbb92be4753b4374aa21af229d6175a5'
+                    }
+                    'fix-republish-software-writer-update': {
+                        table: 'sys_script_fix'
+                        id: '664639f5ca9d4d7cbfac5513649ca823'
                     }
                     'job-continue-executions': {
                         table: 'sysauto_script'
@@ -219,6 +1259,10 @@ declare global {
                         table: 'sys_app_module'
                         id: '7f52f9fc6cbe4993b0485095c90c2707'
                     }
+                    'mod-orphan-executions': {
+                        table: 'sys_app_module'
+                        id: 'a39040ae41364fe6b66cc3d664814ee5'
+                    }
                     'mod-outbox': {
                         table: 'sys_app_module'
                         id: 'efdc64ac74f34b3eabee9e5766f80067'
@@ -226,6 +1270,10 @@ declare global {
                     'mod-overview': {
                         table: 'sys_app_module'
                         id: '8d97b3cea55644fea9505b861389b898'
+                    }
+                    'mod-packs': {
+                        table: 'sys_app_module'
+                        id: 'fd69b288f58d417a8b1860bd23aafe1d'
                     }
                     'mod-peers': {
                         table: 'sys_app_module'
@@ -291,6 +1339,62 @@ declare global {
                         table: 'sys_ui_related_list'
                         id: '0f92adc40be94db9bc0bb8b9363806ab'
                     }
+                    'pack-case1-comp-detailed': {
+                        table: 'x_33764_sbridge_movement_pack'
+                        id: '3e531afea73f4065878f146296fda180'
+                    }
+                    'pack-m-case1-computer': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '9e3cdb16fe7d4eebb0289b1d2d891d87'
+                    }
+                    'pack-m-case1-fs': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'b175648740a94993b827af4deaef072e'
+                    }
+                    'pack-m-case1-memory': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '39454a494e3a47d8babc03150190ecba'
+                    }
+                    'pack-m-case1-nic': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'ed832bfb64ae497f830f00c7221b7759'
+                    }
+                    'pack-m-case1-process': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '98d283f928ac4a0c8c2f7b9db1987d09'
+                    }
+                    'pack-m-case1-rel': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'cb1546543e5446bfa1ea4e8789fc3fa5'
+                    }
+                    'pack-m-case1-serial': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '42b89aadd82040ec8a23466ced4dacf3'
+                    }
+                    'pack-m-case1-spkg': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '2f29f2a49d6d42869a5fc7ea87aef8d7'
+                    }
+                    'pack-m-case1-storage': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '019be9275cb842bf81b57d715ecd09a9'
+                    }
+                    'pack-m-case1-swinst': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: 'beb283475e0446208b55acef9ca2311c'
+                    }
+                    'pack-m-case1-tcp': {
+                        table: 'x_33764_sbridge_pack_member'
+                        id: '83f60a86f44f44238cdf1a522340f3b7'
+                    }
+                    'pack-rel-members': {
+                        table: 'sys_ui_related_list_entry'
+                        id: 'dc11fb2469e14830aed3e1445f36fce2'
+                    }
+                    'pack-related-list': {
+                        table: 'sys_ui_related_list'
+                        id: 'ddcf27d1676649b490fd327fbb8425c0'
+                    }
                     package_json: {
                         table: 'sys_module'
                         id: '1c478f472a3b442099982ee58f01bd3c'
@@ -306,6 +1410,10 @@ declare global {
                     'prop-batch': {
                         table: 'sys_properties'
                         id: 'fc451097fdb44e2087c26e8ac529de4e'
+                    }
+                    'prop-cmdb-computer-fields': {
+                        table: 'sys_properties'
+                        id: 'c4e8a1b07d3f4e2a9b6c5d8e1f0a4b27'
                     }
                     'prop-dlq': {
                         table: 'sys_properties'
@@ -598,12 +1706,85 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '01ec221f172e4758915b9b1b5373497a'
+                        key: {
+                            sys_security_acl: '40c87870c791430189b01eaba4c6bc5f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '01f7f6577c194916915ba77672ecc87b'
+                        key: {
+                            sys_security_acl: '9aa1dc153fe845f18178082f377a6445'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '0201237691574ed8838b0efd7ec1c7bd'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'sequence'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0208e71f0b3648729692b4a47c4c3470'
+                        key: {
+                            sys_security_acl: '348cd8d06b9a4b17be89669560bb961f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '021bcd6a23f5414ca6fa3e90891b8ab9'
+                        key: {
+                            sys_security_acl: 'ccd9ca76d2614e6aa2702394a563c815'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '0276c95bed9f4784a635c98f24ee7320'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0286042aa11d490cb344789982b3f5f2'
+                        key: {
+                            sys_security_acl: '521c272bf1cb4420bad9cd766ac794a5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -685,12 +1866,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '039c4937acef4a85963a9f9c02f0adfb'
+                        key: {
+                            sys_security_acl: '8949ec3a5c934f0092ab706ef1c62d82'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '03a17e83c3324b06be5b1df223165465'
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'target_table'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '03af88432c314ee3a918d839f7dd1245'
+                        key: {
+                            sys_security_acl: '0e43309408034658b28e34add7df010a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -812,6 +2019,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '04b88360e9974a4da6e59b5d262fceaf'
+                        key: {
+                            sys_security_acl: 'cc31348701334f6d9994ec45c25c402e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '04e46312d8d841b58495965b11ba2821'
                         key: {
@@ -821,11 +2041,81 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '04ec8301aeba43379a1ea5c2658920c7'
+                        key: {
+                            sys_security_acl: '1f4ba56886d34ebba86dbdc1e0e55b29'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '04f8d426019846169c12a91d9d3fd6f1'
+                        key: {
+                            sys_security_acl: '51c74ed7f7014bc0b4fc0a890304d56b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '051648faa706451d810aed6fac9809ab'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'version_note'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '05280586f6aa42eba76cc48b2d508d84'
+                        key: {
+                            sys_security_acl: '3ca92915b319472b9a99be47e52ac21e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '05704c6dd6fc47139d8c571932762a72'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'comments_and_work_notes'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '058e2683d9f04fdb9fe3905ce76303b3'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'version_note'
                         }
                     },
                     {
@@ -884,11 +2174,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '05c2c0c33b0d41f69a0499e8413b4d20'
+                        key: {
+                            sys_security_acl: '4b6e56fc2a3844c5845b25ef98e3f62c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '05d24a2db2c04183a76dd357e65e2e1d'
+                        key: {
+                            sys_security_acl: 'f7b27c82577349629942cd1b1034818a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '05dca9cf66ad4f35bebd376cda11b63c'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_mode'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '05f88f0fca6449a9a9346566c0a65240'
+                        key: {
+                            sys_security_acl: '4a64e657634e45ebb639924966a39466'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -968,6 +2297,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '068cb9f3ccb646fb96378afa44f8c59f'
+                        key: {
+                            sys_security_acl: 'ee1aed0ed5a8426dacb6860f71c91b35'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '06b11f44cf964f5bae7d6456a00eb2d1'
                         key: {
@@ -981,6 +2323,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'match_strategy'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '076347274cb047fd95991fed195e8cc6'
+                        key: {
+                            sys_security_acl: 'a8585428dc6f44fdb452072b68105b63'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1003,6 +2358,45 @@ declare global {
                             }
                             element: 'name'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '07af3b0ee01d44739a5745049cd4a267'
+                        key: {
+                            sys_security_acl: 'e2046ea1e288438ea991e9fe95a76ac0'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '07c0c0d530884ad5bb4412b54516829b'
+                        key: {
+                            sys_security_acl: '40c87870c791430189b01eaba4c6bc5f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '082cb2b574bf4fcdb3bfa0fe6c415c57'
+                        key: {
+                            sys_security_acl: '0be67570a668472596e18065ce0844ae'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1039,6 +2433,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '083b9fb4eabd4d98b4930435e6f73371'
+                        key: {
+                            sys_security_acl: 'a97e1aadbc944d59ac3f12370adad48d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '0897e692be484075b0feeb6da2c57ee0'
                         key: {
@@ -1059,6 +2466,19 @@ declare global {
                                 }
                             }
                             element: 'base_url'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '08a1643aa86d482d90dd8b5abdcdd02c'
+                        key: {
+                            sys_security_acl: '57d610abcaa442df8fe4a7d0719f3306'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1144,6 +2564,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '090f4a8b51a94f8f9118a0c5eefe9fda'
+                        key: {
+                            sys_security_acl: '6d1fb7802518418383488a941a839a65'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '0926c79c1d12408988987228b40ac5f7'
                         key: {
@@ -1167,6 +2600,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '09436be2682a4b68b7c30619ec3e0a95'
+                        key: {
+                            sys_security_acl: '05fc270471544edab584a845cfd3b576'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '096faef922234dd6b72bc21ae8ef545a'
                         key: {
@@ -1179,6 +2625,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '09702b90f7cd409d9c8c609b3f7a6395'
+                        key: {
+                            sys_security_acl: '505896c626924555b0bbb65ede5de1d3'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1219,6 +2678,27 @@ declare global {
                             value: 'pending'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '09edce515b8445258031e772c7ff423b'
+                        key: {
+                            sys_security_acl: '12ef8cf0acc843b585d97b1d3b7f2219'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice_set'
+                        id: '0a084209e6f442ed9135ca3c2a296c7f'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
                         }
                     },
                     {
@@ -1285,6 +2765,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '0ad0e1a20a6c4440a9b7cfc033c7c790'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'roots_and_prior'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '0b074d92b20340619564ad30ef8fe03b'
                         key: {
@@ -1338,6 +2829,28 @@ declare global {
                             }
                             element: '.end_split'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '0b169021b0bd4ced8d74db38fba524ee'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'NULL'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0b3009561ee140e5b5e4117dc1a8a51b'
+                        key: {
+                            sys_security_acl: 'd45225aed9c04f00ab5a369b3856ce3f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1402,6 +2915,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '0c80698494dd45f39908a136d0c8e794'
+                        key: {
+                            sys_security_acl: '2165bd33b1d040a38559b3d369cd4543'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '0cbbd038444b4779a6379e81071492a8'
                         key: {
@@ -1431,6 +2957,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'direction'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0cfce61662d4476a82c929dc28931aa1'
+                        key: {
+                            sys_security_acl: 'f9f2a8f0420644e4adc3991e05aa6ad1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1470,6 +3009,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0dc0fcff24ca4d7f9ae2cbe015ff7801'
+                        key: {
+                            sys_security_acl: '9d3a3e43e7a6442cac3c2c783d26603b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1524,6 +3076,29 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '0e92466c71814d329705e6ebc2efc25b'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'expand_mode'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '0eab40a1ff374dd8a3d1609e33afd970'
                         key: {
@@ -1543,11 +3118,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '0f41243f25c84ac4ac4dcdfcd8adfede'
+                        key: {
+                            sys_security_acl: '54d1f2a87af0469e9816f323d9b65945'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '0f6996b8e54d4a4592ce873c10bc3c1e'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'trigger_type'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '0fc591fc398c4cd1b73cd2021040ea6b'
+                        key: {
+                            sys_security_acl: '117f1a0d21174a358e4ffb30296041bb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1579,6 +3180,19 @@ declare global {
                             name: 'x_33764_sbridge_policy'
                             element: 'preserve_sys_id'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '102277619abc4e908dffa7a7a73d7dce'
+                        key: {
+                            sys_security_acl: 'f0f794904e7541c49cdbec95378485a1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1640,11 +3254,46 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '10d6c188f3294deda434f1a30c607385'
+                        key: {
+                            sys_security_acl: 'd660acd2bac8408ba1ddade92bd2161b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '10dfa764e4fc4518ab2b58bb5c3fbdc8'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claimed_at'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_number'
                         id: '1107e19aa4814f71b582336f4698e46a'
                         key: {
                             category: 'x_33764_sbridge_execution_schedule'
                             prefix: 'SCH'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1147bf14591743509722c7e5d2be993c'
+                        key: {
+                            sys_security_acl: '16fe0737a1d74661836b98a3032f882c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1701,6 +3350,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '11d2bba6890342b8ad20c07df2fa3099'
+                        key: {
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'root_filter'
+                            position: '1'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '11e2d28c3bb64882bbe7fd01d75e05ad'
                         key: {
@@ -1719,6 +3390,17 @@ declare global {
                     },
                     {
                         table: 'sys_choice'
+                        id: '1226f17cbb6e4d4a9b4f4800b42cf321'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'parent_in'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
                         id: '1292aa9a876d4b68bd2892f3e3f5cb32'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
@@ -1733,6 +3415,19 @@ declare global {
                         id: '12c366f9ac2b4722b076001c9f0a4055'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '12ca8f4385414aac961f83057a4c5135'
+                        key: {
+                            sys_security_acl: '991f7ad0e2ca4c0997e2dfbb8c984f9f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1760,11 +3455,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '13474a15ec52459ba813f98648f31a1a'
+                        key: {
+                            sys_security_acl: 'ad0f10d2145942cdbb8f8a2edac56137'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '137ce85575014549b04963785c2972a2'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'day_of_week'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '138820d402ce4ed4934bed0ee20377b3'
+                        key: {
+                            sys_security_acl: '3e0aec5bf40542dea7effb0f561eeaab'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -1776,6 +3497,15 @@ declare global {
                             value: 'send'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_element_mapping'
+                        id: '138ad2254f954be7934b9a5183c17d30'
+                        key: {
+                            id: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
                         }
                     },
                     {
@@ -1806,6 +3536,36 @@ declare global {
                         id: '1426ab1b6b36498fad0b66d8848e018d'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list'
+                        id: '14530ccda7c048d1af42e0da7a52e70b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                            element: 'NULL'
+                            relationship: 'NULL'
+                            parent: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '147a37912bcd44e18a5c9fc4e053beae'
+                        key: {
+                            sys_security_acl: '3751bf3c54df431fac814a6796d8a7d3'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1882,12 +3642,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '15c9c555696544af963f87afeca1e0ce'
+                        key: {
+                            sys_security_acl: 'ecf716d1dd3449aab82b976027d44ba5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '15f9377d6d8a49baa9cb9c0c77b26ff6'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'day_of_week'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '161182fd09be4f009599d113ad714e24'
+                        key: {
+                            sys_security_acl: '51135d84143046719490ff665765850b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1922,11 +3708,87 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '162f8a3f1ded4a5db953ff64ffc9bbc9'
+                        key: {
+                            sys_security_acl: '9c8c7f479e2043d897b6c191efd85c57'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '1639f573e4a84507bf437ce552365903'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_variable'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '165aa90bdf994a2c88640bc131968d8b'
+                        key: {
+                            sys_security_acl: 'a12025811efb4114b068029c285b06d4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '16773c3a8e7a4fd69945fce8b9cf3a8c'
+                        key: {
+                            sys_security_acl: 'c6de8e92eb654e67a0298fd7617add03'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '16a88e365f3d43dfad059921796a4bcf'
+                        key: {
+                            sys_security_acl: '9f2654bdfa32424db3d9db9692b1efe8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '16afe95d49a34b31b9e8e77171f1b3cb'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '16b9a953f08648d7b387c5ea13663f54'
+                        key: {
+                            sys_security_acl: '94173f923a0c4bc5bbf19997ff0bb358'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -1975,6 +3837,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '17251f3d409548afb25ab2f1f354f80a'
+                        key: {
+                            sys_security_acl: '33d1314894164916bb114f8c71f8a6fe'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '172d5cd852ba43d6b2d5ca0b6b4a191b'
                         key: {
@@ -1988,6 +3863,93 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_outbox'
                             element: 'op'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '173fcb3e604e402ab482bea9b18db9e3'
+                        key: {
+                            sys_security_acl: 'aa51beff8ccc4c3183cd47a09b70fca6'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '175f9e795d0147659b99c888dfe4482b'
+                        key: {
+                            sys_security_acl: '6a13db90f9b947bfb4299699eba1a1a9'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '176df02cacc64798825ce913e16d6c0a'
+                        key: {
+                            sys_security_acl: '8fa4bd7e8f4f43de8c10fcc989dfa014'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '17906f619b824979adcc4218c5afd6f0'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'parent_member'
+                            position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '17bf9fa7abb644f2b283051ba66184d3'
+                        key: {
+                            sys_security_acl: '99eb560f07964b15b5323beac0dc2d2f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '17daed9dc43c497099ad9f758401d668'
+                        key: {
+                            sys_security_acl: 'f0bbb35388f54faeaccfc39ff261fe89'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2130,12 +4092,56 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '18f96504ee5040e5918bf4a010d177c1'
+                        key: {
+                            sys_security_acl: '21c0701c892946e78019c3abb57b4882'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '190f5215deb340c78d0b120fb3540b5a'
                         key: {
                             name: 'x_33764_sbridge_record_result'
                             element: 'execution'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '1926d45297774e3bb349f07960f5b55a'
+                        key: {
+                            list_id: {
+                                id: '36a3b480e56f4d3d99ab9b259c624ed5'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'config_type'
+                        }
+                    },
+                    {
+                        table: 'sys_index'
+                        id: '1935e8298ea14d6bbdc13bdbc8e114f3'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_outbox'
+                            col_name_string: 'peer,state,pack_seq'
                         }
                     },
                     {
@@ -2179,6 +4185,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '19f91fd27a3c4bfca1c057f09360d0cf'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'prior_records'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '1a1a498112c343f395c69ec8a9e44946'
                         key: {
@@ -2218,12 +4235,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '1a6ab32869534658a6fe3c0f0deff0dc'
+                        key: {
+                            sys_security_acl: '794454677b4f4da8a42c8fb656a31e33'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '1ad4205dd683445aa8ac0471f14dcf74'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'last_execution'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1ae1698dd84e4a01a0c05898105517f7'
+                        key: {
+                            sys_security_acl: '0be67570a668472596e18065ce0844ae'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2244,11 +4287,63 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '1b3a0a71bc564c96b113467352f6cba2'
+                        key: {
+                            sys_security_acl: '415717acb62447a2968cefaf4929c949'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '1b5b20c210014b6c96dba51f592bb345'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_completed_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1b5de53f961f4e62be6c57a83c4ae413'
+                        key: {
+                            sys_security_acl: 'fa4fd1f7ce3c487bb255663d54391136'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1bcc3adb775e47cda9e616536185b81a'
+                        key: {
+                            sys_security_acl: '011a0e8ec29b4352858d06a8e686a396'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1bd637ce75ab4119bdce4d2487ccb258'
+                        key: {
+                            sys_security_acl: 'e9cdf4e708774bff93b8ed0097e0ac72'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2305,6 +4400,29 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '1bf4de6688bf461fae870103c394e025'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'graph_kind'
                         }
                     },
                     {
@@ -2380,6 +4498,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '1c7f0984781f445fa9967b7d403aea7f'
+                        key: {
+                            sys_security_acl: '348cd8d06b9a4b17be89669560bb961f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '1c914cf0cb624a46b2f3a6a4f0f23981'
                         deleted: true
@@ -2411,6 +4542,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '1d2690daad4741b5979d28e4a9041dad'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '1d7574c8d78146859566a24885bbaf57'
                         key: {
@@ -2422,6 +4562,19 @@ declare global {
                                 }
                             }
                             field: 'execution_result'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1d763621d4b0492d80ccf5a93f0cddc2'
+                        key: {
+                            sys_security_acl: '67066dcfd7f74f16a0a2e315b6ef7bc4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2438,6 +4591,45 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'connection_alias'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1da9342281ac4154894c729feaab0517'
+                        key: {
+                            sys_security_acl: '421eb10b29be403bacd097cb822ffac8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1dd318fcee184be3963c34c29d8e9513'
+                        key: {
+                            sys_security_acl: 'fd6655baac8d444c80f62da8a7153045'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '1ddaf63d0c834d0db286f6f4f049488a'
+                        key: {
+                            sys_security_acl: 'f4087acaa73842edb01a8a41bb3b4961'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2486,6 +4678,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '1e2ee9e016bc4733a4ce7ab64ea49ab7'
+                        key: {
+                            sys_security_acl: 'c1d077f630e743408956a599e130edad'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '1e4a8fc4f5ab44f49624ed2d814730ff'
                         key: {
@@ -2497,6 +4702,17 @@ declare global {
                                 }
                             }
                             field: 'target_processing_completed_at'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '1e4e67cbea3f4ea2838c3b15f19b5bf3'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'record'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -2554,6 +4770,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '1f6f17542bec4369adb60ce3431a027c'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'fk_remap_fields'
+                            position: '5'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '1f779007d0f74cdab12b21a6ecaceeb2'
                         key: {
@@ -2597,11 +4835,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '1ffa8e8c359442fe9aa3fa24f6f5f9bc'
+                        key: {
+                            sys_security_acl: '7c979404ce194ac186c2f14fbefc3815'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '201d17a7c4314d03832a3ee3c20813b8'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'platform_job'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2073e0ab44da44558f390482df7bbdbb'
+                        key: {
+                            sys_security_acl: 'e96da69487244c599ddf4d6273d377a8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -2611,6 +4875,19 @@ declare global {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'transfer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '20abb4d3a11846579906d1824962313f'
+                        key: {
+                            sys_security_acl: 'acb5ab93c5ec4bfd93b4391213230d8c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -2655,6 +4932,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '20ea67f15e494fc1b2367c4aa8e72bff'
+                        key: {
+                            sys_security_acl: '34cc455476684a8ba92cf155640bc89e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -2724,6 +5014,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '21f659ca68af4f0f9fa0f93337d02cb4'
+                        key: {
+                            sys_security_acl: '0f3d170514da4ad7bc05c3f1c7ac5832'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_user_role'
                         id: '22264935be5b4f3dad0575f5f38f3c23'
                         key: {
@@ -2753,11 +5056,49 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '2257c499717145389e88100b7d0edcd8'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'none'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '22a2cca41656455b9d63f3c0d0ef2e32'
+                        key: {
+                            sys_security_acl: '7bde104712e74406a84fbd515b9dc2f8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '22d3f5f49c534afeb5db665622de13b7'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'target_instance'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy_action'
+                        id: '22fc9f9d30554a48b4574de6fc7dc4ce'
+                        key: {
+                            ui_policy: {
+                                id: '5ec64b1d1b1b410aa6ecbcd413bb0765'
+                                key: {
+                                    table: 'x_33764_sbridge_movement_config'
+                                    short_description: 'Hide Movement Pack unless configuration type is Pack'
+                                }
+                            }
+                            field: 'pack'
                         }
                     },
                     {
@@ -2787,6 +5128,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2384e1f3c29144e1aaa225ebdf80397f'
+                        key: {
+                            sys_security_acl: 'f79a0d184dd647de947db791bb18894f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -2830,6 +5184,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '23eea1f4003744d18432ebdb972e83a4'
+                        key: {
+                            sys_security_acl: 'efbeaf4fa4dc45ad9536445ccd8d217d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '23f182cce1914ea183eda9da99f5d1bb'
                         key: {
@@ -2839,12 +5206,41 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '246c2a74b20448229e3dff4ba5bb1839'
+                        key: {
+                            sys_security_acl: 'f0bbb35388f54faeaccfc39ff261fe89'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '24a6cfb932fe4bc89becaa7768695034'
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'owner_peer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '24b43ba4c84948589bd9a11f3769a9d3'
+                        key: {
+                            name: 'x_33764_sbridge_outbox'
+                            element: 'pack_seq'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '24cdb10cddbf44dabc9ee2cc481c29e7'
+                        key: {
+                            document_key: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            variable: '42f2564b73031300440211d8faf6a777'
                         }
                     },
                     {
@@ -2862,6 +5258,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '252e4cc2f59048cf8a7b00ea2e29158b'
+                        key: {
+                            sys_security_acl: '8da0afc5435c45be92dc27a98f1ef746'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '2556ebaf3cbd4a1ca182960226ccaaeb'
                         key: {
@@ -2876,6 +5285,54 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'outbox'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '257bfc605dbd46688993fc15f52dd4f8'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'description'
+                            position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '25a270defc2f4192b7dd1f667c58ca04'
+                        key: {
+                            sys_security_acl: '430ca2aa3f8940cba89ac981b23038e1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '25aa3811ce6e4670a030fa5b3d243fde'
+                        key: {
+                            sys_security_acl: '43c8465ed9be40848a0ae2792ae2ce40'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -2973,6 +5430,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '26a6b21116ba442e953be5bbf0a9cf48'
+                        key: {
+                            sys_security_acl: '8da621430dd14d5883fdc028817f4dc2'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '26acbf9c4c7d4fd9951dfe8499c2a361'
+                        key: {
+                            sys_security_acl: 'e2046ea1e288438ea991e9fe95a76ac0'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '26d28d87a22d41f589e5c077b8d3efef'
                         deleted: true
@@ -2993,6 +5476,51 @@ declare global {
                             }
                             element: 'acknowledged_at'
                             position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '27bc3fd188dc41f19deba8982994367e'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '27cd0b5477324fe8915bb2869f3f2551'
+                        key: {
+                            sys_security_acl: '314caf3c4cd64a74bf7a811e6b6fd85b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '281c73c56a304c05b20930edff75aa5e'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'name'
                         }
                     },
                     {
@@ -3061,11 +5589,41 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '2916cb2bb1544681bafd6165f9377a5e'
+                        key: {
+                            sys_security_acl: '0deda4e04f234f96a79ca1b9440c16e9'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '293b09f199d74c57abd05754fc715a3d'
                         key: {
                             name: 'x_33764_sbridge_run'
                             element: 'peer'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '294017590b084a12886ebbc17f8e816a'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'pack'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '29647b4ea49d4c81b2eef5c4b276758a'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'pack'
                             language: 'en'
                         }
                     },
@@ -3210,12 +5768,46 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '2aa8a29ddc1241769430e4826ad45760'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'name'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2ab8fd61b1774b09b8e7056b697dd291'
+                        key: {
+                            sys_security_acl: '820a2ecb0c69494f9729528fa3ba53dd'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '2ac150dde82a48cb867ba9fb0615bdb2'
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'record_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2ac57a7a23e942c79ca7218e2f0ccb0b'
+                        key: {
+                            sys_security_acl: '75791d68956a43d3a77d985202756fa1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -3233,11 +5825,33 @@ declare global {
                     },
                     {
                         table: 'sys_documentation'
+                        id: '2b09dbcd5b714d738ae6a7b130b3cc04'
+                        key: {
+                            name: 'x_33764_sbridge_outbox'
+                            element: 'pack_seq'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
                         id: '2bc50a5ae3d1494db9144bb4f02f57aa'
                         key: {
                             name: 'x_33764_sbridge_processing_error'
                             element: 'NULL'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2bcf52e8bd514013982d0035e0c70089'
+                        key: {
+                            sys_security_acl: '2af74a91d4d9465b8b4e2f1ca1b0bd46'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -3283,6 +5897,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '2c418e71c9e647db9a2a6289feadb74f'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '2c4ab623a7c944189d682a38a4a0fe82'
                         key: {
                             sys_ui_section: {
@@ -3301,6 +5937,14 @@ declare global {
                             }
                             element: 'execution_completed_at'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '2c996cd575e74de4b68d61a1cff1af7b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'pack'
                         }
                     },
                     {
@@ -3349,6 +5993,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '2ce4650399c2475a8379e1c15cabae0b'
+                        key: {
+                            sys_security_acl: '55096513a0504499bca5ddee34533017'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '2cfe03f3c0b247ea8188b5d47623caa7'
                         key: {
@@ -3391,6 +6048,19 @@ declare global {
                             }
                             element: 'target_received_at'
                             position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2d21b308d40c4a8db0357297608d5c24'
+                        key: {
+                            sys_security_acl: 'ee1aed0ed5a8426dacb6860f71c91b35'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -3485,6 +6155,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '2df5ff3bdf0b4e86bf92c2eba5371e92'
+                        key: {
+                            sys_security_acl: 'bf82af8495474a7686136ac1a87b67a5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2e285dc9a0c14ee3b947d1e9655acc31'
+                        key: {
+                            sys_security_acl: 'e5d8a9c40bca48888030bdf56e4dc179'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '2e511d0f06bc4452974d7dc980cb75b3'
                         key: {
@@ -3527,6 +6223,19 @@ declare global {
                                 }
                             }
                             element: 'source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2e5feee640954aab889086b6fed13b9e'
+                        key: {
+                            sys_security_acl: '5fd65c012c5640319837e3da3ebdcae3'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -3601,12 +6310,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '2f7a352097af4e4e85bcd48779ddffd4'
+                        key: {
+                            sys_security_acl: '95d5f93d43164e7288a67e73a113166e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '2f8e75a32b224dcc93973f12e8251c59'
                         key: {
                             name: 'x_33764_sbridge_run'
                             element: 'seed_cursor'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '2f999db478194a1d8e2000cf66f0159d'
+                        key: {
+                            sys_security_acl: 'df263ee4435649688c48c352dcd871a2'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -3648,6 +6383,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '306288c2d6be49d9ae3a158ad03b411b'
+                        key: {
+                            sys_security_acl: 'caece0b7f25c49889a39d53861da2323'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '3084fe0ed9044c34a25e605c85a86f94'
                         key: {
@@ -3668,6 +6416,19 @@ declare global {
                                 }
                             }
                             element: 'source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '308b36ececc843c8941c3751b532bb39'
+                        key: {
+                            sys_security_acl: '3e06b76ecb9941f798d99ed0cd438baf'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -3732,6 +6493,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '317de2e43b014503bc7c31ab9a10e120'
+                        key: {
+                            sys_security_acl: '6d69400754a9468aac9cbb59d0782c34'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '319d7efe8d764ed29bc699121de6e266'
                         key: {
@@ -3743,6 +6517,27 @@ declare global {
                                 }
                             }
                             field: 'received_count'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '320a2a2625f046d8937cfdeb86ef5726'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3228a0c3efc344ce9ba039db5415df0c'
+                        key: {
+                            sys_security_acl: '19c25ae6aaaa4086a45814837e4b5f83'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -3878,6 +6673,35 @@ declare global {
                         }
                     },
                     {
+                        table: 'ua_table_licensing_config'
+                        id: '33a9375a6a2a40e084f8953453421437'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '33acc23907f24f77aaf755aeaa37d4a1'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'flow_key'
+                            position: '6'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '33d2ec7be9204ef483457eb3019749e0'
                         key: {
@@ -3917,6 +6741,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '3402991027ea4c88ba5c202d5ea673a1'
+                        key: {
+                            sys_security_acl: '01578017217e41dbb6a28b7d93ada77b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '3475f0aa274a4088b9fb60aeb855d467'
                         key: {
@@ -3930,6 +6767,32 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'field_list'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '348defb25bdf420591bb1b9005d50f62'
+                        key: {
+                            sys_security_acl: '6d69400754a9468aac9cbb59d0782c34'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '34c022231f4040a4b747af7e79195f06'
+                        key: {
+                            sys_security_acl: '843ce1680f394e87a42c3fa70fd41135'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -3956,6 +6819,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '34ee347f62b94085a158e43c33a98dca'
+                        key: {
+                            sys_security_acl: '4495207bd5c74704bf82a8b3bf135d0f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '3521e31320854c62957f941f70ac3641'
                         key: {
@@ -3979,6 +6855,19 @@ declare global {
                             element: 'NULL'
                             relationship: 'NULL'
                             parent: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '35932b3471d34244910f774b4fce06c1'
+                        key: {
+                            sys_security_acl: '997832897fe146f3833645dd403a7a18'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4009,6 +6898,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'trigger_type'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '3633d6cfa6014685b92a1107bbbc8f1b'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'graph_kind'
+                            position: '5'
                         }
                     },
                     {
@@ -4075,6 +6986,39 @@ declare global {
                             }
                             element: 'filter'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '369d21842c0b4a129a6e602a57f24e99'
+                        key: {
+                            sys_ui_form: {
+                                id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -4201,6 +7145,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '3749ab0777c94814baf3f1c0f259b894'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '3'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '374e775e63f245e6816a14cf01c53fed'
                         key: {
@@ -4261,6 +7227,32 @@ declare global {
                             value: 'hourly'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '38260db5145545adb50b7e2e2ad98bf0'
+                        key: {
+                            sys_security_acl: '9587a64a326e4964985a65e312e5fba5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3880ca2002744848943a21d4f5a1b211'
+                        key: {
+                            sys_security_acl: '19316d93e1234fac9a7cb97e80608883'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4326,12 +7318,49 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '390be39d6bd847aab20a06797213b1e1'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '391621f74fa249aeb3f1a570626f0c0f'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'record_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '39395cb3241c49cfb623a39d7eb99889'
+                        key: {
+                            sys_security_acl: '21f3c0271a0241a6bbc65801fcef23ad'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '393a587c6a2d4b228b76c4414bb73501'
+                        key: {
+                            sys_security_acl: 'c32ca2eb6a004a43858ec413ad90adee'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4405,6 +7434,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '3a009ddeb49043eda8d2dd1bc23221f3'
+                        key: {
+                            sys_security_acl: '34e5130201504f5987d857ac270ec30e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '3a0dc07e642d4857a9432dd2a8084bec'
                         key: {
@@ -4441,6 +7483,28 @@ declare global {
                             }
                             element: 'inserted_count'
                             position: '7'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '3a51c3a2c614411fb966a19c4ee6dfb5'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'filter_snapshot'
+                            position: '8'
                         }
                     },
                     {
@@ -4574,6 +7638,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '3c22444ad2144d618f9f0842cb9ebe89'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'source_table'
+                            position: '4'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '3c5d47700f7d4d899108a7349bc58a12'
                         key: {
@@ -4643,12 +7729,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '3ccf03160e0646f5a62f6e36a03e44d7'
+                        key: {
+                            sys_security_acl: '243d5420f9f1498cb122675fc5fef1bb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '3d07a660f25746d6a049203bffe3ccbf'
                         key: {
                             name: 'x_33764_sbridge_test_record'
                             element: 'notes'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3d0b0d348f124b248e28671355045e8b'
+                        key: {
+                            sys_security_acl: '06b73283fdcc401da70f30debb39bb41'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -4671,6 +7783,42 @@ declare global {
                             }
                             element: 'payload_hash'
                             position: '8'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '3d77902ac563434dbd788b46a2aa8df1'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'parent_field'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3de80e6bf5814a99953fde496cc30323'
+                        key: {
+                            sys_security_acl: '038b1451ada74d79be54c4e2ae9d6ce4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4725,6 +7873,20 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_form'
+                        id: '3e130d434afc41a6be786770c479e492'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '3e24e3554dfa4f099701088a1d4fa667'
                         key: {
@@ -4744,6 +7906,19 @@ declare global {
                             }
                             element: 'payload'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3e3720a555b7457cac9b9a89794fffe7'
+                        key: {
+                            sys_security_acl: '430ca2aa3f8940cba89ac981b23038e1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4770,11 +7945,33 @@ declare global {
                     },
                     {
                         table: 'sys_documentation'
+                        id: '3eb517f602734e5abb9bc0b65761dbe7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'pack'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
                         id: '3ed18b59b3e84f03aced3b6a8af1dbba'
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'operation'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '3efcfc81416442f08c6fab3c5fdc322d'
+                        key: {
+                            sys_security_acl: '15937be654f244958b22e0f9f8241ba7'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -4812,6 +8009,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '40005876a200434184f92d9df400eecb'
+                        key: {
+                            sys_security_acl: 'af08f09872554b399bed13c1efdadd73'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '4026af815322425f80507d21cc241825'
                         key: {
@@ -4832,12 +8042,47 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4087946ec29b46f3b12763228cf9e3fc'
+                        key: {
+                            sys_security_acl: 'fa4fd1f7ce3c487bb255663d54391136'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '40f466a725d64e2ab3dddd7c6c856c17'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'active'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '410f498385854e179af57140e3894863'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'pack'
+                            position: '3'
                         }
                     },
                     {
@@ -4904,6 +8149,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '41e0dfa51ca04d5ebede7ece7adc8abb'
+                        key: {
+                            sys_security_acl: '011a0e8ec29b4352858d06a8e686a396'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '4204680db7f04ace8bd8104d888dc269'
                         key: {
@@ -4965,6 +8223,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '42834bf137a04f44aa235e7c422a9646'
+                        key: {
+                            sys_security_acl: '9d3a3e43e7a6442cac3c2c783d26603b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '42c180ce3d874321b05f9ce69a74aa9d'
                         key: {
@@ -4999,6 +8270,19 @@ declare global {
                                 }
                             }
                             field: 'number'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4343e2c1bb40447c8e4aac7fc448cb92'
+                        key: {
+                            sys_security_acl: '7845447bc0034adcb7af9a0199954235'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -5057,6 +8341,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'work_notes'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '44119f0cfcc34765a1b0a37b37e26d4f'
+                        key: {
+                            sys_security_acl: 'ad40d671f51e438888494638f7684b6a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -5166,6 +8463,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4549bc1f88ae438d91821f9f45dcfc6a'
+                        key: {
+                            sys_security_acl: '98d0bb8e4d13421299df010982d2fbda'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '456e495c512c4252a3bdc812ad80c562'
                         deleted: true
@@ -5228,6 +8538,68 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '45a87ee84ef442c680a24d74037907c2'
+                        key: {
+                            sys_security_acl: 'efa673635fa644df9710da5c1c2e53df'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4600b616434f41329796090b95bbdb69'
+                        key: {
+                            sys_security_acl: '55096513a0504499bca5ddee34533017'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '463c3b5148d14f249934ba651ec31d21'
+                        key: {
+                            sys_security_acl: '8e6e275c6c0d4bc69b93fdbe51734b7d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '46835d79270e40ea9e3b4885d903ee3b'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'source_table'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '468368c261a74a7e9e92108537907f2f'
                         key: {
@@ -5259,6 +8631,32 @@ declare global {
                             }
                             element: 'transfer_completed_at'
                             position: '6'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '46d6ec597f29487689dc977810da0ee6'
+                        key: {
+                            sys_security_acl: '3ad146c7c3a0428b84b8931191595277'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '470eca2f6467413c81393f4f9c2d7cfe'
+                        key: {
+                            sys_security_acl: 'e757baea7c45465d8a6e0985f30d81c0'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -5301,6 +8699,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '474c3219780a4ba4a1252667ad8cc4c4'
+                        key: {
+                            sys_security_acl: '89e704baec8d46ebbfd24d9b28f89ae1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '47626d7325e24292819beaa065bef3f5'
                         key: {
@@ -5321,6 +8732,19 @@ declare global {
                                 }
                             }
                             element: 'table'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4784090d7c2f4ec187ad135014f9a390'
+                        key: {
+                            sys_security_acl: 'bff77ae46c6c497fa7e06c6c79bcfa14'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -5349,6 +8773,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '47ed73a50cac438f8ebf8454ae0e20e6'
+                        key: {
+                            sys_security_acl: '77d847f86a5547cca1fb6cdce302e7b3'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '4831c26ce4d3472387829471638c92f8'
                         key: {
@@ -5360,11 +8797,42 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_list_element'
+                        id: '4852b9f5c7fe443397e517b2ab204292'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'name'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '48615ac9cfd94b45ab6f66d731786398'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'batch_size'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '486684c45ca14c8398c2eedcb0438b46'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'field_list'
                         }
                     },
                     {
@@ -5392,6 +8860,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'payload_hash'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '48db52d9f6ea47509c2af6f0b6e1bee8'
+                        key: {
+                            sys_security_acl: '75791d68956a43d3a77d985202756fa1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -5427,6 +8908,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4a85aa1cdc1a4a02beabea51cff25834'
+                        key: {
+                            sys_security_acl: '57d610abcaa442df8fe4a7d0719f3306'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '4ab4021940594d8fa87f7f20a0484141'
                         key: {
@@ -5438,6 +8932,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4acd5d40008e42b9ac3695416833f943'
+                        key: {
+                            sys_security_acl: '06b73283fdcc401da70f30debb39bb41'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '4b1a5c7fb02449b190c6f080fe18e075'
                         key: {
@@ -5446,6 +8953,14 @@ declare global {
                             value: 'successful'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '4b4e13191da04490ae81bef1dab890f7'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'active'
                         }
                     },
                     {
@@ -5469,6 +8984,23 @@ declare global {
                             }
                             element: 'source_read_completed_at'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '4bc2788eccac468d8ea0db6790b3f6c0'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claim'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '4bd4c553a1e34a19acb1aa7dffd10d82'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'NULL'
+                            language: 'en'
                         }
                     },
                     {
@@ -5523,6 +9055,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4c721ab3df9e4922afe4af94ab18eab2'
+                        key: {
+                            sys_security_acl: '140156419bd341f09edbd7c23973bd38'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '4c791bc0389e470485d96ea6efe747ab'
                         key: {
@@ -5537,6 +9082,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'frequency'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4c8124e11ad740d9a9cbf75ff93ab035'
+                        key: {
+                            sys_security_acl: 'c32ca2eb6a004a43858ec413ad90adee'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -5572,6 +9130,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '4c9bb5616a524ab9b8740f99ecf8a982'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'mapping'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: '4cc343f05784471ab8da1a6a7be2789e'
+                        key: {
+                            document_key: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4cd8fde4524a4f28b6dba9285866f00c'
+                        key: {
+                            sys_security_acl: '91dc2ba04acb49d6a7bbab81d9e504ee'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '4cd96c278874491fbe195d09cb4a4311'
                         deleted: true
@@ -5588,8 +9178,22 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4cf50aea9ee2496d9bd685cfaf990cfc'
+                        key: {
+                            sys_security_acl: '42de8dcb55404e3c8881ee96e0e29e28'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '4d179e03c4eb4faab38129280b6a6cb0'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -5610,11 +9214,65 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '4d1ce54be5994c5db8d808e5fa26fbe5'
+                        key: {
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'root_table'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '4d521437c1bb415d8b74696e2efee937'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_trigger'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '4d94f00877a44663a3a562ded28360c4'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'comments'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '4d9560968f784f8b853436e67a7df864'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4d997ec991744e5da4436060858ae01e'
+                        key: {
+                            sys_security_acl: '0b34fa98e9414b2a8e4f410172effd24'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -5651,6 +9309,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '4e484e54953941d598b7861449f45cd2'
+                        key: {
+                            sys_security_acl: 'bff77ae46c6c497fa7e06c6c79bcfa14'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4e5f915e19ae4a449b79bb2e2fefb295'
+                        key: {
+                            sys_security_acl: '45013bfd2ab647869c26d5042efdc6ee'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '4e96ad54639142869a2e37660f7348b1'
                         key: {
@@ -5678,6 +9362,19 @@ declare global {
                         id: '4eb323b5ff7d4b6fb0b2cae892ad22b4'
                         key: {
                             name: 'x_33764_sbridge_peer'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '4f0ad0811492493292455607301a34ae'
+                        key: {
+                            sys_security_acl: 'f5bd363d70a3473699c79c316d952f7a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -5709,6 +9406,28 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '4fe009842e824b8187bf15c245394419'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'direction'
+                            position: '4'
                         }
                     },
                     {
@@ -5942,6 +9661,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '51c54d5b55cf425388aaebf9187c474a'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'name'
+                            position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '51e5d4daaaca4143b8f3b2335cfd7816'
                         key: {
                             sys_ui_section: {
@@ -5999,6 +9740,53 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'updated_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '525e7f2e7b0440b4a4fd6ab2668276e1'
+                        key: {
+                            sys_security_acl: '3ca92915b319472b9a99be47e52ac21e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '52ae1a2e13a64b08bfd7751e89a6b5df'
+                        key: {
+                            sys_security_acl: '88f401e1a048406ca8b2c504013272c6'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '52ecd1446c9443568a4ea36beb2659c6'
+                        key: {
+                            sys_security_acl: '22012232f498432c85008e5f6554c831'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '52fc3390d743494d916a9c8b5dee8e5a'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'name'
                         }
                     },
                     {
@@ -6121,6 +9909,40 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '53abc9ccc79f4b7a84f20fa460f97b53'
+                        key: {
+                            sys_security_acl: 'dcb387673bf542c89a5cb760c88d4a7c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '53bc698a01314829b195edf857cd2088'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'source_table'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '53c603c07acc4e74af3deb0372d701e3'
+                        key: {
+                            sys_security_acl: '89e704baec8d46ebbfd24d9b28f89ae1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '53e44f909d9a4fc2955b773417cd9252'
                         key: {
@@ -6158,6 +9980,21 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'skipped_count'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: '54bbddcc180c4f34bd72172ccd330797'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            caption: 'Expand'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -6258,6 +10095,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5545191663984435b50a84957294a03d'
+                        key: {
+                            sys_security_acl: 'f9f2a8f0420644e4adc3991e05aa6ad1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5546d4ea7b5a4eefbfc9baa5ba645c2b'
+                        key: {
+                            sys_security_acl: '42de8dcb55404e3c8881ee96e0e29e28'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '5577506df39b43c784e8ee56009a3bff'
                         key: {
@@ -6269,6 +10132,17 @@ declare global {
                                 }
                             }
                             field: 'duration_seconds'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '55844f0f8f2249b2a541f80ab2f9e63d'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'business_key'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -6341,6 +10215,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5623025d7c9d4e688387a38fd6b97fd4'
+                        key: {
+                            sys_security_acl: 'd660acd2bac8408ba1ddade92bd2161b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '562f0b331a51493c8fc9a90185d64257'
                         key: {
@@ -6368,6 +10255,15 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '565c0f66c3894ebfa2e9684fe90b0523'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            language: 'en'
                         }
                     },
                     {
@@ -6401,11 +10297,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '56bd96d20a64497f83c36bc41884502f'
+                        key: {
+                            sys_security_acl: '674d307cce1d4fe0a60736253215b529'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_variable_value'
                         id: '56c5b0df9b834250ac3051795263f0c1'
                         key: {
                             document_key: 'e22d6d5beda546f6bc898060c240433c'
                             variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '570049c452284749bbc17db99743857f'
+                        key: {
+                            sys_security_acl: '601365d2f6794da8b0e922b66a5d6e64'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5735257251714306aa77ea86227ce3eb'
+                        key: {
+                            sys_security_acl: 'cc31348701334f6d9994ec45c25c402e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -6478,6 +10413,19 @@ declare global {
                                 }
                             }
                             element: 'message_type'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '57eff61e5a65431fab25e050a037195c'
+                        key: {
+                            sys_security_acl: '34cc455476684a8ba92cf155640bc89e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -6558,12 +10506,51 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '588eb045cc9243ea901f7f2cbb355cd0'
+                        key: {
+                            sys_security_acl: '4dc068c52aeb4dc18a1944cc1c05a595'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '58e49951b5bc4899b1f172f86eb1fa9d'
+                        key: {
+                            sys_security_acl: '794454677b4f4da8a42c8fb656a31e33'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '5955326e62794d4caeee1d110c41d378'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'batch_size'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5964d29529834d1fa0c1001eb491a22c'
+                        key: {
+                            sys_security_acl: '51e4089928d64632a5a50a651b5a961f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -6604,6 +10591,19 @@ declare global {
                                         }
                                     }
                                     sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5979e51365b143c5bd481ef61020e099'
+                        key: {
+                            sys_security_acl: '572102a5f4ae4ed799f4f5dd0960394c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
                                 }
                             }
                         }
@@ -6668,6 +10668,15 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '59e83e9a214b4181b82b910b36a16cb8'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_member'
+                            language: 'en'
                         }
                     },
                     {
@@ -6766,6 +10775,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5a4f3ccbe8564270bc8a49ff15ae4dfd'
+                        key: {
+                            sys_security_acl: '16b2e288f2ef4281a5863db5db5e5805'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '5a5b39e877c0431fb06cb3339076e122'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '5a7d97a540e74e68bd78addf8d3245ec'
                         key: {
@@ -6807,11 +10838,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5ae951736784485380150506fcb09eac'
+                        key: {
+                            sys_security_acl: '7845447bc0034adcb7af9a0199954235'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5afbf29a57924d6c87e7bf421991fecf'
+                        key: {
+                            sys_security_acl: '1ee453069fa84616bfb93a76b7147b7c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '5b0a3ecfd4484eb18620f8f148efe1a3'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'comments_and_work_notes'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5b29c01359f34e56838fc7e22042c562'
+                        key: {
+                            sys_security_acl: 'c977f8719a1d4d239f78c76c2e189a2f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -6915,6 +10985,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5bcc151ffbff404d8fd9a374dbe78f97'
+                        key: {
+                            sys_security_acl: 'c977f8719a1d4d239f78c76c2e189a2f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '5bd1f844a2594181b36faffbaacd9f57'
                         key: {
@@ -6963,6 +11046,58 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '5c483c6c9f7d4dd0ba108d12032a57c4'
+                        key: {
+                            sys_security_acl: '87ca87c079494f729bbaa381d8767c1d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5c4becc280b74e7ca457d59efc0017f5'
+                        key: {
+                            sys_security_acl: '5fd65c012c5640319837e3da3ebdcae3'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5c545466b06146fc8e8bcdd280466016'
+                        key: {
+                            sys_security_acl: '1f4ba56886d34ebba86dbdc1e0e55b29'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5c5dc3fe0a76499aaae392e9cca25000'
+                        key: {
+                            sys_security_acl: 'e9cdf4e708774bff93b8ed0097e0ac72'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form'
                         id: '5c72267d9ab74a159d1d6b4a3ef4c24e'
                         key: {
@@ -6994,6 +11129,19 @@ declare global {
                             name: 'x_33764_sbridge_outbox'
                             element: 'attempts'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '5c802e79edec48768c9778592a5478ab'
+                        key: {
+                            sys_security_acl: '77a85fa0aff8446e89f1fafa7d5009b3'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -7111,6 +11259,14 @@ declare global {
                             value: 'inbound'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_policy'
+                        id: '5ec64b1d1b1b410aa6ecbcd413bb0765'
+                        key: {
+                            table: 'x_33764_sbridge_movement_config'
+                            short_description: 'Hide Movement Pack unless configuration type is Pack'
                         }
                     },
                     {
@@ -7232,6 +11388,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '5f7d871d22d243449f3e6da548bda740'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claimed_at'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '5fd46a6a953141f0adb3a8d22edbfa77'
                         deleted: true
@@ -7252,6 +11416,50 @@ declare global {
                             }
                             element: '12M.x_33764_sbridge_data_execution.x_33764_sbridge_processing_error.execution'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '5ffeff06f6ee42529eecc21103e1ae4e'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'description'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '601138b7a17947dc9f4142f37df75160'
+                        key: {
+                            list_id: {
+                                id: '36a3b480e56f4d3d99ab9b259c624ed5'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'pack'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '60a4b56770184ed69c09129fa2ca9583'
+                        key: {
+                            sys_security_acl: '3df23c71d535423ea3a8e4a4f76a1526'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -7294,6 +11502,50 @@ declare global {
                             value: 'upsert'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '613e242522564f538710cb181d76e0bc'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'active'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '61630a59724b4bdd8d95695e63040487'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'field_list'
+                            position: '7'
                         }
                     },
                     {
@@ -7347,6 +11599,58 @@ declare global {
                             value: 'insert'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '622ad13b27dd4d7db88ca05072b4c433'
+                        key: {
+                            sys_security_acl: '8da0afc5435c45be92dc27a98f1ef746'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6269fb574d50445aa3f093c804ca7a0c'
+                        key: {
+                            sys_security_acl: '4e7196a29f234dceb967e2534acd738d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '628731dda4834fd2b4982dfa640dd673'
+                        key: {
+                            sys_security_acl: 'af08f09872554b399bed13c1efdadd73'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '629c5e30e3f245f0a5160c4c997aa255'
+                        key: {
+                            sys_security_acl: '504fd757b48e4488b7dd30f73215cbfb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -7419,6 +11723,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '62ee8adb17b9449ca80d9dfc2146608e'
+                        key: {
+                            sys_security_acl: '4170c51297e44bc1b9604a7a13adfb06'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '630616e1037e4173ad8ba32aac2cc8f1'
                         key: {
@@ -7449,6 +11766,17 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'target_table'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '6398c2f8600943ddab2457e4d8c01ed7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'relationship'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -7589,10 +11917,44 @@ declare global {
                     },
                     {
                         table: 'sys_dictionary'
+                        id: '65331d17fa084cf48732e8f56691bfc5'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_seq'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
                         id: '656c8748304c482d82d32a5608fd301f'
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'source_table'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '65984cfd02f440028c55af311611d5ad'
+                        key: {
+                            sys_security_acl: '51135d84143046719490ff665765850b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '65e6239b38724e1e8aeb491f7e44211b'
+                        key: {
+                            sys_security_acl: 'd7a10d363fd1476783dd3399941633b6'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -7601,6 +11963,28 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_xref'
                             element: 'source_table'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '660d78bc817f4d34badf8e51970432c3'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.split'
+                            position: '4'
                         }
                     },
                     {
@@ -7631,6 +12015,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'last_run_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '666bc1d7436e42bcb21874370b6f14a8'
+                        key: {
+                            sys_security_acl: 'dfb39ea83e1f400fb73ca73158008ed9'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -7694,6 +12091,19 @@ declare global {
                             value: 'queue'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '67464f180f124459bd8534f7c0f364c0'
+                        key: {
+                            sys_security_acl: '1c5e08df04ec41eaa66f366978e897a6'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -7763,6 +12173,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_element_mapping'
+                        id: '67dfcc34c21b485db9ded9a26a6ff4e2'
+                        key: {
+                            id: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '681f6c57c4594ed7a21c582de74e4f8c'
                         deleted: true
@@ -7825,6 +12244,19 @@ declare global {
                         key: {
                             table: 'x_33764_sbridge_transfer_audit'
                             short_description: 'Inactive. Acknowledgement fields stay visible in 0.4.0.'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '686a71ce842442ffbb1d3bb1aef903d9'
+                        key: {
+                            sys_security_acl: '0b34fa98e9414b2a8e4f410172effd24'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -7893,6 +12325,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '68d2cb871dfc4ad9806ab54e5a0ed8c8'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -7922,6 +12355,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '692a5cdd4f9140fab835a6c99ac90f34'
+                        key: {
+                            sys_security_acl: '80915857c7b24878bcd0d77b71cf3b8d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '694f862bab554b87a2694333436dff7b'
                         key: {
@@ -7942,6 +12388,14 @@ declare global {
                                 }
                             }
                             field: 'selected_count'
+                        }
+                    },
+                    {
+                        table: 'sys_choice_set'
+                        id: '698600bb665947179698c24ba0bbe2be'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
                         }
                     },
                     {
@@ -7973,6 +12427,39 @@ declare global {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'http_status'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '6a39d499732d4708aa5625036e8e1130'
+                        key: {
+                            sys_ui_form: {
+                                id: '3e130d434afc41a6be786770c479e492'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'dd21651738cb4734b095d3b36dc22a69'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Root'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
                         }
                     },
                     {
@@ -8027,6 +12514,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '6af231ca973a4a70bf4efd93f3948c82'
+                        key: {
+                            sys_security_acl: 'caece0b7f25c49889a39d53861da2323'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '6af96145ddd4475383ce1dffa57b16de'
                         deleted: true
@@ -8047,6 +12547,19 @@ declare global {
                             }
                             element: 'target_processing_completed_at'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6b08f106cd75417b98363883c9663f51'
+                        key: {
+                            sys_security_acl: '4495207bd5c74704bf82a8b3bf135d0f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -8079,6 +12592,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '6b63b760a7e14a97a08270d479c8d1c7'
+                        key: {
+                            sys_security_acl: '3794b1a4906542f8b2c80dc0b724eac8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '6b7c8531d1994171960b85d3f745863a'
                         key: {
@@ -8107,6 +12633,32 @@ declare global {
                                         }
                                     }
                                     sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6b7d88d3baff4352aab2e2bd2123f38d'
+                        key: {
+                            sys_security_acl: '41b48d526ac4478d9c336f6b8e4b7207'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6b80387b79974a2a8d6daeeeded84a32'
+                        key: {
+                            sys_security_acl: '9c658210adb440bb9d3cddad0eb9fabd'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
                                 }
                             }
                         }
@@ -8202,11 +12754,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '6c4392d583ab430bb69fafa857b811f8'
+                        key: {
+                            sys_security_acl: 'd541ebf5fea04159ae032007437da23b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '6c6131fe6a9443d7a5bda149b2f26ab3'
                         key: {
                             name: 'x_33764_sbridge_processing_error'
                             element: 'source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6c96743d4e6249ac8a4ef4852d4cf312'
+                        key: {
+                            sys_security_acl: '1a4c8200d1c844ce8663afdb205abe01'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -8342,12 +12920,49 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '6dc63d04008744c8b17d624b8e44cb3c'
+                        key: {
+                            sys_security_acl: '5331bca1d99143b196e5e58417ff036c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '6df01becc8f1468aa83ec40cfc129c6c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_action'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '6e08ef23adfe4232aaab911dabba6443'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'configuration'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6e32ea60daa74cdbaab42cecb7bb5ed1'
+                        key: {
+                            sys_security_acl: '85f1fddd6f0e4b25abbea6efc6fcc61b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -8373,11 +12988,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '6e7067bb2a484ce7a160e2d2b59210c9'
+                        key: {
+                            sys_security_acl: '215d51e7bb834262a2a2862d47c6c420'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '6e751daf531a496fac4a1fad757d79bf'
                         key: {
                             name: 'x_33764_sbridge_outbox'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6e9bff33ab03443c9bfe34a7fe3e6c41'
+                        key: {
+                            sys_security_acl: '19c25ae6aaaa4086a45814837e4b5f83'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -8392,6 +13033,19 @@ declare global {
                                 }
                             }
                             field: 'target_received_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6f3e7703640143fcb50112edb24a541a'
+                        key: {
+                            sys_security_acl: 'a6521c8641e14338a0e126d6317e0d12'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -8417,6 +13071,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: '6f8afea3de7042c08383c964443993a6'
+                        key: {
+                            document_key: '3266ce906b8f4a39bd03d10038ee894e'
+                            variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '6f9d90a925984cd58f6ff6390d361b0e'
                         key: {
@@ -8435,6 +13097,17 @@ declare global {
                                     name: 'x_33764_sbridge.reader'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '6fa1907733ba49c39da072b6024b1138'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'any_reference_in'
+                            language: 'en'
+                            dependent_value: 'NULL'
                         }
                     },
                     {
@@ -8480,6 +13153,27 @@ declare global {
                             }
                             element: 'execution_state'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '6fcd92926e9940129f5199e607b50033'
+                        key: {
+                            sys_security_acl: '038b1451ada74d79be54c4e2ae9d6ce4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '6fe71135e1cc437096d85e58d80d2abf'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'apply_order'
                         }
                     },
                     {
@@ -8550,6 +13244,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '709fd61b1ba84181968dd8853b96c715'
+                        key: {
+                            sys_security_acl: 'eb12dc23d22c48de92281feb76466832'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '70dce34dc2a0455a9cdb8ed1e0ea6e3e'
                         key: {
@@ -8589,6 +13296,32 @@ declare global {
                             name: 'x_33764_sbridge_test_record'
                             element: 'value'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '71b3b76ffe4f487ea29ea0f5ce1934a4'
+                        key: {
+                            sys_security_acl: '415717acb62447a2968cefaf4929c949'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '71bb1d1a19e44d94b1fbf9ff1ff35daf'
+                        key: {
+                            sys_security_acl: 'fd2f2fc5b35f49639a6da56306eb599d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -8663,11 +13396,86 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '72c6c2e0cfbb4f788374ac29cd3206e1'
+                        key: {
+                            sys_security_acl: 'adcad465a03c46c2b66ec8188b18af9a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '72d3fe1e34de4dd9a88921c1999d9deb'
+                        key: {
+                            sys_security_acl: 'e96da69487244c599ddf4d6273d377a8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '72d984743df44312b97a6ba514e32aaa'
+                        key: {
+                            sys_security_acl: '89712d9b0587480492d4ad3aeb74201d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '72f91ef536ca40ec9830c09e93f56334'
                         key: {
                             name: 'x_33764_sbridge_processing_error'
                             element: 'legacy_key'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '7320a5b710994fb694ee4b78983ee4cc'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'apply_order'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '735301a340314be7b7bce67c879e58ea'
+                        key: {
+                            sys_security_acl: '4dc068c52aeb4dc18a1944cc1c05a595'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -8736,6 +13544,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '74115867f93b4af2bf49f5c0652ecb36'
+                        key: {
+                            sys_security_acl: '78769570725f4c72a56650914d39e576'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: '7418e3f642cb41cb80680d7fe70c59be'
                         key: {
@@ -8783,12 +13604,48 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '749ad488ad4e495fa60a64855e9dec89'
+                        key: {
+                            sys_security_acl: '77d847f86a5547cca1fb6cdce302e7b3'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '74c087c79097455691c58f2a02ff8ccc'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'last_validation_status'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '74e215300ed646418207eb4b5b4609dd'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'root_table'
                         }
                     },
                     {
@@ -8821,6 +13678,39 @@ declare global {
                                 }
                             }
                             element: 'remote_audit_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '755035286d85474e955e67c6550adb5f'
+                        key: {
+                            sys_security_acl: '95fc6fe7318a449aa089c33b4e010bba'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_db_object'
+                        id: '7586e9a3d86b4438a855da1ebf1e13e5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '75ac8a98e016491aa72d2cdafd48bad2'
+                        key: {
+                            sys_security_acl: 'f4a0f2a39bb84262bdf43e8faeb7bba0'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -8864,6 +13754,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7619526a1a074d8792c3c01f9067091f'
+                        key: {
+                            sys_security_acl: '82c31e4631d04fdd991a7b85c551958f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '7632b75b09c643ff9f3a3e34379c41b2'
                         key: {
@@ -8892,6 +13795,19 @@ declare global {
                                         }
                                     }
                                     sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '763ca9a68c044121bd68d5c67ec18791'
+                        key: {
+                            sys_security_acl: 'd7992dcae6f54e91bf71ea4451c6a4ff'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
                                 }
                             }
                         }
@@ -8979,6 +13895,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_element_mapping'
+                        id: '76e90110ab3d4fd498589045ea261372'
+                        key: {
+                            id: '3266ce906b8f4a39bd03d10038ee894e'
+                            table: 'var__m_atf_input_variable_41de4a935332120028bc29cac2dc349a'
+                            field: 'script'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: '76eca80a60064ce2beb5271af845d6ff'
                         key: {
@@ -8999,6 +13924,19 @@ declare global {
                                 }
                             }
                             element: 'execution_result'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '77072b3e8ebd495298bec83dc2d01684'
+                        key: {
+                            sys_security_acl: 'ecf716d1dd3449aab82b976027d44ba5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9070,6 +14008,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '77c21f2be759476d807e9e97db3058e9'
+                        key: {
+                            sys_security_acl: '0d056b97c4d64a0ba90ccd5675639db4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '77c8508830f440d592dc6a27f267be04'
                         key: {
@@ -9078,6 +14029,28 @@ declare global {
                             value: 'outbound'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '77c92df3e97341ae98d874c46cb3e579'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'apply_order'
+                            position: '3'
                         }
                     },
                     {
@@ -9121,6 +14094,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7822c7a551c74722820397629b0eb0d2'
+                        key: {
+                            sys_security_acl: 'd47465295fb54d0bb44b939681a8c6ac'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '78727db4b7ae4b09ac87cb42c6da7359'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '788439ba114f4b6ba84f9a23e4c15301'
                         key: {
@@ -9134,6 +14129,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_record_result'
                             element: 'action'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '78ad80bf6b3445fc949db28d0245eeac'
+                        key: {
+                            sys_security_acl: 'ccd9ca76d2614e6aa2702394a563c815'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9157,6 +14165,28 @@ declare global {
                                 }
                             }
                             element: 'source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '78bb6978620f4a798a0221ac41d2863d'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_instance'
+                            position: '5'
                         }
                     },
                     {
@@ -9268,6 +14298,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '79ef80e151ba458eb38d59e0d89c3081'
+                        key: {
+                            sys_security_acl: 'a253281cf26243f681cfad9274cbc884'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '7a13090306b8454fa23128eb1a10380c'
                         key: {
@@ -9276,6 +14319,19 @@ declare global {
                             value: 'flow'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7a33c8f571b8415490fe7dca63fb5188'
+                        key: {
+                            sys_security_acl: 'e757baea7c45465d8a6e0985f30d81c0'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -9293,6 +14349,29 @@ declare global {
                             element: 'NULL'
                             relationship: 'NULL'
                             parent: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: '7a69271f4e344ca4bde44e6b1b8c6a8f'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'active'
                         }
                     },
                     {
@@ -9315,6 +14394,19 @@ declare global {
                                 }
                             }
                             field: 'started_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7a9cb3d2f9fb41f08c9d05eb1802906a'
+                        key: {
+                            sys_security_acl: '677f792ea2ce4df28ac723061b0505a7'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -9413,6 +14505,40 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7b5532c6ac98474994dbbcffd49edb8c'
+                        key: {
+                            sys_security_acl: '0f3d170514da4ad7bc05c3f1c7ac5832'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7b6a725f1a21436e994660eccd9140f3'
+                        key: {
+                            sys_security_acl: '572102a5f4ae4ed799f4f5dd0960394c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '7b833f8c57e34b72a58e03980738718c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_member'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '7b8ee2bb827d47b1b5d7d107cd0d047e'
                         key: {
@@ -9436,11 +14562,33 @@ declare global {
                     },
                     {
                         table: 'sys_documentation'
+                        id: '7bb383bc422a4d12954b2df2400882fa'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'active'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
                         id: '7be36c75bc294321ab65e262fc147321'
                         key: {
                             name: 'x_33764_sbridge_receipt'
                             element: 'peer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7becddb21132413682e34083fbbd7022'
+                        key: {
+                            sys_security_acl: 'd47465295fb54d0bb44b939681a8c6ac'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -9450,6 +14598,19 @@ declare global {
                             name: 'x_33764_sbridge_outbox'
                             element: 'peer'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7c360dc1616a4d279d3b5445dd9cb7d5'
+                        key: {
+                            sys_security_acl: '73e322753478460cb6c7d86096298064'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -9484,11 +14645,48 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '7c9de146dfe245518066c050e0e29a48'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_step'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '7ca249cafdf142bd8553ca7a3959467b'
                         key: {
                             name: 'x_33764_sbridge_record_result'
                             element: 'result'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7ca27e5b519f4b2a988d93430513c238'
+                        key: {
+                            sys_security_acl: '3ad146c7c3a0428b84b8931191595277'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7ca309d5347f431fb18e956e5160f8e0'
+                        key: {
+                            sys_security_acl: 'd45225aed9c04f00ab5a369b3856ce3f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -9521,6 +14719,19 @@ declare global {
                                         }
                                     }
                                     sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7d2a70ed8a794979b640717e72a1eb4e'
+                        key: {
+                            sys_security_acl: 'f4a0f2a39bb84262bdf43e8faeb7bba0'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
                                 }
                             }
                         }
@@ -9576,6 +14787,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7d6a729faecd4c64b55ec0919fea80a8'
+                        key: {
+                            sys_security_acl: 'ad0f10d2145942cdbb8f8a2edac56137'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '7d73cdc558044930b489aedd3a5c91a3'
                         key: {
@@ -9607,12 +14831,69 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7d7ee77bd7ea4f31a4b5c8b51d3de57e'
+                        key: {
+                            sys_security_acl: 'cb79889fd6ef4cb7be1b9607f0760d0f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_user_role_contains'
+                        id: '7db32d50b4474210a58814f3b854ac43'
+                        key: {
+                            role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                            contains: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '7dc6d48eea2d4aeba9c0b218c932f35e'
                         key: {
                             name: 'x_33764_sbridge_xref'
                             element: 'NULL'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7dfe67a50471485e9decbbc6eaa52da8'
+                        key: {
+                            sys_security_acl: 'cb79889fd6ef4cb7be1b9607f0760d0f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7e4e6cf6a5ca4103a0d3f9f63d34e936'
+                        key: {
+                            sys_security_acl: '09c54aa2c45f4a3ea40c15b6b9e42c4c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9648,6 +14929,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '7e8fd6299c2c429693e9ffa29dad35ba'
+                        key: {
+                            sys_security_acl: '12ef8cf0acc843b585d97b1d3b7f2219'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '7ed147a2e3c445bcba811405c79ecf72'
                         key: {
@@ -9670,6 +14964,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '7edd81a19ddb4288ada826e895fd7b71'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'name'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '7ef6a6d388a54687aa95ec0190e39257'
                         key: {
@@ -9678,6 +14981,14 @@ declare global {
                             value: 'dry_run'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_index'
+                        id: '7f9477df1c7b48d392305717dc6e743e'
+                        key: {
+                            logical_table_name: 'x_33764_sbridge_pack_member'
+                            col_name_string: 'pack,apply_order'
                         }
                     },
                     {
@@ -9693,6 +15004,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '7fbe75f2b576467bad6f673a82e873d6'
+                        key: {
+                            sys_security_acl: 'efbeaf4fa4dc45ad9536445ccd8d217d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9802,6 +15126,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '811670ecb5a84fd6997b9aafc1646de7'
+                        key: {
+                            sys_security_acl: 'f7cc50650a034ac1ad8a62781fc04326'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '813748a96c8846a2ba0699170b5b3146'
+                        key: {
+                            sys_security_acl: '55160966ee53408b891a7fb411e7ba89'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '814ff5965b534dc58a4a4b867c357703'
                         key: {
@@ -9816,6 +15166,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'last_error'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '816b6685e1634af9a2344ed4e75dd422'
+                        key: {
+                            sys_security_acl: '96110404b0654660bf6294d5c60f8bea'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9855,6 +15218,19 @@ declare global {
                             }
                             element: 'mode'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '81cbd534f3604354948b7e4e6471240c'
+                        key: {
+                            sys_security_acl: '73e322753478460cb6c7d86096298064'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -9986,6 +15362,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '843ca330217e48879a086550195a73f5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'flow_logic'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '843d4c14605a4425bd07d33d5cca8318'
                         key: {
@@ -10066,6 +15453,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: '849c132ea2ab4c73995278b829c310a4'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '84c9ffacc010483c88e025577a943d23'
                         key: {
@@ -10112,8 +15507,22 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8574019bc4764716a2028b000ab479a2'
+                        key: {
+                            sys_security_acl: '1db9b32f7daa4da2b6ce685fd85d1897'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '8576b1a5a7d74da59bd5151b46cefa50'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -10145,6 +15554,19 @@ declare global {
                                 }
                             }
                             field: 'acknowledged_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8612bb31912d4bd5a8372e9c1347f42b'
+                        key: {
+                            sys_security_acl: '91dc2ba04acb49d6a7bbab81d9e504ee'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10185,11 +15607,48 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8651677120fb4e2f9d765d2d7ccf84cb'
+                        key: {
+                            sys_security_acl: '37b3128ddf43409ba6881dbe554df439'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '866927b8783545e990eebbcd53e013f2'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'root_filter'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: '86e3ab3d834e4a539d45a91a13e2c6be'
                         key: {
                             logical_table_name: 'x_33764_sbridge_record_result'
                             col_name_string: 'legacy_key'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '87209164b93541a89388f35e456a3b81'
+                        key: {
+                            sys_security_acl: '10e5fe990f1e442696c8af35f6e86c86'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10225,6 +15684,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '878cdfb9ad3246dc8f12e3509de45884'
+                        key: {
+                            sys_security_acl: 'c322e24ed25949e6b1c32153d798bafc'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '87a7a0a5c17748cd9a2c7bea0dac642b'
                         key: {
@@ -10247,6 +15719,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '87b35949471842ceb190fb9adfc85211'
+                        key: {
+                            sys_security_acl: '2571c1dafc4642bd8da1322cb13f1cb6'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '87d075f15894499880392e2047d40565'
                         deleted: true
@@ -10260,6 +15745,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '87da1c76c3a64ad0a73544dee5cae214'
+                        key: {
+                            sys_security_acl: 'b62396fb95c5400da3bf7b7069f2a265'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10285,6 +15783,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '87fccb50424643199280d8c560414b8c'
+                        key: {
+                            sys_security_acl: '9e50d62c354645db8b794d04c9581cac'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '88166629d15944b4a33ccc75acbb3c43'
                         key: {
@@ -10293,6 +15804,19 @@ declare global {
                             value: 'manual'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '884863d8b8a344c89dc195fe404336e8'
+                        key: {
+                            sys_security_acl: '65f6146e3373400f8ab5c7febf8526eb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10339,6 +15863,45 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8877ec8e85684a3d857be12649d42728'
+                        key: {
+                            sys_security_acl: '9ff5c3b12af243fb90519c6cc985ad1b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '889850061c814308a30fd1474134cb79'
+                        key: {
+                            sys_security_acl: '8da621430dd14d5883fdc028817f4dc2'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '88a3acd18b1449b09bc169556a8c1c38'
+                        key: {
+                            sys_security_acl: '2571c1dafc4642bd8da1322cb13f1cb6'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: '88b4c165ff0a4815837a6b51a834ba95'
                         key: {
@@ -10350,6 +15913,15 @@ declare global {
                                 }
                             }
                             field: 'transfer_sent_at'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: '88b7b28d6603485cb27286248de32cfb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'fk_remap_fields'
+                            language: 'en'
                         }
                     },
                     {
@@ -10382,6 +15954,19 @@ declare global {
                                 }
                             }
                             element: 'sys_created_on'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8913da87ffb34fbfa25d78766bf66cf8'
+                        key: {
+                            sys_security_acl: '80915857c7b24878bcd0d77b71cf3b8d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10453,6 +16038,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8ac17cf037694ee7b957f52db18abeac'
+                        key: {
+                            sys_security_acl: 'ad40d671f51e438888494638f7684b6a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '8af52437fc014cf2a4dcbf80e90bc900'
                         key: {
@@ -10472,6 +16070,19 @@ declare global {
                             }
                             element: 'execution'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8b1129fa16ce4f2faaceb8d170961744'
+                        key: {
+                            sys_security_acl: '96110404b0654660bf6294d5c60f8bea'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -10495,6 +16106,19 @@ declare global {
                             }
                             element: 'started_at'
                             position: '9'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8bbf4d07e93a474c95487bf381be61da'
+                        key: {
+                            sys_security_acl: 'acb5ab93c5ec4bfd93b4391213230d8c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -10661,6 +16285,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8df00633bfd0498ebcebd430bd2c271e'
+                        key: {
+                            sys_security_acl: '4bf1ecc985ae44f695e1f920bda0a68c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8dfa0158ce434e7b99daee6334e769a3'
+                        key: {
+                            sys_security_acl: 'f7cc50650a034ac1ad8a62781fc04326'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '8e2022fcfd42473796fe38bace058bc9'
                         key: {
@@ -10718,6 +16368,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '8ea6915de487432a9f19cfab1240f0f9'
+                        key: {
+                            sys_security_acl: 'fc693fe1b63e4a4ab0e7647471835148'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: '8ec79f200f854365a3689c6c2671f5b0'
                         key: {
@@ -10757,6 +16420,19 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_result'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '8f4585d3f9b04f488673b7a59368bb5c'
+                        key: {
+                            sys_security_acl: 'be3989866e3444d4803e471f961f9731'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -10879,6 +16555,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '90a1c1e0c2bc43779d5c7703f683c19c'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'config_type'
+                            position: '2'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '90b1265be6ed4d2cb509befd1ef81af8'
                         deleted: true
@@ -10892,6 +16590,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '90b176ee951842678514a5477cc5808f'
+                        key: {
+                            sys_security_acl: '15937be654f244958b22e0f9f8241ba7'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -10993,6 +16704,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: '919b2c61563744fbab57c1bed1c42fa5'
+                        key: {
+                            document_key: 'b8d2f1c04e6a4b9d9a7c3e5f1b0d8a46'
+                            variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '91a89ffa0e4f40fa9d5fd5d9402032fb'
                         key: {
@@ -11001,11 +16720,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '91b076a6968641cea9b15d3dfe34e679'
+                        key: {
+                            sys_security_acl: 'dcb387673bf542c89a5cb760c88d4a7c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '91b5a283f1ff4869b3e980f70862fbbe'
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'target_instance'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '91c727f3e917434381483d3489394cbe'
+                        key: {
+                            sys_security_acl: '4bd2d3ae42b8414dae299f8679449126'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '91e3bedf81ae46429b05fdb01fd4918b'
+                        key: {
+                            sys_security_acl: '3df23c71d535423ea3a8e4a4f76a1526'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -11021,6 +16779,67 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '92554b1c353149848bd84cc436a15372'
+                        key: {
+                            sys_security_acl: '13e2a1e9c90549b99ceb7c70ca2c24b5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9279cc84389440c3837a89763552ab4d'
+                        key: {
+                            sys_security_acl: '843ce1680f394e87a42c3fa70fd41135'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: '92db945733d94939b70916fd7b4f8b5c'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'target_table'
+                            position: '6'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '92f13a26a51d4f8a9d686f0ecb968fa4'
+                        key: {
+                            sys_security_acl: '95fc6fe7318a449aa089c33b4e010bba'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -11173,6 +16992,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: '94382280b92b4289a039b83464bda480'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'match_strategy'
+                            position: '6'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9438ee4be4bb4ac7b63d3991d1bf7892'
                         key: {
@@ -11187,6 +17028,32 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'work_notes'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '949b496de6e54c6fa5018e008c3c8eff'
+                        key: {
+                            sys_security_acl: '575b862f7e6e46728260c4b39d21a3de'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '94abdbd3d9a643488ccd4da28cf63b22'
+                        key: {
+                            sys_security_acl: '10e5fe990f1e442696c8af35f6e86c86'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -11259,6 +17126,17 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice'
+                        id: '961f52b4a8164376a43f8353d0fe96eb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                            value: 'pill'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '9651f74eeaea4ddda03fdc68ac4faa55'
                         key: {
@@ -11282,6 +17160,19 @@ declare global {
                             value: 'validated'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '96984e0cc68e46b58bc325263531e502'
+                        key: {
+                            sys_security_acl: '6d1fb7802518418383488a941a839a65'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -11316,6 +17207,65 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_form_section'
+                        id: '9742865eee074862967aa6848ff297f5'
+                        key: {
+                            sys_ui_form: {
+                                id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '974fa226b2594aef9853aa999e8ebf83'
+                        key: {
+                            sys_security_acl: '85f1fddd6f0e4b25abbea6efc6fcc61b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '97811f5c6cba44ccbebf1c9cc56d4fbd'
+                        key: {
+                            sys_security_acl: '6d79cb9a1db64c1da2cb02db69f3e762'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: '978198084e8c477cbf56d83c9d62e848'
                         key: {
@@ -11341,6 +17291,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9887b56910f344cfba40754c80fd8c9e'
+                        key: {
+                            sys_security_acl: '314caf3c4cd64a74bf7a811e6b6fd85b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: '98d4adba49a64ca5b3eee8ca5514eecb'
                         key: {
@@ -11356,11 +17319,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '991fabe3d727440b8b93111f625dd383'
+                        key: {
+                            sys_security_acl: '9aa1dc153fe845f18178082f377a6445'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9922ec7edba245a4aa2668d2b91e8b73'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'configuration'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '99da706b1a6441d5a88f0925c7ed9357'
+                        key: {
+                            sys_security_acl: 'ba5fb50f621a41baa273e23e4327f89e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -11392,6 +17381,52 @@ declare global {
                             }
                             element: 'ref_map'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form_section'
+                        id: '9a17c3eb91c6483eb624d6f4d6df0795'
+                        key: {
+                            sys_ui_form: {
+                                id: '3e130d434afc41a6be786770c479e492'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9a264c86dd7e4cdea2e0fe675057b27d'
+                        key: {
+                            sys_security_acl: 'f11e8fff1f284a2c9376b7cad3891ddf'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -11442,6 +17477,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: '9a4a26ef40ba40129b3d84d02c8fc25b'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'parent_field'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: '9a559ad43db24a62babd2398abf2ea5d'
                         key: {
                             sys_ui_section: {
@@ -11473,6 +17530,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: '9a5d9ff799134f509d1728edee956ee4'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'af38a4f95475482d82e5c6af3fb6dff7'
@@ -11554,6 +17612,15 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: '9b547e81b05640e5813045b04a10ac8a'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_query'
+                            language: 'en'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9bb344927fc046348f1f2aa11706acd7'
                         key: {
@@ -11567,6 +17634,14 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'transfer'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: '9bcf69bcf84549bd9aa9fb1013304d82'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'pack'
                         }
                     },
                     {
@@ -11615,6 +17690,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9c1bcac985e1481c9ff3c5a6ce24b846'
+                        key: {
+                            sys_security_acl: '421eb10b29be403bacd097cb822ffac8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '9c6c9ee55e4b4f21a1e6c1ee0556a08f'
                         key: {
@@ -11659,12 +17747,36 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9ca4a6a8390a47f09fff768aaf49445c'
+                        key: {
+                            sys_security_acl: '140156419bd341f09edbd7c23973bd38'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: '9cd2c842005349c49c43e3aeb0d91ed4'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_state'
                             value: 'finalising'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: '9cd885eef6724fac8f7456df0bd7243b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                            value: 'sys_id'
                             language: 'en'
                             dependent_value: 'NULL'
                         }
@@ -11714,6 +17826,45 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9db733a402d343a8a94e13fcf8c3b943'
+                        key: {
+                            sys_security_acl: 'c977d351e1a04815b12c1363f5754d0e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9de1937451f3458fb4af78301b71140e'
+                        key: {
+                            sys_security_acl: '1c5e08df04ec41eaa66f366978e897a6'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9def6b02e0564e32a987fa4797817dfb'
+                        key: {
+                            sys_security_acl: '51e4089928d64632a5a50a651b5a961f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: '9e03fd237a7b45ca980bfb50bdb08cfa'
                         key: {
@@ -11733,6 +17884,19 @@ declare global {
                             }
                             element: 'comments'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9e20410a9c0e4c5e8107c1bb68c7b9db'
+                        key: {
+                            sys_security_acl: '4bac95f670c64269909fb7659ccfe766'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -11769,11 +17933,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9e30476c442c46038ad4419996c95e92'
+                        key: {
+                            sys_security_acl: 'f79a0d184dd647de947db791bb18894f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9e6e498bcf4b44de9b0b30042510ed03'
+                        key: {
+                            sys_security_acl: '4b6e56fc2a3844c5845b25ef98e3f62c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '9ebb708ad9bf4cd48809cece28e7fd59'
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'mode'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9f1124c4dc294edbb1a6109845379378'
+                        key: {
+                            sys_security_acl: 'cf974adbc863465ca8188b6821535f76'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -11861,11 +18064,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9f5246efefef47abb03d8578f98c1295'
+                        key: {
+                            sys_security_acl: 'a253281cf26243f681cfad9274cbc884'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: '9f6a6977d2c144f2b83413e02d3539c8'
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'match_strategy'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: '9f9f8340c4d6405793e94ef95c40cc0f'
+                        key: {
+                            sys_security_acl: '51c74ed7f7014bc0b4fc0a890304d56b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -11923,6 +18152,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: '9fd5687ebfcc4e598df292699d3723ac'
+                        key: {
+                            sys_security_acl: '4da3ec3793ab450abf4edc68f44c1035'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: '9fdaaa71009e4ba8bddf2b720150f476'
                         key: {
@@ -11951,6 +18193,19 @@ declare global {
                                 }
                             }
                             element: 'name'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a078ab7b6a5e489f89b3db9694e08f70'
+                        key: {
+                            sys_security_acl: '677f792ea2ce4df28ac723061b0505a7'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12006,6 +18261,29 @@ declare global {
                                     sys_domain: 'global'
                                 }
                             }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'a0edba3fcbc449aea591ddd2ebe63f82'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'pack'
                         }
                     },
                     {
@@ -12099,6 +18377,27 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a1a18f25caf14e5ab1501aa32b290aca'
+                        key: {
+                            sys_security_acl: '41b48d526ac4478d9c336f6b8e4b7207'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_variable_value'
+                        id: 'a1d8a1246bf642faba8a9c9b4dcae0d2'
+                        key: {
+                            document_key: '3266ce906b8f4a39bd03d10038ee894e'
+                            variable: '42f2564b73031300440211d8faf6a777'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'a1e8443cb7ac4b2bb553f7b6215a7fa7'
                         deleted: true
@@ -12119,6 +18418,19 @@ declare global {
                             }
                             element: 'execution_completed_at'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a22f408eb9f14432a6f45d3dce193002'
+                        key: {
+                            sys_security_acl: 'f54ed2f1010043beaab9af9c7fba2371'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12213,11 +18525,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a34eeda66cd14e26b9a5228f77978ab6'
+                        key: {
+                            sys_security_acl: '8fd660138cc8445390b64a7a9f4bc9bb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: 'a358c735ae954dbe8e112994344d163a'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'execution_mode'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a362a5cb7d524aa5a6effaeb6cb73c84'
+                        key: {
+                            sys_security_acl: '88f401e1a048406ca8b2c504013272c6'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -12291,11 +18629,45 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a40b6c1e24d54cb58ea64662f4681d35'
+                        key: {
+                            sys_security_acl: '9c658210adb440bb9d3cddad0eb9fabd'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a438bfa08aa54ac2bd6578da726d3ebf'
+                        key: {
+                            sys_security_acl: '89712d9b0587480492d4ad3aeb74201d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: 'a440c29943d24418a49e37da18059b11'
                         key: {
                             logical_table_name: 'x_33764_sbridge_xref'
                             col_name_string: 'peer,source_table,source_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'a44d4a3e74ce4a9684377355a2db1225'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
                         }
                     },
                     {
@@ -12338,6 +18710,32 @@ declare global {
                                         }
                                     }
                                     sys_domain: 'global'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a4b1f5b953b34dfb919c74c802268326'
+                        key: {
+                            sys_security_acl: '49ee2fc8c62249e4b974ac774a580192'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a4d8b7ee8e2243518b59f85946df89d9'
+                        key: {
+                            sys_security_acl: '82c31e4631d04fdd991a7b85c551958f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
                                 }
                             }
                         }
@@ -12418,12 +18816,38 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a5ae50669759477ea0efe2dbe32a08bf'
+                        key: {
+                            sys_security_acl: '37b3128ddf43409ba6881dbe554df439'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'a5b13b438ebf4b9880fd4fd4204c10fe'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'remote_received_at'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a5ee27d851284c8e8c9bc5fedd77edc4'
+                        key: {
+                            sys_security_acl: 'a9f81f001c8d4d2991e3340dead143dd'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12550,10 +18974,36 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a7b61e2bc48c4bf98d7da291998ae7d4'
+                        key: {
+                            sys_security_acl: 'c322e24ed25949e6b1c32153d798bafc'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_db_object'
                         id: 'a7d5372c8c28425b9e4f6b611128fabd'
                         key: {
                             name: 'x_33764_sbridge_xref'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'a7d85a6ea96c4b24acd66516e0e944f4'
+                        key: {
+                            sys_security_acl: 'a6521c8641e14338a0e126d6317e0d12'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -12566,6 +19016,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'a8b2ff70a38c454185f5a8c352cdb271'
+                        key: {
+                            sys_security_acl: 'df84a66f8439469e84e10ce9f05b5478'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'a8eeb69b29894714ba2c838273fff143'
                         key: {
@@ -12574,6 +19037,28 @@ declare global {
                             value: 'completed'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'a92c4cd2b8a24443b3d4226831dda91c'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'expand_mode'
+                            position: '0'
                         }
                     },
                     {
@@ -12634,10 +19119,71 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'aa54592b0fde4e57a72126450b673f42'
+                        key: {
+                            sys_ui_section: {
+                                id: 'af38a4f95475482d82e5c6af3fb6dff7'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_config'
+                                    caption: 'General'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'description'
+                            position: '5'
+                        }
+                    },
+                    {
                         table: 'sys_ui_action_role'
                         id: 'aa8158830a8143928e2bf6580bc728f7'
                         key: {
                             sys_ui_action: '8c2dd4b675e84c0b817aa5be162facd9'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'aac54d02a0214811b2329655edcd8cf6'
+                        key: {
+                            sys_security_acl: 'fd2f2fc5b35f49639a6da56306eb599d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'aadb90ce28c948d08049c1bee4b969aa'
+                        key: {
+                            sys_security_acl: '5b2f542318634577984badba6e4be626'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ab528c45f7c541808bfb3d3514fd0764'
+                        key: {
+                            sys_security_acl: '761f334a3ef548acbd3e4ea70854f24f'
                             sys_user_role: {
                                 id: '6b1d00c5ac1748e69826b3c315813714'
                                 key: {
@@ -12656,11 +19202,72 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ab9007ba8de04604a4035f5b45dfed9b'
+                        key: {
+                            sys_security_acl: '21c0701c892946e78019c3abb57b4882'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'aba4cdc38c794582b5ac2fdc790358e4'
+                        key: {
+                            sys_security_acl: 'df263ee4435649688c48c352dcd871a2'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'abc3a09d791e45fcadf7965775df82f5'
+                        key: {
+                            sys_security_acl: 'd1fc35c0f0a14471bbc323a44bdcd6c4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'abf4033de7c548cab6d71d8770404f5d'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'sent_at'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'ac2020e79b5f4342b0befe77e9dc0f98'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'flow_key'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ac312cc622f142998dcd3c0b7decadb0'
+                        key: {
+                            sys_security_acl: '6a13db90f9b947bfb4299699eba1a1a9'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12686,6 +19293,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'ac7f1529714e4183b3abf04fc459f612'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'version_note'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'aca5d88404084b469b9aa9f93df9299d'
+                        key: {
+                            sys_security_acl: '991f7ad0e2ca4c0997e2dfbb8c984f9f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'aca9dcaa1ece49b6a958c0610704f9e5'
                         key: {
@@ -12694,6 +19323,19 @@ declare global {
                             value: 'execute'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'acb2c9fb4d2743daa0fc599493273331'
+                        key: {
+                            sys_security_acl: '504fd757b48e4488b7dd30f73215cbfb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12724,6 +19366,32 @@ declare global {
                             }
                             element: 'day_of_month'
                             position: '10'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ad673e56da07414d9bf30ec2d0f95ebe'
+                        key: {
+                            sys_security_acl: '9f2654bdfa32424db3d9db9692b1efe8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ad6d4a15967046f2ba45424f336aa4ee'
+                        key: {
+                            sys_security_acl: '95d5f93d43164e7288a67e73a113166e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -12832,6 +19500,45 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'aeef1327deaf48dcb42b6df5aa14c243'
+                        key: {
+                            sys_security_acl: '820a2ecb0c69494f9729528fa3ba53dd'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'aef7330835a84d7a920a584e23bfffd5'
+                        key: {
+                            sys_security_acl: '0deda4e04f234f96a79ca1b9440c16e9'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'af2dfd181aa9427ea9b0ea2ca6cc15db'
+                        key: {
+                            sys_security_acl: '4bd2d3ae42b8414dae299f8679449126'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_section'
                         id: 'af38a4f95475482d82e5c6af3fb6dff7'
                         key: {
@@ -12847,11 +19554,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'af624a9100874481a9598e76786c15aa'
+                        key: {
+                            sys_security_acl: 'bf82af8495474a7686136ac1a87b67a5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'af7592eb6f5a4062a232c672ab9932ea'
+                        key: {
+                            sys_security_acl: 'dfb39ea83e1f400fb73ca73158008ed9'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'af8f516cc3d34971ae94e7b4acac66fb'
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'preserve_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'afc9fcf17cc4400688fea31e776bb85a'
+                        key: {
+                            sys_security_acl: 'a2b3b42c8c644c728bc6b33b417926b5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -12889,6 +19635,32 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b0cbdbfff49e4f14a62d23cc949bb881'
+                        key: {
+                            sys_security_acl: 'ea57e4a7b977461b873ea9d45a507da7'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b0cd6634c5294875a281ee3805bb74a0'
+                        key: {
+                            sys_security_acl: '1ee453069fa84616bfb93a76b7147b7c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -12963,6 +19735,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b17b5baf6c46435b964faa8af16eca9e'
+                        key: {
+                            sys_security_acl: '09c54aa2c45f4a3ea40c15b6b9e42c4c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'b18fbbdfab2f448090ba1c01d9dc8ec9'
                         key: {
@@ -13007,7 +19792,30 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: 'b1cfee4bfb84415fbbf1ee9900b8e7cd'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'expand_query'
+                            position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: 'b1da34133c33477dbffdb831041c43d5'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -13051,6 +19859,40 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b2265f4c8e004139a3ea7e5b55379f64'
+                        key: {
+                            sys_security_acl: '794915f294c0465b81b28efa1740db61'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'b2292e4a4d5a4cb1bc6a3efae95b1be3'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_query'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b229e271bbce4ea19ba1d3fd49db553c'
+                        key: {
+                            sys_security_acl: '06264563489e4514a68693c58b79d6a1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'b24d594307444a1581cf757c14c5e1bc'
                         key: {
@@ -13059,6 +19901,20 @@ declare global {
                             value: 'rejected'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_form'
+                        id: 'b2639cfe9c26406db4e2debe4e3870b9'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -13082,6 +19938,19 @@ declare global {
                             }
                             element: '.split'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b26f0a16e35a41b5920128bf6dc05f9e'
+                        key: {
+                            sys_security_acl: '2af74a91d4d9465b8b4e2f1ca1b0bd46'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -13179,6 +20048,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b33bd735399e4fa2a8a7a3f2ddad6ec8'
+                        key: {
+                            sys_security_acl: '543d3b3e12834920940aca370a488615'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'b33f67de18234a80912900ced1d3fb51'
                         key: {
@@ -13192,6 +20074,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'legacy_key'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b36f8a64138949279c10dc8604ae93fe'
+                        key: {
+                            sys_security_acl: 'f7b27c82577349629942cd1b1034818a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -13236,11 +20131,75 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b4607a06e875459cb13670bb7223428d'
+                        key: {
+                            sys_security_acl: 'a9f81f001c8d4d2991e3340dead143dd'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b4648889934e4be9b2205a83696f9710'
+                        key: {
+                            sys_security_acl: '8063de7c55bb4f8b8d4c6172e6808e75'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_variable_value'
                         id: 'b47b32e79c414d97b73cc9a2a18dc241'
                         key: {
                             document_key: '303112dfbd494896bf0355b22f8c183a'
                             variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'b4b3bc80d0bb41a4a3fa13e088cd90e4'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'active'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b500fdeca6944d97974bd822d3c2bb28'
+                        key: {
+                            sys_security_acl: '543d3b3e12834920940aca370a488615'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list'
+                        id: 'b513be8d40084d43b7ba709e0d72e43b'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                            element: 'NULL'
+                            relationship: 'NULL'
+                            parent: 'NULL'
                         }
                     },
                     {
@@ -13295,6 +20254,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'propagate_deletes'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b67d61b2a4eb4094a70d453811a73b1f'
+                        key: {
+                            sys_security_acl: 'eae7b3b93e314565bd59c68bec4bfc1c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -13413,11 +20385,59 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b79bd19ebb7a43b9a08c68fea84b820a'
+                        key: {
+                            sys_security_acl: '19316d93e1234fac9a7cb97e80608883'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b79e5e9e9d6e48b6a2a905907eda37e3'
+                        key: {
+                            sys_security_acl: 'eae7b3b93e314565bd59c68bec4bfc1c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: 'b7c2ad2d1db94cf6b87742d1a8dc4a46'
                         key: {
                             name: 'x_33764_sbridge_execution_schedule'
                             element: 'frequency'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b85ade1b199d4a0d960ad648394e6a42'
+                        key: {
+                            sys_security_acl: '05fc270471544edab584a845cfd3b576'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'b89ae28e490b4f59a3bb624190b1f4cc'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'field_list'
+                            language: 'en'
                         }
                     },
                     {
@@ -13435,12 +20455,51 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'b8bae58e62c4494eb1f345387448aab8'
+                        key: {
+                            sys_security_acl: '9587a64a326e4964985a65e312e5fba5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b8dd28430b084607925ad5dcf2f8d22f'
+                        key: {
+                            sys_security_acl: 'a8585428dc6f44fdb452072b68105b63'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'b8f4167b6d0b4cf1933814590e6bfdf8'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'failed_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b91345dd9a994dd498ea1da52879b609'
+                        key: {
+                            sys_security_acl: '3e06b76ecb9941f798d99ed0cd438baf'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -13466,6 +20525,54 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_documentation'
+                        id: 'b92a5f7fe23e49beb86293ae6b5a8256'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'name'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b97aa36cd94d43498c1b93c664d45913'
+                        key: {
+                            sys_security_acl: '06264563489e4514a68693c58b79d6a1'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b982f8cbf9b54955be5e4f81dde3edea'
+                        key: {
+                            sys_security_acl: 'b7582b42cbc94e3a9c9a41d304823c4d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b994d5a3785246d9ad20b7691e78d6d6'
+                        key: {
+                            sys_security_acl: '34e5130201504f5987d857ac270ec30e'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'b9bddcbee2df45a59106ea4345423c9b'
                         key: {
@@ -13483,6 +20590,19 @@ declare global {
                             name: 'x_33764_sbridge_test_record'
                             element: 'NULL'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'b9e37ec2c11e4922ab7c6a7f6919d699'
+                        key: {
+                            sys_security_acl: '1db9b32f7daa4da2b6ce685fd85d1897'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -13532,6 +20652,32 @@ declare global {
                             }
                             element: '.begin_split'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ba786a6cb04242ed9583a066ceec8327'
+                        key: {
+                            sys_security_acl: 'f34710ee430e4c9d9c202aefe6cd2a7a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'baa3d01bde6a45ad823747c8b45eca68'
+                        key: {
+                            sys_security_acl: '2fcee3dac1c8406f9f944701ebe35891'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -13589,6 +20735,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'bafc3b4d31f34a588741dc3e76582bbf'
+                        key: {
+                            sys_security_acl: '575b862f7e6e46728260c4b39d21a3de'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'bb26091f1d87428f9a10b21e6e614767'
                         key: {
@@ -13617,6 +20776,19 @@ declare global {
                             }
                             element: 'name'
                             position: '0'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'bb4e53a7a3cd496ba683032fbf623438'
+                        key: {
+                            sys_security_acl: '54d1f2a87af0469e9816f323d9b65945'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -13700,6 +20872,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'bc7736413c5540d785f00f76f6b9d312'
+                        key: {
+                            sys_security_acl: '1a4c8200d1c844ce8663afdb205abe01'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'bd027bc211594d659bd7e3950ad064f7'
                         key: {
@@ -13722,11 +20907,55 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'bd25650e705d4e76923219a09551cbaf'
+                        key: {
+                            sys_security_acl: 'f11e8fff1f284a2c9376b7cad3891ddf'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'bd34531cce9d47cfb4544e7929c95ea3'
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'target_table'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'bd4a0c9f246e49fd977380a479c00f55'
+                        key: {
+                            sys_security_acl: '16fe0737a1d74661836b98a3032f882c'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'bd549aca975a4168a9d2d5b061e61011'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_table'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'bd5f4c8067374399b5a25818a6f7dfda'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_field'
+                            language: 'en'
                         }
                     },
                     {
@@ -13760,6 +20989,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'bd965bd8e87543a5a1dfe726d4135785'
+                        key: {
+                            sys_security_acl: 'e5d8a9c40bca48888030bdf56e4dc179'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'bdacc035c5f34263ab534e01b694309f'
                         key: {
@@ -13781,6 +21023,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'bdc137f58e3547378cd44b97ade70e5d'
+                        key: {
+                            sys_security_acl: '3e0aec5bf40542dea7effb0f561eeaab'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -13865,6 +21120,28 @@ declare global {
                     },
                     {
                         table: 'sys_ui_element'
+                        id: 'be473638689a464c8554faa44ff6a86d'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'name'
+                            position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
                         id: 'be59cc7873164efb8a6817d407969933'
                         key: {
                             sys_ui_section: {
@@ -13883,6 +21160,19 @@ declare global {
                             }
                             element: 'owner_peer'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'be5ff136a4dd4564869188b8b73fd3a0'
+                        key: {
+                            sys_security_acl: '7a4ec2d237f34e42846984b0bbc4b0b0'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -13906,6 +21196,21 @@ declare global {
                                 }
                             }
                             element: 'ack_stage'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: 'bea510e712364fdd9c67742a1b9465eb'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            caption: 'Pack'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
                         }
                     },
                     {
@@ -13933,6 +21238,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'bed81785176a4418b2ea84d005e6272a'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: 'af38a4f95475482d82e5c6af3fb6dff7'
@@ -13950,6 +21256,14 @@ declare global {
                             }
                             element: 'direction'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'bedcf87db08744f9a5de671b417c9653'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'NULL'
                         }
                     },
                     {
@@ -14013,6 +21327,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c01028b4d0e24586897f2bfdba29ea46'
+                        key: {
+                            sys_security_acl: 'bff2beed6f734cf0b29ad423e25d1cfb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'c0135b48bb074db98a88ea7b52794b55'
                         key: {
@@ -14032,6 +21359,29 @@ declare global {
                             }
                             element: 'source_sys_id'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'c02c9990a3974759a8547d91d5daeb69'
+                        key: {
+                            list_id: {
+                                id: 'b513be8d40084d43b7ba709e0d72e43b'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'root_filter'
                         }
                     },
                     {
@@ -14093,6 +21443,13 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_user_role'
+                        id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                        key: {
+                            name: 'x_33764_sbridge.worker'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'c0f4bb95d0a24b1688d65c4d26da76b1'
                         deleted: true
@@ -14121,6 +21478,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c168d18db62147a2bcea2cb4549989c7'
+                        key: {
+                            sys_security_acl: '43c8465ed9be40848a0ae2792ae2ce40'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -14162,6 +21532,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c1ecdd54c5fc453493109db2b0dba76d'
+                        key: {
+                            sys_security_acl: '4da3ec3793ab450abf4edc68f44c1035'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: 'c1fcdd8ef677453bb910c82d47fa0f24'
                         key: {
@@ -14185,12 +21568,47 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c22fbcac86e740178ccde7cf2a903c40'
+                        key: {
+                            sys_security_acl: '9ff5c3b12af243fb90519c6cc985ad1b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'c24ac9e17f9c4f9dab643a3135c83850'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'inserted_count'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'c25aac3ba2b942439a67854ffd32fd3a'
+                        key: {
+                            sys_ui_section: {
+                                id: '54bbddcc180c4f34bd72172ccd330797'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Expand'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'id_scope'
+                            position: '3'
                         }
                     },
                     {
@@ -14218,6 +21636,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c274c135bd1b45d0bab7739830692e71'
+                        key: {
+                            sys_security_acl: '01578017217e41dbb6a28b7d93ada77b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'c274dcb7eab34042925775cc27e30048'
                         key: {
@@ -14240,6 +21671,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c29ac2520ac2457f9dcb812a91544e1c'
+                        key: {
+                            sys_security_acl: 'a97e1aadbc944d59ac3f12370adad48d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'c2c69058235a423fa3cb19c40603a7c1'
                         key: {
@@ -14259,6 +21703,19 @@ declare global {
                             }
                             element: '.end_split'
                             position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c2fdf250399e4606b37e88d6a2dd2d21'
+                        key: {
+                            sys_security_acl: '49ee2fc8c62249e4b974ac774a580192'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -14325,11 +21782,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c39773819c7449228efcc1b6dc9c9db7'
+                        key: {
+                            sys_security_acl: 'fd6655baac8d444c80f62da8a7153045'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_index'
                         id: 'c3afbbebd6f245818236a6acfe1265f8'
                         key: {
                             logical_table_name: 'x_33764_sbridge_dlq'
                             col_name_string: 'resolved'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c3ca946187e146358cf7f76fa9d2fe74'
+                        key: {
+                            sys_security_acl: '85f98d0f094a4c6690f8b1210d9232df'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -14447,6 +21930,15 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'c5b9acf6275542efb6f88a17851deae1'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'description'
+                            language: 'en'
                         }
                     },
                     {
@@ -14578,6 +22070,55 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c6d31b4a7ceb4d199dd8b00e24f5fe7a'
+                        key: {
+                            sys_security_acl: 'c1d077f630e743408956a599e130edad'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'c6f2fb154cee4590a1330d002217c8cb'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'fk_remap_fields'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c70a1e87545a4f69819675e9f610ac9c'
+                        key: {
+                            sys_security_acl: '7a4ec2d237f34e42846984b0bbc4b0b0'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'c760e22b9f864e6abaf51ed0562e0ccb'
                         key: {
@@ -14676,6 +22217,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c7c30a3a8469423b883f7b6869a1ed58'
+                        key: {
+                            sys_security_acl: '55160966ee53408b891a7fb411e7ba89'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: 'c7d874c2aef8461aac724541ac84995b'
                         key: {
@@ -14726,6 +22280,30 @@ declare global {
                             }
                             element: 'mode'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'c8c8c29fdeb04093ba206a057f2eae7b'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                            value: 'encoded_query'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c8d070211783490fa4fb29c4ca663eaf'
+                        key: {
+                            sys_security_acl: '79bf4fc06e104f2c9c362ecd576104fb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -14839,6 +22417,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'c9721879b38f4446b4309cf1010d33b1'
+                        key: {
+                            sys_security_acl: '9c8c7f479e2043d897b6c191efd85c57'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'c97d2c2fb9eb49e2803614239500247b'
+                        key: {
+                            sys_security_acl: '117f1a0d21174a358e4ffb30296041bb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_action_role'
                         id: 'c98e1c5c79154dbf97812527664a6cfb'
                         key: {
@@ -14934,6 +22538,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ca47fef4be2d4ea1b46757decb52fb21'
+                        key: {
+                            sys_security_acl: 'df84a66f8439469e84e10ce9f05b5478'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'ca8054e88fb240ae98658dc61a8875bb'
                         key: {
@@ -14953,6 +22570,32 @@ declare global {
                             }
                             element: 'table'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ca83eb74390d4ef1b77aa200627650e2'
+                        key: {
+                            sys_security_acl: 'c977d351e1a04815b12c1363f5754d0e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'cafddce92eb54574a0d7afe56e6ec25e'
+                        key: {
+                            sys_security_acl: '8e6e275c6c0d4bc69b93fdbe51734b7d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -14984,6 +22627,28 @@ declare global {
                             }
                             element: '.split'
                             position: '5'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'cb32ecb0f6194a10984e71975de21cf2'
+                        key: {
+                            sys_ui_section: {
+                                id: 'bea510e712364fdd9c67742a1b9465eb'
+                                key: {
+                                    name: 'x_33764_sbridge_movement_pack'
+                                    caption: 'Pack'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'version_note'
+                            position: '2'
                         }
                     },
                     {
@@ -15117,6 +22782,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'cc7b157b6e7c4df3b1b14a5cd35e71bd'
+                        key: {
+                            sys_security_acl: '8063de7c55bb4f8b8d4c6172e6808e75'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'cc7e7bd0816b4c358fa6269f8d55f307'
                         key: {
@@ -15223,6 +22901,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ccfb4e5cc57b4a3593b4e30542eaa591'
+                        key: {
+                            sys_security_acl: '3f523221fec8457280166dd089404ead'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'cd05c8c2d438426a8164a070fa4dddd9'
                         key: {
@@ -15254,6 +22945,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'cd1d88a25b904644a8ce7bebe67cbfad'
+                        key: {
+                            sys_security_acl: '3751bf3c54df431fac814a6796d8a7d3'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'cd33289c20a2454cb968cdb3318a00b5'
+                        key: {
+                            sys_security_acl: 'ac67e7e0f2e741ccbf1a37b605a543aa'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'cd419260d5d7405c9eab9e164f21258b'
                         key: {
@@ -15273,6 +22990,29 @@ declare global {
                             }
                             element: 'configuration'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_list_element'
+                        id: 'cd4c1f999bcf4e60a46a22609a248191'
+                        key: {
+                            list_id: {
+                                id: '14530ccda7c048d1af42e0da7a52e70b'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                    element: 'NULL'
+                                    relationship: 'NULL'
+                                    parent: 'NULL'
+                                }
+                            }
+                            element: 'active'
                         }
                     },
                     {
@@ -15317,6 +23057,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice_set'
+                        id: 'cdc93df83c9449128f1c6f54261d48d8'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'graph_kind'
+                        }
+                    },
+                    {
                         table: 'sys_ui_form'
                         id: 'cdd3db833450434390ee1469444044de'
                         key: {
@@ -15328,6 +23076,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ce17f719c11543b4b9fe00d4a2ca9eed'
+                        key: {
+                            sys_security_acl: '13e2a1e9c90549b99ceb7c70ca2c24b5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -15350,6 +23111,32 @@ declare global {
                             }
                             element: 'source_read_completed_at'
                             position: '3'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ce60cc74dbb0480ba2ddbc0c7c2fe855'
+                        key: {
+                            sys_security_acl: '7c979404ce194ac186c2f14fbefc3815'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ce86881478054b34970e1240c27e80c1'
+                        key: {
+                            sys_security_acl: 'd541ebf5fea04159ae032007437da23b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15388,6 +23175,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'cef660f700d94722bc0274eee810f24e'
+                        key: {
+                            sys_security_acl: 'efa673635fa644df9710da5c1c2e53df'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15452,6 +23252,32 @@ declare global {
                                 }
                             }
                             element: 'type'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'cf748f307bdb4c309cfee061a198a60f'
+                        key: {
+                            sys_security_acl: 'f4087acaa73842edb01a8a41bb3b4961'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'cfc3bd4bbbfd4d8388b14fd3897bef35'
+                        key: {
+                            sys_security_acl: 'adcad465a03c46c2b66ec8188b18af9a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15576,6 +23402,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'd0e357d16e084fa48a061b83fcf0df41'
+                        key: {
+                            sys_security_acl: '87ca87c079494f729bbaa381d8767c1d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'd10504c36bb34bb49e9d29081c886cb3'
                         key: {
@@ -15655,11 +23494,52 @@ declare global {
                         }
                     },
                     {
+                        table: 'ua_table_licensing_config'
+                        id: 'd20ca43e4a474daebec180bd8688138c'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'd218a12c988e41f8a0f43963959c0072'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'fk_remap_fields'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd245aa240cf3495db9494aa3f4e58f5a'
+                        key: {
+                            sys_security_acl: '761f334a3ef548acbd3e4ea70854f24f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice_set'
                         id: 'd255793749ae4c9bbac0ec2e05506658'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
                             element: 'ack_stage'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd2609130530b47f99fad7139d20fcaa1'
+                        key: {
+                            sys_security_acl: '521c272bf1cb4420bad9cd766ac794a5'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15691,6 +23571,30 @@ declare global {
                             name: 'x_33764_sbridge_transfer'
                             element: 'operation'
                             value: 'update'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd34ea072416a4bc4b856b4066fa4ea14'
+                        key: {
+                            sys_security_acl: 'd0b33b0e00b94fe59caa485041c32ddc'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'd3992d49f5d140bb94595f43f6daebcb'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                            value: 'roots'
                             language: 'en'
                             dependent_value: 'NULL'
                         }
@@ -15738,6 +23642,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'd4537635ec0e4f8fa41bddc7c1236b58'
+                        key: {
+                            sys_security_acl: 'f54ed2f1010043beaab9af9c7fba2371'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'd476ddc2464a4ce3b0e6cd0e0bfd1d08'
                         key: {
@@ -15757,6 +23674,19 @@ declare global {
                             }
                             element: 'platform_job'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd493b5a8224b48408e508964e9cb6964'
+                        key: {
+                            sys_security_acl: '67c861668e9c4682a8c18052748e4846'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15825,6 +23755,13 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_db_object'
+                        id: 'd56dd4e813654cb98b526d00a263756e'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                        }
+                    },
+                    {
                         table: 'sys_ui_policy_action'
                         id: 'd57db9641a23423db3b595778d01a02f'
                         key: {
@@ -15836,6 +23773,32 @@ declare global {
                                 }
                             }
                             field: 'source_instance'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd57f4af750954fcabe6626874786c786'
+                        key: {
+                            sys_security_acl: '2a33535925ae45b984d3b4be90097cfe'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd5a09fce565547548d4e2c7678457cf1'
+                        key: {
+                            sys_security_acl: '21f3c0271a0241a6bbc65801fcef23ad'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -15877,6 +23840,28 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_element'
+                        id: 'd5f12a90030c4e48948356f42bdfc86b'
+                        key: {
+                            sys_ui_section: {
+                                id: '98d4adba49a64ca5b3eee8ca5514eecb'
+                                key: {
+                                    name: 'x_33764_sbridge_data_execution'
+                                    caption: 'Scope'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: '.end_split'
+                            position: '7'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: 'd6a19c361d224c8981bc59eb2b884dd2'
                         key: {
@@ -15909,11 +23894,50 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'd6e1080297e34878aae9d77ac6fb0aad'
+                        key: {
+                            sys_security_acl: 'f5bd363d70a3473699c79c316d952f7a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'd6ee0436bd094560a93355d1dcbd886f'
                         key: {
                             name: 'x_33764_sbridge_dlq'
                             element: 'resolved'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd7036da589254bcbb44936948797397b'
+                        key: {
+                            sys_security_acl: 'b62396fb95c5400da3bf7b7069f2a265'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd71fe599699e43aa833d8aa51aa6a1e4'
+                        key: {
+                            sys_security_acl: 'fc693fe1b63e4a4ab0e7647471835148'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -15931,6 +23955,19 @@ declare global {
                         key: {
                             logical_table_name: 'x_33764_sbridge_execution_schedule'
                             col_name_string: 'configuration'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'd811b405a6d6439d9532df3439fdf8e0'
+                        key: {
+                            sys_security_acl: '8fa4bd7e8f4f43de8c10fcc989dfa014'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -16011,6 +24048,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'd9b8d2546bfe418585d2dea5cd2c8e82'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_member'
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: 'd9ba6794758b49468ca8fc9bc8ad1b74'
                         key: {
@@ -16087,6 +24132,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'da7a0f393de245d0a3e09f5563afc124'
+                        key: {
+                            sys_security_acl: '7a0ba87baba849d48e19d6e8904385b4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'da81564da7904a5598ef307055efff20'
+                        key: {
+                            sys_security_acl: 'be3989866e3444d4803e471f961f9731'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'daaf018b50d145978f78b80d2a410b4f'
                         key: {
@@ -16114,6 +24185,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_movement_config'
                             element: 'policy'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'db55029222904b80a568d6b93cbd48e3'
+                        key: {
+                            sys_security_acl: '3794b1a4906542f8b2c80dc0b724eac8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -16168,6 +24252,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'dbb11648fb8c424ea3a909e60947561b'
+                        key: {
+                            sys_security_acl: '99eb560f07964b15b5323beac0dc2d2f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form'
                         id: 'dbc2f55417e54544876936006e91d1fa'
                         key: {
@@ -16203,6 +24300,15 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_transfer'
                             element: 'source_instance'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'dc9cb90804194bfb83df7303f1037166'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_member'
+                            language: 'en'
                         }
                     },
                     {
@@ -16311,6 +24417,47 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_section'
+                        id: 'dd21651738cb4734b095d3b36dc22a69'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            caption: 'Root'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'dd7643995a1a4315962e33542b15e77a'
+                        key: {
+                            sys_security_acl: '22012232f498432c85008e5f6554c831'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'dd772b65b7b6406ea884ce07ab63591d'
+                        key: {
+                            sys_security_acl: '4a64e657634e45ebb639924966a39466'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'dda34d45b2014ffaaf8973c1bae0e683'
                         deleted: true
@@ -16388,6 +24535,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'dddf2c03543c4fb9836b6acaeb765035'
+                        key: {
+                            sys_security_acl: '215d51e7bb834262a2a2862d47c6c420'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'debe85368f96497687f76deb72c44a8a'
                         key: {
@@ -16430,6 +24590,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'deef523c53be44b8830bbd589f153ce9'
+                        key: {
+                            sys_security_acl: '4bac95f670c64269909fb7659ccfe766'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'df32dac8df7946c4aee84ea5e73b1dfe'
                         key: {
@@ -16460,6 +24633,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'df38354ab56548a797a9b49a8b017a83'
+                        key: {
+                            sys_security_acl: 'd7992dcae6f54e91bf71ea4451c6a4ff'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'df53eedbca5242d6a9c8b0d96e04b622'
                         key: {
@@ -16483,6 +24669,32 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'configuration'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e0777290e9bd4fc6b7b19d380603c344'
+                        key: {
+                            sys_security_acl: '33d1314894164916bb114f8c71f8a6fe'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e08f7660a18141eba20bff543c653ae8'
+                        key: {
+                            sys_security_acl: '2165bd33b1d040a38559b3d369cd4543'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -16555,6 +24767,40 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'e178182378e34b71a10d8f20479466f2'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'match_strategy'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e1a38b025f91441884d5a7a54182d16e'
+                        key: {
+                            sys_security_acl: 'ba5fb50f621a41baa273e23e4327f89e'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e1e6e49395b04c9daaf7a3255fec249e'
+                        key: {
+                            sys_security_acl: '4170c51297e44bc1b9604a7a13adfb06'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'e1e9eabde70943b08eda1f4a2bf44b54'
                         key: {
@@ -16613,6 +24859,14 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_policy'
                             element: 'table'
+                        }
+                    },
+                    {
+                        table: 'sys_dictionary'
+                        id: 'e237cefd2e0b487889e2e17b7b9157a7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'flow_key'
                         }
                     },
                     {
@@ -16744,6 +24998,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'e2d3ae6644434663b2ca101bfa926461'
+                        key: {
+                            sys_security_acl: 'eb12dc23d22c48de92281feb76466832'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e2f9915ea1e044b7997e17439410dbad'
+                        key: {
+                            sys_security_acl: '85f98d0f094a4c6690f8b1210d9232df'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'e3798846ef264bfea066419d55321fbd'
                         key: {
@@ -16780,6 +25060,32 @@ declare global {
                             }
                             element: 'started'
                             position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e40a9bce273f42d3b256c35613aabce3'
+                        key: {
+                            sys_security_acl: '94173f923a0c4bc5bbf19997ff0bb358'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e40f4137eeeb45ac8051b18711a0ed64'
+                        key: {
+                            sys_security_acl: '997832897fe146f3833645dd403a7a18'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -16850,6 +25156,46 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_ui_policy_action'
+                        id: 'e4b675de422446938d1ae1f394d0490e'
+                        key: {
+                            ui_policy: {
+                                id: '424eab7705ce4b618dc35142a61f6edd'
+                                key: {
+                                    table: 'x_33764_sbridge_data_execution'
+                                    short_description: 'Lock a data execution after it leaves Draft'
+                                }
+                            }
+                            field: 'pack'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e4bb14e1fb2d4bcab3bba1baf63055e3'
+                        key: {
+                            sys_security_acl: '29dfb593a11a44aab40c510f9dadd11f'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e4c05ab83d7c4852b706ae04cdd8b593'
+                        key: {
+                            sys_security_acl: 'cf974adbc863465ca8188b6821535f76'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'e4cc0510568a4aa7836b2f29e80d57a4'
                         key: {
@@ -16867,6 +25213,15 @@ declare global {
                             value: 'once'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'e526fc0b2ae943728e2df7a0a236af87'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'pack'
+                            language: 'en'
                         }
                     },
                     {
@@ -16918,6 +25273,15 @@ declare global {
                         id: 'e61006dc76374da8a57a29cb7e2b82b4'
                         key: {
                             name: 'x_33764_sbridge_transfer'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'e63e2e70ebe34b24a0afaad8dac72238'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_filter'
+                            language: 'en'
                         }
                     },
                     {
@@ -17010,6 +25374,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'e6e768ec51b64d18ad836241e33bb28f'
+                        key: {
+                            sys_security_acl: '7a0ba87baba849d48e19d6e8904385b4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'e6e9b78fbde044639ffb953f3e1c3c28'
                         key: {
@@ -17027,6 +25404,32 @@ declare global {
                             value: 'completed'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e7014dd16d5e41ff9a0858575c5981d8'
+                        key: {
+                            sys_security_acl: 'bff2beed6f734cf0b29ad423e25d1cfb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e71a77ab4fc348e4b866511d8a8069a1'
+                        key: {
+                            sys_security_acl: '45013bfd2ab647869c26d5042efdc6ee'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17153,6 +25556,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'e7add8367dda43e2b6ad6f138acb1abf'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_filter'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'e7af59350dbe436cb46b78e9e398f485'
                         key: {
@@ -17183,6 +25594,27 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'e8124dea5a8f41ec9a983a9c12475b08'
+                        key: {
+                            sys_security_acl: '5b2f542318634577984badba6e4be626'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice_set'
+                        id: 'e83f56c1bd344ea0ac7509fe952f45a0'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'expand_mode'
+                        }
+                    },
+                    {
                         table: 'ua_table_licensing_config'
                         id: 'e8fce6bbc92b42cd8437e26103eecf19'
                         key: {
@@ -17198,6 +25630,45 @@ declare global {
                             value: 'failed'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e9278d946ffe48dab03cee5e933255a4'
+                        key: {
+                            sys_security_acl: 'a2b3b42c8c644c728bc6b33b417926b5'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e9555b465bda46118f5d4c5bb8361654'
+                        key: {
+                            sys_security_acl: '7bde104712e74406a84fbd515b9dc2f8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'e99ba4d6293f47498848c7915dadee11'
+                        key: {
+                            sys_security_acl: '794915f294c0465b81b28efa1740db61'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17232,11 +25703,33 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ea057eb636594747bd7bb7394eda77ff'
+                        key: {
+                            sys_security_acl: 'd0b33b0e00b94fe59caa485041c32ddc'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'ea08fe56a82746acbf7ce4979c39f028'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'name'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'ea0a386a85604840a4b670d01795bf1c'
+                        key: {
+                            name: 'x_33764_sbridge_data_execution'
+                            element: 'expand_claim'
+                            language: 'en'
                         }
                     },
                     {
@@ -17262,11 +25755,89 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ea8aab80dc7a470caf8e84fdaec2fedf'
+                        key: {
+                            sys_security_acl: '0e43309408034658b28e34add7df010a'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ea9f24e6dbf44f96800ad756d99a6f72'
+                        key: {
+                            sys_security_acl: '2a33535925ae45b984d3b4be90097cfe'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eaaa55a2c54a4a1bba602280fb364d45'
+                        key: {
+                            sys_security_acl: 'd1fc35c0f0a14471bbc323a44bdcd6c4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eab336b7aa6e4734bcbb72399c3b7ff3'
+                        key: {
+                            sys_security_acl: 'd7a10d363fd1476783dd3399941633b6'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eac8cf38882a4c48972e4b32da8821ab'
+                        key: {
+                            sys_security_acl: '5afe1b2c67874cc2b166fb46a362a9ac'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'eae7ce3e5ddf4c4186cbd4b6aa43cf12'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'target_processing_completed_at'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eaefc86e57134838b2ede6bfeff71bb1'
+                        key: {
+                            sys_security_acl: 'f0f794904e7541c49cdbec95378485a1'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17315,6 +25886,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'eb6fface17b34fe4a4fbf316033b9219'
+                        key: {
+                            sys_security_acl: '243d5420f9f1498cb122675fc5fef1bb'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_form_section'
                         id: 'eb72eac640b54c04ad39bc0637844a46'
                         key: {
@@ -17353,6 +25937,19 @@ declare global {
                         key: {
                             name: 'x_33764_sbridge_record_result'
                             element: 'target_sys_id'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eb85da391a394663b41de796e0c2f47c'
+                        key: {
+                            sys_security_acl: 'ac67e7e0f2e741ccbf1a37b605a543aa'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -17449,6 +26046,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ec7036610a3d42aebdd1b8ada66cae92'
+                        key: {
+                            sys_security_acl: '65f6146e3373400f8ab5c7febf8526eb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'ec8e1f2662a544d48a99ce8b5cb0fb18'
                         key: {
@@ -17465,6 +26075,15 @@ declare global {
                         key: {
                             document_key: '717049a287a04d26a8a02cb1bab0b8b8'
                             variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'edbab63262654d1d974121308418b8a7'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'active'
+                            language: 'en'
                         }
                     },
                     {
@@ -17522,6 +26141,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'ee8aa64f2d5046ee87359af811ae624b'
+                        key: {
+                            sys_security_acl: '674d307cce1d4fe0a60736253215b529'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'ee94ffb2a1a1464dadcdefed20f3f1a4'
                         key: {
@@ -17549,6 +26181,19 @@ declare global {
                         key: {
                             document_key: '828bd8e3134440018f6442652feee41c'
                             variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'eec18df877b44781b4ef1ed4464ebb11'
+                        key: {
+                            sys_security_acl: '48f3abccbd8f4fd6a01454956125a82b'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17583,6 +26228,32 @@ declare global {
                             value: 'cmdb'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ef2f9646bb7b46a289fcf708529c932f'
+                        key: {
+                            sys_security_acl: '79bf4fc06e104f2c9c362ecd576104fb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ef448ee297f740d8a951ff68913f98db'
+                        key: {
+                            sys_security_acl: '29dfb593a11a44aab40c510f9dadd11f'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -17676,6 +26347,27 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_choice_set'
+                        id: 'f005442d1cda4b25a4db237c33f60fd5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'id_scope'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f00d0bf21d4b484b834566428a6e03ed'
+                        key: {
+                            sys_security_acl: '9e50d62c354645db8b794d04c9581cac'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f0179982e24d47598ca80a32e73d24aa'
                         deleted: true
@@ -17732,6 +26424,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f0a490a387e44e2f9a1ddee8cf874275'
+                        key: {
+                            sys_security_acl: 'f34710ee430e4c9d9c202aefe6cd2a7a'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'f0a9309e0cbf4ce1aab27618a081aadd'
                         key: {
@@ -17774,6 +26479,45 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f0e0f454e06d43d8a4ea0f345471ac4b'
+                        key: {
+                            sys_security_acl: '98d0bb8e4d13421299df010982d2fbda'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f0e57c77b66e44659c1193a409e7702d'
+                        key: {
+                            sys_security_acl: '8fd660138cc8445390b64a7a9f4bc9bb'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f11321f35be6414ea350b68bb6f60f36'
+                        key: {
+                            sys_security_acl: '5331bca1d99143b196e5e58417ff036c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f117e41716d842dea0157f0817148ca6'
                         deleted: true
@@ -17797,6 +26541,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'f11d9fa7537e441ca3344503642fc702'
+                        key: {
+                            name: 'x_33764_sbridge_movement_pack'
+                            element: 'root_table'
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f15af4f855c44f6480f10023467ee2b4'
                         key: {
@@ -17816,6 +26568,56 @@ declare global {
                             }
                             element: 'selected_count'
                             position: '1'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_element'
+                        id: 'f161f131ce444e8e812c8165266fd55d'
+                        key: {
+                            sys_ui_section: {
+                                id: 'f17a6fbd57f7403982e34fe508d81835'
+                                key: {
+                                    name: 'x_33764_sbridge_pack_member'
+                                    caption: 'Member'
+                                    view: {
+                                        id: 'Default view'
+                                        key: {
+                                            name: 'NULL'
+                                        }
+                                    }
+                                    sys_domain: 'global'
+                                }
+                            }
+                            element: 'active'
+                            position: '2'
+                        }
+                    },
+                    {
+                        table: 'sys_ui_section'
+                        id: 'f17a6fbd57f7403982e34fe508d81835'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            caption: 'Member'
+                            view: {
+                                id: 'Default view'
+                                key: {
+                                    name: 'NULL'
+                                }
+                            }
+                            sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f1dfae88ca9540508df85a468e2b5c91'
+                        key: {
+                            sys_security_acl: 'b7582b42cbc94e3a9c9a41d304823c4d'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -17851,6 +26653,15 @@ declare global {
                     },
                     {
                         table: 'sys_documentation'
+                        id: 'f251872b17c4419bb599d2a3578b1752'
+                        key: {
+                            name: 'x_33764_sbridge_run'
+                            element: 'seed_seq'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
                         id: 'f26b006d9f774cb982e239eceaffd635'
                         key: {
                             name: 'x_33764_sbridge_transfer_audit'
@@ -17872,6 +26683,19 @@ declare global {
                                 }
                             }
                             sys_domain: 'global'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f2aa2264b25b4c7081d19b364d48c490'
+                        key: {
+                            sys_security_acl: '77a85fa0aff8446e89f1fafa7d5009b3'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17906,6 +26730,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f2bc6e29be1f4970b3d3fd69495267cd'
+                        key: {
+                            sys_security_acl: '601365d2f6794da8b0e922b66a5d6e64'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'f2c4268d3c3f47158d04336e210d2cb9'
                         key: {
@@ -17922,6 +26759,19 @@ declare global {
                             value: 'allow'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f31ec99e7ec4473ea1dbf563aeff3a1c'
+                        key: {
+                            sys_security_acl: '6d79cb9a1db64c1da2cb02db69f3e762'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -17959,6 +26809,7 @@ declare global {
                     {
                         table: 'sys_ui_element'
                         id: 'f39bab998bc54d7bb9e8858b4deb2532'
+                        deleted: true
                         key: {
                             sys_ui_section: {
                                 id: '98d4adba49a64ca5b3eee8ca5514eecb'
@@ -18002,6 +26853,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f3a8055609364ad68f8f490b8afcbc88'
+                        key: {
+                            sys_security_acl: '5afe1b2c67874cc2b166fb46a362a9ac'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'f3b1209fe9b54082b5f39db3d5d91707'
                         key: {
@@ -18021,6 +26885,19 @@ declare global {
                             }
                             element: 'target_sys_id'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f3c8b13620ac4f50b06b673a93d4c930'
+                        key: {
+                            sys_security_acl: '16b2e288f2ef4281a5863db5db5e5805'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18046,6 +26923,19 @@ declare global {
                             name: 'x_33764_sbridge_outbox'
                             element: 'NULL'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f42c05e31ee64fe39e2265f86a3bbe16'
+                        key: {
+                            sys_security_acl: 'aa51beff8ccc4c3183cd47a09b70fca6'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18107,11 +26997,33 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f530d9db37f84f84b683309729afd1c7'
+                        key: {
+                            sys_security_acl: '8e73d1b1d4674023b6d4d954c6c872e8'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'f53d26ecdd3d42d1b2bb51fdc7f9a0e9'
                         key: {
                             name: 'x_33764_sbridge_receipt'
                             element: 'target_sys_id'
+                            language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'f551bc752c424df0a0583a89cfd722d5'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'source_table'
                             language: 'en'
                         }
                     },
@@ -18136,6 +27048,15 @@ declare global {
                             }
                             element: 'initiated_by'
                             position: '4'
+                        }
+                    },
+                    {
+                        table: 'sys_documentation'
+                        id: 'f5dc9906540d4d07bbd6389317071610'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'apply_order'
+                            language: 'en'
                         }
                     },
                     {
@@ -18205,6 +27126,32 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f68435213c4a4ee493477957e0aa6a73'
+                        key: {
+                            sys_security_acl: '8949ec3a5c934f0092ab706ef1c62d82'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f6cf8f28aab34bff8b6692c560a613cb'
+                        key: {
+                            sys_security_acl: '78769570725f4c72a56650914d39e576'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_choice'
                         id: 'f6dac2485c78454d9ba9f3f923bd72df'
                         key: {
@@ -18213,6 +27160,19 @@ declare global {
                             value: 'update'
                             language: 'en'
                             dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f6f32426fe5747248c5f73ff40d48070'
+                        key: {
+                            sys_security_acl: '3f523221fec8457280166dd089404ead'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18233,10 +27193,55 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_dictionary'
+                        id: 'f6fbd8619b86470980c0b5515e761e87'
+                        key: {
+                            name: 'x_33764_sbridge_pack_member'
+                            element: 'parent_field'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f7293dcfd1364265aafac544663f9d0c'
+                        key: {
+                            sys_security_acl: 'c6de8e92eb654e67a0298fd7617add03'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_db_object'
                         id: 'f7634d55682347f997b83eb1198a05c9'
                         key: {
                             name: 'x_33764_sbridge_data_execution'
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'f7e265bad2c841d89805a5649d6a93d1'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            value: 'pack'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f7f4a6e4892b49d4940194bd367779b7'
+                        key: {
+                            sys_security_acl: 'ea57e4a7b977461b873ea9d45a507da7'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18312,6 +27317,14 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_variable_value'
+                        id: 'f8e24c0fbf864e0d8f96f99ed4635a84'
+                        key: {
+                            document_key: 'c01a04e6d3464008b6dcbdc5e7fe6b60'
+                            variable: '989d9e235324220002c6435723dc3484'
+                        }
+                    },
+                    {
                         table: 'sys_dictionary'
                         id: 'f944f214ba104beaadb5b440c8f0790c'
                         key: {
@@ -18329,12 +27342,49 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'f9847c03adb34e8c81c6fb18e521245c'
+                        key: {
+                            sys_security_acl: '505896c626924555b0bbb65ede5de1d3'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_choice'
+                        id: 'f9953246515f4eab9896bbea3ff74d09'
+                        key: {
+                            name: 'x_33764_sbridge_movement_config'
+                            element: 'config_type'
+                            value: 'table'
+                            language: 'en'
+                            dependent_value: 'NULL'
+                        }
+                    },
+                    {
                         table: 'sys_documentation'
                         id: 'f9bf44a7c8b34de48f9190a4c05e4a46'
                         key: {
                             name: 'x_33764_sbridge_peer'
                             element: 'connection_alias'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'f9e49b97b48c4f59b0c39db1df9224c8'
+                        key: {
+                            sys_security_acl: '4bf1ecc985ae44f695e1f920bda0a68c'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18650,6 +27700,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'fcffdd10c3814e21b747123384d31d61'
+                        key: {
+                            sys_security_acl: 'a12025811efb4114b068029c285b06d4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_element'
                         id: 'fd40f7eb7c724d1fa2646218253bea75'
                         key: {
@@ -18701,11 +27764,37 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'fda561c8d5194f83aaa1375304fa9d67'
+                        key: {
+                            sys_security_acl: '67c861668e9c4682a8c18052748e4846'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_number'
                         id: 'fdbd67e49e2c43649d2ce09728039c02'
                         key: {
                             category: 'x_33764_sbridge_transfer'
                             prefix: 'TRN'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'fdce8151e8d74f22a9c57c7886368699'
+                        key: {
+                            sys_security_acl: '67066dcfd7f74f16a0a2e315b6ef7bc4'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18749,6 +27838,19 @@ declare global {
                         }
                     },
                     {
+                        table: 'sys_security_acl_role'
+                        id: 'fee087068cee47f4b4b502eb92a26a7b'
+                        key: {
+                            sys_security_acl: '4e7196a29f234dceb967e2534acd738d'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
                         table: 'sys_ui_list_element'
                         id: 'fee4e596aa8e4dfc84e7a61421be66f2'
                         key: {
@@ -18769,6 +27871,19 @@ declare global {
                                 }
                             }
                             element: 'execution_mode'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'fef48e33c155494ca059a9a8e2d65cb3'
+                        key: {
+                            sys_security_acl: '2fcee3dac1c8406f9f944701ebe35891'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
                         }
                     },
                     {
@@ -18799,6 +27914,32 @@ declare global {
                                 }
                             }
                             element: 'number'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ffb80bceab83406280f72ffa8db09240'
+                        key: {
+                            sys_security_acl: '8e73d1b1d4674023b6d4d954c6c872e8'
+                            sys_user_role: {
+                                id: 'c0ec4e27e3f4416faba56bceed58d0ff'
+                                key: {
+                                    name: 'x_33764_sbridge.worker'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'ffbbee4c670d4bf0977ade3ea945cdf3'
+                        key: {
+                            sys_security_acl: '48f3abccbd8f4fd6a01454956125a82b'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                     {
@@ -18886,6 +28027,19 @@ declare global {
                             name: 'x_33764_sbridge_data_execution'
                             element: 'legacy_key'
                             language: 'en'
+                        }
+                    },
+                    {
+                        table: 'sys_security_acl_role'
+                        id: 'fffba40639a445a7af946d11faa65398'
+                        key: {
+                            sys_security_acl: '0d056b97c4d64a0ba90ccd5675639db4'
+                            sys_user_role: {
+                                id: '6b1d00c5ac1748e69826b3c315813714'
+                                key: {
+                                    name: 'x_33764_sbridge.operator'
+                                }
+                            }
                         }
                     },
                 ]

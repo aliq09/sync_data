@@ -19,6 +19,10 @@
  * number column default) assigns DEX###### / TRN###### from sys_number. Epoch numbers are not written.
  * When movement_config.ack_required is false, acknowledgement milestones stay empty and
  * HTTP 200 still completes the execution. When it is true, the result waits for ACK.
+ *
+ * 0.4.2: a drain run is a transport poll, not a movement. _shadowRunById does not
+ * insert a Data Execution for type=drain, and it does not insert or complete a row
+ * whose configuration is empty. continueQueued / drain stay idempotent.
  */
 var BridgeDualWrite = Class.create()
 
@@ -90,7 +94,7 @@ BridgeDualWrite.prototype = {
             if (!dex.getValue('run')) dex.setValue('run', runId)
             var state = dex.getValue('execution_state') || ''
             if (state === 'draft' || state === 'queued' || state === 'validating' || state === 'preparing') {
-                this._transitionState(dex, 'reading_source', 'Execution controller started reading the source through BridgeSeed.')
+                this._transitionState(dex, 'reading_source', 'Execution controller started reading the source.')
             }
             dex.update()
         })
@@ -197,7 +201,7 @@ BridgeDualWrite.prototype = {
                     source_table: item.table || '',
                     source_sys_id: item.source_sys_id,
                     target_sys_id: (out && out.target_sys_id) || '',
-                    action: item.op || '',
+                    action: this._actionLabel(status, out && out.operation, item.op || ''),
                     result: status,
                     error: out && out.error ? String(out.error).substr(0, 4000) : '',
                 }
@@ -260,6 +264,16 @@ BridgeDualWrite.prototype = {
         }
 
         var values = this._configValuesFromPolicy(policyGr)
+        // Execute calls linkPolicies before BridgeSeed. That used to copy
+        // policy.condition over a filter the operator had already set
+        // (Case 7: filter nameSTARTSWITHcase6_max_ disappeared). Seed and
+        // capture still read policy.condition. Preview, dry run, and the
+        // DEX snapshot read this filter. Keep it once it is set. An empty
+        // filter still receives the policy condition. Clear the filter to
+        // let the next link copy condition again.
+        if (!isNew && String(gr.getValue('filter') || '').replace(/^\s+|\s+$/g, '') !== '') {
+            delete values.filter
+        }
         var changed = isNew
         for (var field in values) {
             if (!Object.prototype.hasOwnProperty.call(values, field)) continue
@@ -307,6 +321,8 @@ BridgeDualWrite.prototype = {
             target_instance: targetInstance,
             source_table: table,
             target_table: targetTable,
+            // Initial value only. _linkOne does not overwrite a filter that is
+            // already set. policy.condition remains the query BridgeSeed uses.
             filter: policyGr.getValue('condition') || '',
             preserve_sys_id: policyGr.getValue('preserve_sys_id') === '1',
             propagate_deletes: policyGr.getValue('propagate_deletes') === '1',
@@ -331,6 +347,14 @@ BridgeDualWrite.prototype = {
         var run = new GlideRecord(BridgeConfig.TABLE.run)
         if (!run.get(runId)) return
 
+        // Drain creates a new x_33764_sbridge_run on every poll. Shadowing that run
+        // inserted a second Data Execution with an empty configuration (the drain
+        // row has no seed policy) and onRunClosed then marked it Completed /
+        // Successful — including selected=0 rows when the poll sent nothing.
+        // Transfers already roll onto the controller execution from the outbox
+        // payload (onOutboxSettled). Do not mint a DEX for the poll itself.
+        if ((run.getValue('type') || '') === 'drain') return
+
         var key = 'run:' + runId
         var dex = this._controllerDexForRun(runId)
         var isNew = false
@@ -347,13 +371,16 @@ BridgeDualWrite.prototype = {
                 dex.setValue('run', runId)
             }
         }
-        // Drain close still writes the run: shadow. It must not finish a controller DEX.
+        // Controller rows are finished by _rollupExecution, not by closing a sync run.
         if (!isNew && this._isControllerDex(dex) && phase === 'close') return
 
         var type = run.getValue('type') || ''
         var policyId = run.getValue('seed_policy') || ''
-        var configId = policyId ? this._configIdForPolicy(policyId) : dex.getValue('configuration') || ''
-        if (configId && !dex.getValue('configuration')) dex.setValue('configuration', configId)
+        var configId = policyId ? this._configIdForPolicy(policyId) : ''
+        if (!configId) configId = dex.getValue('configuration') || ''
+        // Never insert, and never mark Completed/Successful, without a configuration.
+        if (!configId) return
+        if (!dex.getValue('configuration')) dex.setValue('configuration', configId)
         this._fillDexRouting(dex, run, policyId, configId)
 
         if (isNew || !dex.getValue('config_snapshot')) {
@@ -495,6 +522,7 @@ BridgeDualWrite.prototype = {
         }
 
         if (isNew) {
+            if (!dex.getValue('configuration')) return
             this._ensurePlatformNumber(dex)
             dex.insert()
         } else dex.update()
@@ -695,7 +723,7 @@ BridgeDualWrite.prototype = {
             source_table: outboxGr.getValue('table') || '',
             source_sys_id: outboxGr.getValue('source_sys_id') || '',
             target_sys_id: mapped.targetSysId,
-            action: outboxGr.getValue('op') || '',
+            action: this._recordAction(outboxGr, mapped),
             result: mapped.result,
             error: mapped.error,
         })
@@ -747,9 +775,11 @@ BridgeDualWrite.prototype = {
                 if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
             }
         }
+        if (controller) {
+            changed = this._setCount(dex, 'failed_count', this._failedTransferCount(byStage)) || changed
+        }
         if (!closed && controller) {
             changed = this._setCount(dex, 'sent_count', byStage.sent || 0) || changed
-            changed = this._setCount(dex, 'failed_count', byStage.dead || 0) || changed
             if ((byStage.sent || 0) > 0 && (state === 'queued' || state === 'reading_source' || state === 'preparing' || state === 'validating')) {
                 if (this._transitionState(dex, 'sending', 'A transfer has left this instance.')) changed = true
             }
@@ -765,6 +795,12 @@ BridgeDualWrite.prototype = {
         if (changed) dex.update()
         var endState = dex.getValue('execution_state') || ''
         if (controller && (endState === 'completed' || endState === 'cancelled')) this._touchConfigFromDex(dex)
+    },
+
+    /** Retrying rows are stage failed. Dead rows have exhausted attempts. Both are failures. */
+    _failedTransferCount: function (byStage) {
+        byStage = byStage || {}
+        return (byStage.failed || 0) + (byStage.dead || 0)
     },
 
     _setCount: function (dex, field, value) {
@@ -856,7 +892,31 @@ BridgeDualWrite.prototype = {
             dead: !!(outcome && outcome.dead),
             dlqId: outcome && outcome.dlqId ? outcome.dlqId : '',
             targetSysId: outcome && outcome.targetSysId ? outcome.targetSysId : '',
+            operation: outcome && outcome.operation ? String(outcome.operation) : '',
         }
+    },
+
+    /**
+     * Record-result action from the apply outcome. The outbox op is always
+     * insert for a seed. Skip, update, and insert are what the execution counts.
+     */
+    _recordAction: function (outboxGr, mapped) {
+        var fallback = ''
+        try {
+            fallback = outboxGr && outboxGr.getValue ? outboxGr.getValue('op') || '' : ''
+        } catch (e) {
+            fallback = ''
+        }
+        return this._actionLabel(mapped && mapped.result, mapped && mapped.operation, fallback)
+    },
+
+    _actionLabel: function (status, operation, fallback) {
+        var op = operation ? String(operation) : ''
+        if (status === 'skipped' || op === 'skip') return 'skip'
+        if (status === 'failed' || status === 'rejected') return 'fail'
+        if (op === 'update' || op === 'upsert') return 'update'
+        if (op === 'insert' || op === 'delete') return op
+        return fallback || ''
     },
 
     _correlation: function (payloadText, outboxId) {
@@ -1015,6 +1075,7 @@ BridgeDualWrite.prototype = {
      */
     _maybeCompleteController: function (dex, byStage) {
         if (!this._isControllerDex(dex)) return false
+        if (!dex.getValue('configuration')) return false
         var mode = dex.getValue('execution_mode') || ''
         if (mode === 'dry_run' || mode === 'reconciliation') return false
         var state = dex.getValue('execution_state') || ''
@@ -1033,7 +1094,7 @@ BridgeDualWrite.prototype = {
         else if (dead > 0) result = 'failed'
         else if (rejected > 0) result = 'successful_with_warnings'
         dex.setValue('execution_result', result)
-        dex.setValue('failed_count', dead)
+        dex.setValue('failed_count', this._failedTransferCount(byStage))
         var now = new GlideDateTime().getValue()
         if (!dex.getValue('transfer_completed_at') && selected > 0) dex.setValue('transfer_completed_at', now)
         if (!dex.getValue('execution_completed_at')) dex.setValue('execution_completed_at', now)
@@ -1346,6 +1407,12 @@ BridgeDualWrite.prototype = {
         gr.query()
         var created = 0
         while (gr.next()) {
+            // Drain polls and controller-linked seed runs are not missing shadows.
+            // Counting them used to walk the same rows on every drain() and, for
+            // drain runs, insert an empty Data Execution each time the legacy_key
+            // lookup missed (controller rows use ctrl:, not run:).
+            if (keyPrefix === 'run' && (gr.getValue('type') || '') === 'drain') continue
+            if (keyPrefix === 'run' && this._controllerDexForRun(gr.getUniqueValue())) continue
             var key = keyPrefix + ':' + gr.getUniqueValue()
             var target = this._backfillTarget(keyPrefix)
             if (!target) return
@@ -1355,6 +1422,8 @@ BridgeDualWrite.prototype = {
             } catch (e) {
                 gs.warn('[bridge] dual-write backfill ' + key + ' failed (ignored): ' + e)
             }
+            // A writer that refuses an empty configuration must not consume the budget.
+            if (!this._findId(target, 'legacy_key', key)) continue
             created++
             if (created >= limit) return
         }

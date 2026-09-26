@@ -121,6 +121,7 @@ BridgeSeed.prototype = {
             table: tableName,
             direction: 'outbound',
             mode: policyGr.getValue('mode') || 'direct',
+            // Capture unions the computer include-list for cmdb_ci_computer. This column stays the policy list.
             field_list: policyGr.getValue('field_list') || '',
             condition: policyGr.getValue('condition') || '',
             ref_map: policyGr.getValue('ref_map') || '',
@@ -132,6 +133,10 @@ BridgeSeed.prototype = {
         }
 
         var gr = new GlideRecord(tableName)
+        // Rows to send follow the sync policy condition. The movement-config
+        // filter is not applied here and is not overwritten when it is already
+        // set (BridgeDualWrite._linkOne). Case 7 keeps policy.condition and
+        // filter = nameSTARTSWITHcase6_max_ as two values.
         if (policy.condition) gr.addEncodedQuery(policy.condition)
         if (cursor) gr.addQuery('sys_id', '>', cursor)
         gr.orderBy('sys_id')
@@ -182,13 +187,24 @@ BridgeSeed.prototype = {
         dex.update()
     },
 
-    _enqueueSeed: function (current, policy, localPeer, tableName, runId, executionId) {
+    _enqueueSeed: function (current, policy, localPeer, tableName, runId, executionId, extra) {
         // Reuse capture payload shaping; write outbox with mode=bulk_seed.
         // execution is a controller link. It is not a target field (apply reads payload.values).
+        // extra is set by BridgePackExpand. Path A callers omit it and pack_seq stays 0.
         var payload = this.capture._payload(current, policy, 'insert')
         payload.mode = policy.mode
         payload.bulk = true
         if (executionId) payload.execution = executionId
+        extra = extra || {}
+        if (extra.pack) payload.pack = extra.pack
+        if (extra.pack_member) payload.pack_member = extra.pack_member
+        if (extra.pack_order) payload.pack_order = extra.pack_order
+        if (extra.pack_fk) payload.pack_fk = extra.pack_fk
+
+        var seq = this.capture.sequenceFor(current, 'insert')
+        if (executionId && this._outboxAlreadyQueued(policy.peer, tableName, current.getUniqueValue(), seq, executionId)) {
+            return false
+        }
 
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.initialize()
@@ -196,11 +212,12 @@ BridgeSeed.prototype = {
         gr.setValue('table', tableName)
         gr.setValue('source_sys_id', current.getUniqueValue())
         gr.setValue('op', 'insert')
-        gr.setValue('seq', this.capture.sequenceFor(current, 'insert'))
+        gr.setValue('seq', seq)
         gr.setValue('payload', JSON.stringify(payload))
         gr.setValue('state', 'pending')
         gr.setValue('attempts', 0)
         gr.setValue('mode', 'bulk_seed')
+        if (extra.pack_seq && gr.isValidField('pack_seq')) gr.setValue('pack_seq', extra.pack_seq)
         var id = gr.insert()
         if (id && runId) {
             try {
@@ -210,6 +227,30 @@ BridgeSeed.prototype = {
             }
         }
         return !!id
+    },
+
+    /**
+     * Same execution, source record, and seq already has an outbox row.
+     * A second expander must not queue it again. A later execution may.
+     */
+    _outboxAlreadyQueued: function (peer, tableName, sourceId, seq, executionId) {
+        if (!peer || !tableName || !sourceId || !executionId) return false
+        var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
+        gr.addQuery('peer', peer)
+        gr.addQuery('table', tableName)
+        gr.addQuery('source_sys_id', sourceId)
+        gr.addQuery('seq', seq)
+        gr.query()
+        while (gr.next()) {
+            var payload = {}
+            try {
+                payload = JSON.parse(gr.getValue('payload') || '{}')
+            } catch (e) {
+                payload = {}
+            }
+            if ((payload.execution || '') === executionId) return true
+        }
+        return false
     },
 
     type: 'BridgeSeed',

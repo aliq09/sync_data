@@ -3,8 +3,9 @@
  *
  * Configuration defines what. This service starts the run. Data Execution tracks it.
  * Transfer still happens only through BridgeSeed → outbox → the existing drain
- * (BridgeTransport) → /apply. UI actions, the schedule job, REST, and Flow call
- * these methods. They do not move records themselves.
+ * (BridgeTransport) → /apply. A pack configuration uses BridgePackExpand instead
+ * of BridgeSeed and still lands in that same outbox and drain. UI actions, the
+ * schedule job, REST, and Flow call these methods. They do not move records themselves.
  *
  * Execute and dry run return as soon as the DEX row exists. A separate job calls
  * continueQueued, which pages BridgeSeed (execute) or a local read (dry run).
@@ -53,6 +54,8 @@ SyncBridgeExecutionService.prototype = {
         var cfg = loaded.row
         var findings = []
         var forStart = !!opts.forStart
+        this._preparePackConfig(cfg)
+        var packMode = this._isPackConfig(cfg)
 
         if (cfg.getValue('active') !== '1') {
             findings.push({
@@ -63,7 +66,11 @@ SyncBridgeExecutionService.prototype = {
         if (!cfg.getValue('name')) findings.push({ level: 'error', message: 'Name is required.' })
         var sourceTable = cfg.getValue('source_table') || ''
         var targetTable = cfg.getValue('target_table') || ''
-        if (!sourceTable) findings.push({ level: 'error', message: 'Source table is required.' })
+        if (!sourceTable && !packMode) findings.push({ level: 'error', message: 'Source table is required.' })
+        if (packMode) {
+            var packFindings = this._validatePack(cfg, forStart)
+            for (var pf = 0; pf < packFindings.length; pf++) findings.push(packFindings[pf])
+        }
         if (!targetTable) {
             findings.push({ level: 'warning', message: 'Target table is empty. Apply uses the source table name.' })
         }
@@ -85,8 +92,10 @@ SyncBridgeExecutionService.prototype = {
         var policy = null
         if (!policyId) {
             findings.push({
-                level: 'error',
-                message: 'No sync policy is linked. BridgeSeed is policy-id only, so Execute cannot start.',
+                level: packMode ? 'warning' : 'error',
+                message: packMode
+                    ? 'No sync policy is linked. Pack expand uses this configuration target instance. Each member table still needs an inbound policy on the target.'
+                    : 'No sync policy is linked. BridgeSeed is policy-id only, so Execute cannot start.',
             })
         } else {
             policy = new GlideRecord(BridgeConfig.TABLE.policy)
@@ -102,8 +111,10 @@ SyncBridgeExecutionService.prototype = {
                 }
                 if (sourceTable && policy.getValue('table') && policy.getValue('table') !== sourceTable) {
                     findings.push({
-                        level: 'error',
-                        message: 'Policy table does not match the configuration source table.',
+                        level: packMode ? 'warning' : 'error',
+                        message: packMode
+                            ? 'Policy table does not match the pack root. Pack members use their own tables. The linked policy is the peer and owner hint.'
+                            : 'Policy table does not match the configuration source table.',
                     })
                 }
                 if (targetInstance && policy.getValue('peer') && policy.getValue('peer') !== targetInstance) {
@@ -182,21 +193,40 @@ SyncBridgeExecutionService.prototype = {
         if (isNaN(limit) || limit < 1) limit = 50
         if (limit > 100) limit = 100
 
-        var matched = this._countSource(cfg)
+        var matched = 0
         var sample = []
         var counts = { insert: 0, update: 0, skip: 0, delete: 0 }
-        var gr = this._sourceQuery(cfg, '')
-        gr.setLimit(limit)
-        gr.query()
-        while (gr.next()) {
-            var predicted = this._predict(gr, cfg)
-            counts[predicted.action] = (counts[predicted.action] || 0) + 1
-            sample.push({
-                source_sys_id: gr.getUniqueValue(),
-                name: predicted.name,
-                existing_target: predicted.target || '',
-                proposed_action: predicted.action,
-            })
+        if (this._isPackConfig(cfg)) {
+            var packPreview = new BridgePackExpand().previewSample(cfg, limit)
+            matched = packPreview.matched || 0
+            var packRows = packPreview.sample || []
+            for (var s = 0; s < packRows.length; s++) {
+                var rowGr = new GlideRecord(packRows[s].table)
+                var predictedPack = { action: 'insert', target: '', name: packRows[s].name || packRows[s].source_sys_id }
+                if (rowGr.get(packRows[s].source_sys_id)) predictedPack = this._predict(rowGr, cfg)
+                counts[predictedPack.action] = (counts[predictedPack.action] || 0) + 1
+                sample.push({
+                    source_sys_id: packRows[s].source_sys_id,
+                    name: (packRows[s].table || '') + ': ' + predictedPack.name,
+                    existing_target: predictedPack.target || '',
+                    proposed_action: predictedPack.action,
+                })
+            }
+        } else {
+            matched = this._countSource(cfg)
+            var gr = this._sourceQuery(cfg, '')
+            gr.setLimit(limit)
+            gr.query()
+            while (gr.next()) {
+                var predicted = this._predict(gr, cfg)
+                counts[predicted.action] = (counts[predicted.action] || 0) + 1
+                sample.push({
+                    source_sys_id: gr.getUniqueValue(),
+                    name: predicted.name,
+                    existing_target: predicted.target || '',
+                    proposed_action: predicted.action,
+                })
+            }
         }
 
         var message =
@@ -357,7 +387,8 @@ SyncBridgeExecutionService.prototype = {
 
     /**
      * One page of queued controller work. Called by the continue job, not by UI actions.
-     * Does not call BridgeTransport.
+     * Does not call BridgeTransport and does not insert a Data Execution.
+     * Rows with an empty configuration are skipped so a poll cannot revive an orphan.
      */
     continueQueued: function () {
         try {
@@ -367,6 +398,7 @@ SyncBridgeExecutionService.prototype = {
         }
         var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
         dex.addQuery('legacy_key', 'STARTSWITH', 'ctrl:')
+        dex.addNotNullQuery('configuration')
         dex.addQuery('execution_state', 'IN', 'queued,validating,preparing,reading_source,sending')
         dex.orderBy('queued_at')
         dex.setLimit(20)
@@ -487,6 +519,8 @@ SyncBridgeExecutionService.prototype = {
             'batch_size',
             'policy',
             'concurrent_execution_policy',
+            'config_type',
+            'pack',
         ]
         for (var i = 0; i < fields.length; i++) {
             if (copy.isValidField(fields[i])) copy.setValue(fields[i], src.getValue(fields[i]))
@@ -588,6 +622,16 @@ SyncBridgeExecutionService.prototype = {
         dex.setValue('source_table', cfg.getValue('source_table') || '')
         dex.setValue('target_table', cfg.getValue('target_table') || cfg.getValue('source_table') || '')
         dex.setValue('filter_snapshot', cfg.getValue('filter') || '')
+        if (this._isPackConfig(cfg)) {
+            var packFilter = this._packRootFilter(cfg)
+            if (packFilter) dex.setValue('filter_snapshot', packFilter)
+            if (cfg.getValue('pack') && dex.isValidField('pack')) dex.setValue('pack', cfg.getValue('pack'))
+            var packRoot = this._packRootTable(cfg)
+            if (packRoot) {
+                dex.setValue('source_table', packRoot)
+                if (!cfg.getValue('target_table')) dex.setValue('target_table', packRoot)
+            }
+        }
         dex.setValue('execution_state', 'validating')
         dex.setValue('config_snapshot', this._snapshot(cfg, mode, options))
         dex.work_notes =
@@ -613,7 +657,9 @@ SyncBridgeExecutionService.prototype = {
             mode +
             ', ' +
             options.trigger_type +
-            '). Work continues through BridgeSeed and the existing outbox drain.'
+            '). Work continues through ' +
+            (this._isPackConfig(cfg) ? 'BridgePackExpand' : 'BridgeSeed') +
+            ' and the existing outbox drain.'
         cfg.setValue('last_execution', inserted)
         cfg.setValue('last_run_at', now)
         if (cfg.isValidField('last_result')) cfg.setValue('last_result', '')
@@ -638,15 +684,84 @@ SyncBridgeExecutionService.prototype = {
         var state = dex.getValue('execution_state') || ''
         if (state === 'cancelled' || state === 'completed') return
         var mode = dex.getValue('execution_mode') || 'execute'
-        if (mode === 'dry_run') this._pageDryRun(dex)
-        else if (mode === 'reconciliation') {
+        if (mode === 'reconciliation') {
             dex.work_notes = 'Sync Bridge: reconciliation does not run in 0.3.0. No target rows were changed.'
             dex.setValue('execution_result', 'cancelled')
             dex.setValue('execution_state', 'cancelled')
             dex.setValue('execution_completed_at', new GlideDateTime().getValue())
             this._setDuration(dex)
             dex.update()
-        } else this._pageSeed(dex)
+            return
+        }
+        var token = this._claimExecution(dexId)
+        if (!token) return
+        try {
+            dex = this._dex(dexId)
+            if (!dex) return
+            if ((dex.getValue('execution_state') || '') === 'cancelled') return
+            if (mode === 'dry_run') this._pageDryRun(dex)
+            else this._pageSeed(dex)
+        } finally {
+            this._releaseExecution(dexId, token)
+        }
+    },
+
+    /**
+     * One expander per Data Execution. Two callers (the continue job and a
+     * manual continueQueued) both read state=queued, so a state check alone
+     * lets both seed. The token is written, then read back. The caller whose
+     * token is still stored owns the page. A claim older than three minutes
+     * can be taken over. Expansion is also idempotent in BridgeSeed.
+     */
+    _claimExecution: function (dexId) {
+        if (!dexId) return ''
+        var probe = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!probe.isValid() || !probe.isValidField('expand_claim')) {
+            gs.warn('[bridge] expand_claim is missing; this execution is not locked')
+            return 'unlocked'
+        }
+        var token = gs.generateGUID()
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.get(dexId)) return ''
+        var state = dex.getValue('execution_state') || ''
+        if (state === 'completed' || state === 'cancelled' || state === 'sending') return ''
+        var held = dex.getValue('expand_claim') || ''
+        if (held && !this._claimIsStale(dex)) return ''
+        dex.setValue('expand_claim', token)
+        if (dex.isValidField('expand_claimed_at')) dex.setValue('expand_claimed_at', new GlideDateTime().getValue())
+        dex.setWorkflow(false)
+        if (!dex.update()) return ''
+        var check = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!check.get(dexId)) return ''
+        if ((check.getValue('expand_claim') || '') !== token) return ''
+        return token
+    },
+
+    _claimIsStale: function (dex) {
+        var at = ''
+        try {
+            at = dex.getValue('expand_claimed_at') || ''
+        } catch (e) {
+            at = ''
+        }
+        if (!at) return true
+        try {
+            var then = new GlideDateTime(at)
+            var now = new GlideDateTime()
+            return now.getNumericValue() - then.getNumericValue() > 180000
+        } catch (e2) {
+            return true
+        }
+    },
+
+    _releaseExecution: function (dexId, token) {
+        if (!dexId || !token || token === 'unlocked') return
+        var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
+        if (!dex.get(dexId) || !dex.isValidField('expand_claim')) return
+        if ((dex.getValue('expand_claim') || '') !== token) return
+        dex.setValue('expand_claim', '')
+        dex.setWorkflow(false)
+        dex.update()
     },
 
     _pageSeed: function (dex) {
@@ -657,7 +772,8 @@ SyncBridgeExecutionService.prototype = {
             return
         }
         var policyId = cfg.getValue('policy') || ''
-        if (!policyId) {
+        var packMode = this._isPackConfig(cfg)
+        if (!packMode && !policyId) {
             this._failDex(dex, 'Configuration has no sync policy. BridgeSeed was not called.')
             return
         }
@@ -665,13 +781,25 @@ SyncBridgeExecutionService.prototype = {
         if (isNaN(batch) || batch < 1) batch = 200
         var summary
         try {
-            summary = new BridgeSeed().seedPolicy(policyId, {
-                batchSize: batch,
-                runId: dex.getValue('run') || '',
-                executionId: dex.getUniqueValue(),
-            })
+            if (packMode) {
+                summary = new BridgePackExpand().seedPack(cfg, {
+                    batchSize: batch,
+                    runId: dex.getValue('run') || '',
+                    executionId: dex.getUniqueValue(),
+                })
+            } else {
+                summary = new BridgeSeed().seedPolicy(policyId, {
+                    batchSize: batch,
+                    runId: dex.getValue('run') || '',
+                    executionId: dex.getUniqueValue(),
+                })
+            }
         } catch (e) {
-            this._failDex(dex, 'BridgeSeed failed: ' + e)
+            this._failDex(dex, (packMode ? 'BridgePackExpand' : 'BridgeSeed') + ' failed: ' + e)
+            return
+        }
+        if (summary && summary.failed) {
+            this._failDex(dex, summary.reason || 'Pack expand failed.')
             return
         }
         if (!dex.get(dex.getUniqueValue())) return
@@ -692,6 +820,10 @@ SyncBridgeExecutionService.prototype = {
                 dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
             }
             if (total === 0) {
+                if (!dex.getValue('configuration')) {
+                    gs.warn('[bridge] not completing a data execution that has no configuration')
+                    return
+                }
                 dex.setValue('execution_result', 'successful')
                 dex.setValue('execution_completed_at', new GlideDateTime().getValue())
                 dex.setValue('execution_state', 'completed')
@@ -703,15 +835,22 @@ SyncBridgeExecutionService.prototype = {
                 return
             }
             dex.setValue('execution_state', 'sending')
-            dex.work_notes =
-                'Sync Bridge: source read finished. ' +
-                total +
-                ' row(s) are in the outbox. The existing drain sends them through BridgeTransport. Acknowledgement stays empty.'
+            dex.work_notes = packMode
+                ? 'Sync Bridge: pack expand finished. ' +
+                  total +
+                  ' row(s) are in one outbox for this data execution' +
+                  (summary.order ? ' (' + summary.order + ')' : '') +
+                  '. Parents drain before children. cmdb_rel_ci is last. Record Mapping is shared. Acknowledgement stays empty.'
+                : 'Sync Bridge: source read finished. ' +
+                  total +
+                  ' row(s) are in the outbox. The existing drain sends them through BridgeTransport. Acknowledgement stays empty.'
             dex.update()
             return
         }
         dex.setValue('execution_state', 'reading_source')
-        dex.work_notes = 'Sync Bridge: reading source. ' + total + ' row(s) queued so far via BridgeSeed.'
+        dex.work_notes = packMode
+            ? 'Sync Bridge: reading pack members. ' + total + ' row(s) queued so far under this data execution.'
+            : 'Sync Bridge: reading source. ' + total + ' row(s) queued so far via BridgeSeed.'
         dex.update()
     },
 
@@ -719,6 +858,10 @@ SyncBridgeExecutionService.prototype = {
         var cfg = new GlideRecord(BridgeConfig.TABLE.movementConfig)
         if (!cfg.get(dex.getValue('configuration'))) {
             this._failDex(dex, 'Configuration no longer exists.')
+            return
+        }
+        if (this._isPackConfig(cfg)) {
+            this._pagePackDryRun(dex, cfg)
             return
         }
         var run = this._dryRunCursor(dex, cfg)
@@ -761,6 +904,10 @@ SyncBridgeExecutionService.prototype = {
             dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
         }
         if (done) {
+            if (!dex.getValue('configuration')) {
+                gs.warn('[bridge] not completing a dry run that has no configuration')
+                return
+            }
             var deletes = parseInt(run.getValue('failed'), 10) || 0
             dex.setValue('execution_result', 'successful')
             dex.setValue('execution_state', 'completed')
@@ -782,6 +929,79 @@ SyncBridgeExecutionService.prototype = {
         }
         dex.setValue('execution_state', 'reading_source')
         var note = 'Sync Bridge: dry run read ' + (dex.getValue('selected_count') || 0) + ' source row(s). No target writes.'
+        if (sampleLines.length) note += ' Sample: ' + sampleLines.join('; ')
+        dex.work_notes = note.substr(0, 4000)
+        dex.update()
+    },
+
+    _pagePackDryRun: function (dex, cfg) {
+        if ((dex.getValue('execution_state') || '') === 'cancelled') return
+        var batch = parseInt(cfg.getValue('batch_size'), 10)
+        if (isNaN(batch) || batch < 1) batch = 200
+        if (batch > 200) batch = 200
+        var summary
+        try {
+            summary = new BridgePackExpand().readPage(cfg, {
+                batchSize: batch,
+                runId: dex.getValue('run') || '',
+                executionId: dex.getUniqueValue(),
+            })
+        } catch (e) {
+            this._failDex(dex, 'Pack dry run failed: ' + e)
+            return
+        }
+        if (!dex.get(dex.getUniqueValue())) return
+        if (summary && summary.failed) {
+            this._failDex(dex, summary.reason || 'Pack dry run failed.')
+            return
+        }
+        var rows = (summary && summary.rows) || []
+        var page = { insert: 0, update: 0, skip: 0, delete: 0, scanned: rows.length }
+        var sampleLines = []
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i]
+            var gr = new GlideRecord(row.table)
+            var predicted = { action: 'insert', name: row.name || row.source_sys_id, target: '' }
+            if (gr.get(row.source_sys_id)) predicted = this._predict(gr, cfg)
+            page[predicted.action] = (page[predicted.action] || 0) + 1
+            if (sampleLines.length < 15 && !(parseInt(dex.getValue('selected_count'), 10) > 0)) {
+                sampleLines.push((row.table || '') + ' ' + predicted.name + ' ' + predicted.action)
+            }
+        }
+        this._addCount(dex, 'selected_count', page.scanned)
+        this._addCount(dex, 'inserted_count', page.insert)
+        this._addCount(dex, 'updated_count', page.update)
+        this._addCount(dex, 'skipped_count', page.skip + page.delete)
+        if (summary && summary.run_id && !dex.getValue('run')) dex.setValue('run', summary.run_id)
+        var done = !!(summary && summary.done)
+        if (!dex.getValue('source_read_completed_at') && done) {
+            dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
+        }
+        if (done) {
+            if (!dex.getValue('configuration')) {
+                gs.warn('[bridge] not completing a dry run that has no configuration')
+                return
+            }
+            dex.setValue('execution_result', 'successful')
+            dex.setValue('execution_state', 'completed')
+            dex.setValue('execution_completed_at', new GlideDateTime().getValue())
+            this._setDuration(dex)
+            dex.work_notes =
+                'Sync Bridge: pack dry run finished. Predicted insert ' +
+                (dex.getValue('inserted_count') || 0) +
+                ', update ' +
+                (dex.getValue('updated_count') || 0) +
+                ', skip ' +
+                (dex.getValue('skipped_count') || 0) +
+                '. Order ' +
+                ((summary && summary.order) || '') +
+                '. No outbox rows were enqueued. Target business tables were not changed.'
+            dex.update()
+            this._touchConfig(dex)
+            return
+        }
+        dex.setValue('execution_state', 'reading_source')
+        var note = 'Sync Bridge: pack dry run read ' + (dex.getValue('selected_count') || 0) + ' source row(s). No target writes.'
         if (sampleLines.length) note += ' Sample: ' + sampleLines.join('; ')
         dex.work_notes = note.substr(0, 4000)
         dex.update()
@@ -1237,6 +1457,9 @@ SyncBridgeExecutionService.prototype = {
             source_table: cfg.getValue('source_table') || '',
             target_table: cfg.getValue('target_table') || '',
             filter: cfg.getValue('filter') || '',
+            config_type: cfg.isValidField('config_type') ? cfg.getValue('config_type') || 'table' : 'table',
+            pack: cfg.isValidField('pack') ? cfg.getValue('pack') || '' : '',
+            pack_root_filter: this._packRootFilter(cfg),
             operation: cfg.getValue('operation') || '',
             match_strategy: cfg.getValue('match_strategy') || '',
             reference_handling: cfg.getValue('reference_handling') || '',
@@ -1244,7 +1467,9 @@ SyncBridgeExecutionService.prototype = {
             batch_size: cfg.getValue('batch_size') || '',
             ack_required: this._ackFlag(cfg),
             captured_at: new GlideDateTime().getValue(),
-            note: 'Frozen when the execution controller queued this run. Transfer still uses the sync policy, outbox, and /apply. Acknowledgement is required only when ack_required was true at start.',
+            note: this._isPackConfig(cfg)
+                ? 'Frozen when the execution controller queued this pack run. One data execution shares Record Mapping. BridgePackExpand writes the outbox in member order. The existing drain and /apply still perform the transfer.'
+                : 'Frozen when the execution controller queued this run. Transfer still uses the sync policy, outbox, and /apply. Acknowledgement is required only when ack_required was true at start.',
         })
     },
 
@@ -1302,13 +1527,19 @@ SyncBridgeExecutionService.prototype = {
             '. ' +
             (mode === 'dry_run'
                 ? 'Target business tables will not be changed and nothing will be enqueued. Acknowledgement is not used for a dry run.'
-                : this._ackFlag(cfg)
-                  ? 'BridgeSeed will enqueue the outbox. The existing drain performs the send. The result waits for acknowledgement.'
-                  : 'BridgeSeed will enqueue the outbox. The existing drain performs the send. Acknowledgement is not required.')
+                : this._isPackConfig(cfg)
+                  ? 'BridgePackExpand will enqueue one ordered outbox for this data execution. The existing drain performs the send. Parents go before children.'
+                  : this._ackFlag(cfg)
+                    ? 'BridgeSeed will enqueue the outbox. The existing drain performs the send. The result waits for acknowledgement.'
+                    : 'BridgeSeed will enqueue the outbox. The existing drain performs the send. Acknowledgement is not required.')
         )
     },
 
     _failDex: function (dex, reason) {
+        if (!dex.getValue('configuration')) {
+            gs.warn('[bridge] not completing a data execution that has no configuration: ' + reason)
+            return
+        }
         dex.setValue('execution_result', 'failed')
         dex.setValue('execution_state', 'completed')
         dex.setValue('execution_completed_at', new GlideDateTime().getValue())
@@ -1411,6 +1642,129 @@ SyncBridgeExecutionService.prototype = {
         } catch (e) {
             return false
         }
+    },
+
+    _isPackConfig: function (cfg) {
+        try {
+            return new BridgePackExpand().isPackConfig(cfg)
+        } catch (e) {
+            return false
+        }
+    },
+
+    _packRecord: function (cfg) {
+        if (!cfg || !cfg.getValue || !cfg.isValidField('pack')) return null
+        var packId = cfg.getValue('pack') || ''
+        if (!packId) return null
+        var pack = new GlideRecord('x_33764_sbridge_movement_pack')
+        if (!pack.get(packId)) return null
+        return pack
+    },
+
+    _packRootFilter: function (cfg) {
+        var pack = this._packRecord(cfg)
+        if (!pack) return ''
+        return pack.getValue('root_filter') || ''
+    },
+
+    _packRootTable: function (cfg) {
+        var pack = this._packRecord(cfg)
+        if (!pack) return ''
+        return pack.getValue('root_table') || ''
+    },
+
+    /**
+     * Fill a blank source table, target table, and filter from the pack so the
+     * configuration form shows the root. Does not replace a value the operator saved.
+     * Pack expand still reads the pack root filter, not this copy.
+     */
+    _preparePackConfig: function (cfg) {
+        if (!this._isPackConfig(cfg)) return
+        var pack = this._packRecord(cfg)
+        if (!pack) return
+        var changed = false
+        var root = pack.getValue('root_table') || ''
+        if (root && !cfg.getValue('source_table')) {
+            cfg.setValue('source_table', root)
+            changed = true
+        }
+        if (root && !cfg.getValue('target_table')) {
+            cfg.setValue('target_table', root)
+            changed = true
+        }
+        if (!cfg.getValue('filter') && pack.getValue('root_filter')) {
+            cfg.setValue('filter', pack.getValue('root_filter'))
+            changed = true
+        }
+        if (changed) {
+            cfg.setWorkflow(false)
+            cfg.update()
+        }
+    },
+
+    _validatePack: function (cfg, forStart) {
+        var findings = []
+        if (!cfg.getValue('pack')) {
+            findings.push({ level: 'error', message: 'Configuration type is Pack but no Movement Pack is selected.' })
+            return findings
+        }
+        var pack = this._packRecord(cfg)
+        if (!pack) {
+            findings.push({ level: 'error', message: 'Selected Movement Pack was not found.' })
+            return findings
+        }
+        if (pack.getValue('active') !== '1') {
+            findings.push({
+                level: forStart ? 'error' : 'warning',
+                message: 'Movement Pack is inactive.',
+            })
+        }
+        var root = pack.getValue('root_table') || ''
+        if (!root) findings.push({ level: 'error', message: 'Movement Pack has no root table.' })
+        else if (!new GlideRecord(root).isValid()) {
+            findings.push({ level: 'error', message: 'Pack root table ' + root + ' is not valid.' })
+        }
+        var sourceTable = cfg.getValue('source_table') || ''
+        if (root && sourceTable && sourceTable !== root) {
+            findings.push({
+                level: 'warning',
+                message: 'Source table differs from the pack root ' + root + '. Expand uses the pack root.',
+            })
+        }
+        var members = new GlideRecord('x_33764_sbridge_pack_member')
+        members.addQuery('pack', pack.getUniqueValue())
+        members.addQuery('active', true)
+        members.orderBy('apply_order')
+        members.query()
+        var activeCount = 0
+        var flowCount = 0
+        var hasRel = false
+        while (members.next()) {
+            activeCount++
+            var kind = members.getValue('graph_kind') || 'record'
+            if (kind !== 'record' && kind !== 'relationship') flowCount++
+            if ((members.getValue('source_table') || '') === 'cmdb_rel_ci') hasRel = true
+            var tableName = members.getValue('source_table') || ''
+            if (tableName && kind !== 'flow' && kind !== 'flow_trigger' && kind !== 'flow_variable' && kind !== 'flow_logic' && kind !== 'flow_action' && kind !== 'flow_step' && kind !== 'pill') {
+                if (!new GlideRecord(tableName).isValid()) {
+                    findings.push({ level: 'error', message: 'Pack member table ' + tableName + ' is not valid.' })
+                }
+            }
+        }
+        if (!activeCount) findings.push({ level: 'error', message: 'Movement Pack has no active members.' })
+        if (flowCount) {
+            findings.push({
+                level: 'warning',
+                message: flowCount + ' Flow member(s) will be skipped. 0.5.0 does not execute Flow.',
+            })
+        }
+        if (activeCount && !hasRel) {
+            findings.push({
+                level: 'warning',
+                message: 'This pack has no cmdb_rel_ci member. Relationship rows will not move.',
+            })
+        }
+        return findings
     },
 
     _loadConfig: function (configurationId) {

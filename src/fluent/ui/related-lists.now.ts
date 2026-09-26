@@ -114,6 +114,26 @@ Record({
     },
 })
 
+const packRelated = Record({
+    $id: Now.ID['pack-related-list'],
+    table: 'sys_ui_related_list',
+    data: {
+        name: 'x_33764_sbridge_movement_pack',
+        view: 'Default view',
+    },
+})
+
+Record({
+    $id: Now.ID['pack-rel-members'],
+    table: 'sys_ui_related_list_entry',
+    data: {
+        list_id: packRelated,
+        position: 0,
+        related_list: 'x_33764_sbridge_pack_member.pack',
+        order_by: 'apply_order',
+    },
+})
+
 Record({
     $id: Now.ID['mvcfg-rel-schedules'],
     table: 'sys_ui_related_list_entry',

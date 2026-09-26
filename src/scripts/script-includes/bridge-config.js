@@ -19,7 +19,22 @@ BridgeConfig.PROP = {
     dualWrite: 'x_33764_sbridge.dual_write',
     ackEnabled: 'x_33764_sbridge.ack.enabled',
     ackTimeout: 'x_33764_sbridge.ack.timeout_minutes',
+    computerFields: 'x_33764_sbridge.cmdb_computer_fields',
 }
+
+/**
+ * Default capture/seed include-list for cmdb_ci_computer and subclasses.
+ * Keep in sync with the shipped value of x_33764_sbridge.cmdb_computer_fields.
+ * Policy field_list is unioned with this set. `off` on the property uses the policy list only.
+ */
+BridgeConfig.COMPUTER_FIELDS =
+    'name,short_description,operational_status,install_status,serial_number,asset_tag,category,subcategory,' +
+    'os,os_version,os_domain,os_service_pack,os_address_width,ip_address,mac_address,default_gateway,fqdn,host_name,dns_domain,' +
+    'manufacturer,model_id,model_number,ram,cpu_count,cpu_core_count,cpu_core_thread,cpu_speed,cpu_type,cpu_name,cpu_manufacturer,' +
+    'disk_space,chassis_type,virtual,discovery_source,first_discovered,last_discovered,location,department,company,vendor,' +
+    'assigned_to,owned_by,managed_by,supported_by,support_group,assignment_group,managed_by_group,environment,' +
+    'warranty_expiration,po_number,cost,cost_center,asset,correlation_id,description,hardware_status,hardware_substatus,' +
+    'life_cycle_stage,life_cycle_stage_status'
 
 BridgeConfig.TABLE = {
     peer: 'x_33764_sbridge_peer',
@@ -37,6 +52,8 @@ BridgeConfig.TABLE = {
     processingError: 'x_33764_sbridge_processing_error',
     recordResult: 'x_33764_sbridge_record_result',
     executionSchedule: 'x_33764_sbridge_execution_schedule',
+    movementPack: 'x_33764_sbridge_movement_pack',
+    packMember: 'x_33764_sbridge_pack_member',
 }
 
 BridgeConfig.prototype = {
@@ -94,6 +111,38 @@ BridgeConfig.prototype = {
     intProp: function (name, fallback) {
         var raw = parseInt(gs.getProperty(name, ''), 10)
         return isNaN(raw) ? fallback : raw
+    },
+
+    /**
+     * Fields merged into capture and seed for a Computer CI.
+     * Blank property uses BridgeConfig.COMPUTER_FIELDS. `off` / `none` / `-` merges nothing.
+     * @returns {string[]}
+     */
+    computerFieldIncludeList: function () {
+        var raw = ''
+        try {
+            raw = String(gs.getProperty(BridgeConfig.PROP.computerFields, '') || '').replace(/^\s+|\s+$/g, '')
+        } catch (e) {
+            raw = ''
+        }
+        if (!raw) raw = BridgeConfig.COMPUTER_FIELDS
+        if (/^(off|none|-)$/i.test(raw)) return []
+        return this.splitFieldList(raw)
+    },
+
+    /** Comma-separated field names. Drops blanks, duplicates, and sys_ columns. */
+    splitFieldList: function (raw) {
+        var parts = String(raw || '').split(',')
+        var out = []
+        var seen = {}
+        for (var i = 0; i < parts.length; i++) {
+            var name = String(parts[i] || '').replace(/^\s+|\s+$/g, '')
+            if (!name || seen[name]) continue
+            if (name === 'sys_id' || name.indexOf('sys_') === 0) continue
+            seen[name] = true
+            out.push(name)
+        }
+        return out
     },
 
     /**

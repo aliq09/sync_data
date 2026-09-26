@@ -18,6 +18,7 @@ UiPolicy({
         { field: 'number', readOnly: true },
         { field: 'name', readOnly: true },
         { field: 'configuration', readOnly: true },
+        { field: 'pack', readOnly: true },
         { field: 'execution_state', readOnly: true },
         { field: 'execution_result', readOnly: true },
         { field: 'initiated_by', readOnly: true },
@@ -72,4 +73,20 @@ UiPolicy({
         { field: 'acknowledged_at', visible: false },
         { field: 'remote_audit_id', visible: false },
     ],
+})
+
+/**
+ * Path A table configurations do not show the pack reference.
+ * Pack configurations show it. reverseIfFalse puts the field back when type is Pack.
+ */
+UiPolicy({
+    $id: Now.ID['uip-config-hide-pack'],
+    table: 'x_33764_sbridge_movement_config',
+    shortDescription: 'Hide Movement Pack unless configuration type is Pack',
+    conditions: 'config_type!=pack',
+    onLoad: true,
+    reverseIfFalse: true,
+    global: true,
+    active: true,
+    actions: [{ field: 'pack', visible: false }],
 })

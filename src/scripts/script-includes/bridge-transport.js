@@ -170,6 +170,9 @@ BridgeTransport.prototype = {
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.addQuery('peer', peerId)
         gr.addQuery('state', 'IN', 'pending,failed')
+        // Path A rows stay at pack_seq 0 and keep creation order among themselves.
+        // Pack rows use a higher pack_seq so parents drain before children.
+        if (gr.isValidField('pack_seq')) gr.orderBy('pack_seq')
         gr.orderBy('sys_created_on')
         // Over-read, because some failed rows will not be backoff-eligible yet and
         // filtering in the query would need a stored next-attempt time.
@@ -536,6 +539,7 @@ BridgeTransport.prototype = {
                         httpStatus: 200,
                         attempts: row.attempts,
                         targetSysId: result.target_sys_id || '',
+                        operation: result.operation || (result.status === 'skipped' ? 'skip' : ''),
                         ackHold: ackRequired,
                     })
                 })
@@ -718,6 +722,7 @@ BridgeTransport.prototype = {
         gr.setValue('peer', peerId)
         gr.setValue('started', new GlideDateTime().getValue())
         var id = gr.insert()
+        // 0.4.2: BridgeDualWrite ignores type=drain, so this poll does not insert a DEX.
         this._shadowDual('open run', function (dw) {
             dw.onRunOpened(id)
         })
@@ -746,6 +751,7 @@ BridgeTransport.prototype = {
         }
 
         gr.update()
+        // 0.4.2: closing a drain run must not complete a shell Data Execution.
         this._shadowDual('close run', function (dw) {
             dw.onRunClosed(runId, summary)
         })
@@ -762,6 +768,7 @@ BridgeTransport.prototype = {
         var gr = new GlideRecord(BridgeConfig.TABLE.outbox)
         gr.addQuery('peer', peerId)
         gr.addQuery('state', 'IN', 'pending,failed')
+        if (gr.isValidField('pack_seq')) gr.orderBy('pack_seq')
         gr.orderBy('sys_created_on')
         gr.setLimit(1)
         gr.query()

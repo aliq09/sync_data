@@ -37,8 +37,16 @@ export const x_33764_sbridge_policy = Table({
             mandatory: true,
             referenceTable: 'x_33764_sbridge_peer',
         }),
-        field_list: FieldListColumn({ label: 'Fields to sync', dependent: 'table' }),
-        condition: ConditionsColumn({ label: 'Filter condition', dependent: 'table' }),
+        field_list: FieldListColumn({
+            label: 'Fields to sync',
+            dependent: 'table',
+            hint: 'For Computer (cmdb_ci_computer and subclasses), capture and seed also merge x_33764_sbridge.cmdb_computer_fields. Blank uses the built-in computer attributes. Set that property to off to sync only this list.',
+        }),
+        condition: ConditionsColumn({
+            label: 'Filter condition',
+            dependent: 'table',
+            hint: 'Encoded query BridgeSeed and BridgeCapture use. It does not replace a Data Movement Configuration filter that is already set.',
+        }),
         mode: StringColumn({
             label: 'Apply mode',
             default: 'direct',
@@ -50,7 +58,10 @@ export const x_33764_sbridge_policy = Table({
         preserve_sys_id: BooleanColumn({ label: 'Preserve sys_id on target', default: false }),
         propagate_deletes: BooleanColumn({ label: 'Propagate deletes', default: false }),
         capture_ready: BooleanColumn({ label: 'Capture rule ready', default: false, readOnly: true }),
-        ref_map: JsonColumn({ label: 'Reference field map' }),
+        ref_map: JsonColumn({
+            label: 'Reference field map',
+            hint: '0.4.1 xref remaps a source sys_id through Record Mapping, then business_key when that property is set. Example: {"ci":{"strategy":"xref","table":"cmdb_ci_computer","business_key":"name"},"cat_item":{"strategy":"xref","table":"sc_cat_item","business_key":"name"}}.',
+        }),
         target_map: JsonColumn({ label: 'Target field map' }),
         target_table: TableNameColumn({ label: 'Target table (if remapped)' }),
         movement_config: ReferenceColumn({
