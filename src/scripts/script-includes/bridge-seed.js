@@ -121,6 +121,7 @@ BridgeSeed.prototype = {
             table: tableName,
             direction: 'outbound',
             mode: policyGr.getValue('mode') || 'direct',
+            // Capture unions the computer include-list for cmdb_ci_computer. This column stays the policy list.
             field_list: policyGr.getValue('field_list') || '',
             condition: policyGr.getValue('condition') || '',
             ref_map: policyGr.getValue('ref_map') || '',
@@ -132,6 +133,10 @@ BridgeSeed.prototype = {
         }
 
         var gr = new GlideRecord(tableName)
+        // Rows to send follow the sync policy condition. The movement-config
+        // filter is not applied here and is not overwritten when it is already
+        // set (BridgeDualWrite._linkOne). Case 7 keeps policy.condition and
+        // filter = nameSTARTSWITHcase6_max_ as two values.
         if (policy.condition) gr.addEncodedQuery(policy.condition)
         if (cursor) gr.addQuery('sys_id', '>', cursor)
         gr.orderBy('sys_id')

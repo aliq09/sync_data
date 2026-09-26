@@ -76,3 +76,13 @@ Property({
     description:
         'Minutes a data execution may stay awaiting acknowledgement before it is failed with peer does not support ACK. Applies only when that configuration requires acknowledgement.',
 })
+
+Property({
+    $id: Now.ID['prop-cmdb-computer-fields'],
+    name: 'x_33764_sbridge.cmdb_computer_fields',
+    type: 'string',
+    value:
+        'name,short_description,operational_status,install_status,serial_number,asset_tag,category,subcategory,os,os_version,os_domain,os_service_pack,os_address_width,ip_address,mac_address,default_gateway,fqdn,host_name,dns_domain,manufacturer,model_id,model_number,ram,cpu_count,cpu_core_count,cpu_core_thread,cpu_speed,cpu_type,cpu_name,cpu_manufacturer,disk_space,chassis_type,virtual,discovery_source,first_discovered,last_discovered,location,department,company,vendor,assigned_to,owned_by,managed_by,supported_by,support_group,assignment_group,managed_by_group,environment,warranty_expiration,po_number,cost,cost_center,asset,correlation_id,description,hardware_status,hardware_substatus,life_cycle_stage,life_cycle_stage_status',
+    description:
+        'Comma-separated cmdb_ci_computer fields merged into capture and seed when the source class is Computer or a subclass. Unioned with the sync policy field list. Blank uses the built-in computer set. Set to off to keep only the policy field list.',
+})
