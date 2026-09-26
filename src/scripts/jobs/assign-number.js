@@ -7,6 +7,14 @@
  */
 ;(function executeRule(current) {
     if (!current) return
+    // A refused shell insert must not consume a DEX number. The hygiene rule aborts
+    // the insert; this returns first when that rule has not run yet.
+    if (
+        current.getTableName() === 'x_33764_sbridge_data_execution' &&
+        !current.getValue('configuration')
+    ) {
+        return
+    }
     var existing = current.getValue('number')
     if (existing) return
 

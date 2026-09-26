@@ -36,7 +36,7 @@ Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent
 | **Scope** | `x_33764_sbridge` |
 | **Proposed scope** | `x_33764_sync_bridge` was **19 chars** (SDK max 18) → shortened to `x_33764_sbridge` |
 | **SDK** | `@servicenow/sdk` 4.12.2 |
-| **App version** | 0.4.0 (staged acknowledgement and correlation) |
+| **App version** | 0.4.3 (metadata apply; includes 0.4.2 empty Data Execution hygiene and 0.4.1 ACL/xref) |
 | **Target** | PDI `https://dev440454.service-now.com` only (not kkrdev / not prod) |
 
 ## Architecture
@@ -63,7 +63,7 @@ source save → after BR → BridgeCapture (outbox only, no remote I/O)
 | BridgePolicyHelper + policy after-BR (declarative capture BR) | Implemented |
 | Scripted REST: `/apply`, `/seed`, `/ensure_capture` | Implemented |
 | Drain job + condition (skip empty outbox) | Implemented |
-| BridgeRefTranslate | Minimal (user_name / group_name / identity) |
+| BridgeRefTranslate | user_name / group_name / identity, plus Record Mapping xref (0.4.1) |
 | BridgeDivergence / compare API / OAuth peer pack | Stubbed / deferred |
 | ATF | Minimal stubs (SI load + intent; not green until fixtures) |
 
@@ -113,15 +113,94 @@ While Prevent is the concurrent policy and a data execution is still open, **Exe
 
 Live progress uses acknowledgement weight **9** (reading 25, transfer 30, target 18) when the flag is on, and the 0.3.2 weights with `ack_skipped: true` when it is off. The configuration panel shows the ACK stage instead of “Acknowledgement not enabled”. Transfer Audit lists `message_type` (including Ack), `ack_stage`, `acknowledged_at`, and `remote_audit_id`. The Data Execution timeline already shows Acknowledged At.
 
+## Apply worker ACLs (0.4.3)
+
+Apply runs as the integration user (`sbridge.worker` by default). `/apply` rejects any other caller. Do not run apply as admin to prove Cases 5, 6, 7, or 9. Do not grant the `admin` role to `sbridge.worker`.
+
+**How ACL evaluation actually works.** Allow-If rules at the same point are OR: passing any one grants that level. Inside a single rule, the role list, the condition, and the script are AND. Deny-Unless rules are evaluated first, and every matching Deny-Unless must pass. A scoped Allow-If does not cancel a failed Deny-Unless. Table create and each field write are separate checks. A `*` field rule does not override a more specific field rule.
+
+**Why 0.4.1 still failed with the scoped ACLs present.** PDI2 already showed Sync Bridge allow rules for `sys_script` and `sc_cat_item` create/write, and Cases 5 and 6 still failed outbox as `sbridge.worker`. That is what a Deny-Unless looks like: the out-of-box create rules (`admin` on `sys_script`, `catalog_admin` on `sc_cat_item`, `user_admin` / `itil` on `sys_user_group`) and, on Zurich and later, the data-type Deny-Unless rules on `script` and `condition_string` (`snc_required_script_writer_permission`). Admin does not skip the script data-type rules. PDI2's login build date is 06-12-2026, which is in that family. `item_option_new` has no equivalent gate, which is why Case 7 rows landed. 0.4.1 also did not cover `sys_user_group` (Case 9). The 0.4.1 ACL script is gone either way: an ACL script that calls `gs.getProperty` can fail closed, and `/apply` already checks the integration user.
+
+**Role.** `x_33764_sbridge.worker` is what the metadata ACLs check. `x_33764_sbridge.operator` contains it, and every rule lists both roles. The install fix script assigns `x_33764_sbridge.worker` directly to the user named by `x_33764_sbridge.integration_user` and logs `worker=`, `operator=`, and `admin=` for that user. It does not grant operator or admin. There is no ACL script. This repo cannot read PDI2 role rows until that install log (the PDI2 connection was not available from this session).
+
+**Metadata write fallback.** Role allow rules remain the first attempt, so a table with no Deny-Unless (Case 7, Case 1) never leaves the integration user. When insert or update of `sys_script`, `sc_cat_item`, `item_option_new`, or `sys_user_group` returns no sys_id and the failure looks like security (`canCreate`/`canWrite` false, an empty platform message, or an access error), apply retries once through `global.SyncBridgeMetadataWrite`. Global `GlideRecord` is the platform path that does not apply the scoped ACL evaluator, so a Deny-Unless admin or script-writer rule does not block it. The session user is still the integration user (`sys_created_by` stays that user). The writer accepts only those four tables, only insert and update, and only a session token that apply sets for the call. It does not impersonate and it does not grant `admin`. Each success is `gs.info` and a Transfer Audit row with `result=metadata_privilege` (the note is in the error column; the apply result stays applied). The apply response includes `privilege: "global_metadata_writer"`. A validation message that is not an access refusal is not retried.
+
+Fluent cannot ship that script include. `apiName` must start with `x_33764_sbridge.`, and a scoped `GlideRecord` insert is stamped with the application scope, which is why the first 0.4.3 install left `new global.SyncBridgeMetadataWrite()` undefined. The fix script `Grant worker metadata access` runs after the payload loads and publishes the include into **Global**: `sys_scope=global`, `api_name=global.SyncBridgeMetadataWrite`, Accessible from = All application scopes, Caller Access = Caller Tracking. Version stays 0.4.3 so the same application record is upgraded; the fix script body changed, so the upgrade runs it again.
+
+Confirm after install, before re-running Cases 5, 6, 7, and 9:
+
+- System log contains `[bridge] metadata writer callable as global.SyncBridgeMetadataWrite scope=global api_name=global.SyncBridgeMetadataWrite access=public`.
+- **System Definition → Script Includes**, name `SyncBridgeMetadataWrite`, Application **Global**, API Name `global.SyncBridgeMetadataWrite`, Accessible from **All application scopes**. An app-scoped row with API Name `x_33764_sbridge.SyncBridgeMetadataWrite` is not the one apply calls.
+
+| Table | Record operations | Field operations |
+|---|---|---|
+| `sys_script` | read, create, write | `*`, `script`, `condition`, `filter_condition`, `advanced`, action/when/collection fields, and `sys_metadata` columns (`sys_scope`, `sys_class_name`, `sys_package`, `sys_policy`, `sys_update_name`, `sys_name`) |
+| `sc_cat_item` | read, create, write | `*`, name/description/price/catalog/category/workflow/flow/roles, and the same `sys_metadata` columns |
+| `item_option_new` | read, create, write | `*`, `cat_item`, and the variable fields apply writes (`name`, `question_text`, `type`, `order`, `mandatory`, `reference`, `default_value`, `variable_set`, `active`, `description`) |
+| `sys_user_group` | read, create, write | `*`, plus `name`, `description`, `email`, `manager`, `parent`, `type`, `active`, `source`, `roles`, `default_assignee`, `include_members`, `cost_center`, `exclude_manager` |
+
+**Application access.** Record ACLs do not override a global table's Can read / Can create / Can update flags, and a cross-scope privilege cannot raise that ceiling. The same fix script sets those three flags (and Accessible from = All application scopes) on `sys_script`, `sc_cat_item`, `item_option_new`, and `sys_user_group`. It runs as the installing admin and does not impersonate the worker. If the install log says a flag was not saved, open that table in the Global application and check Can read, Can create, and Can update by hand. Delete stays off.
+
+**Cross-scope privileges.** Allowed read, write, and create privileges are shipped for those four tables so Enforcing runtime-access tracking does not refuse the call after the flags are on. An execute privilege for `SyncBridgeMetadataWrite` in global is shipped for the same reason. Delete is not granted.
+
+A failed insert or update now appends `canCreate` / `canWrite` and `getLastErrorMessage()` to `insert into {table} returned no sys_id`, so the next outbox row shows an ACL denial separately from a cross-scope ceiling.
+
+**Record Mapping.** After each successful upsert, including CMDB mode, apply upserts `x_33764_sbridge_xref` (`peer` + `source_table` + `source_sys_id` → `target_sys_id`).
+
+**Reference remap.** Before insert or update, apply resolves references:
+
+1. `user_name` and `group_name` are unchanged.
+2. `identity` and `preserve` on a ref_map entry keep the source sys_id. Movement-config **Reference handling** `preserve` does the same for fields with no entry.
+3. `xref`, `record_mapping`, `mapping`, or `business_key` look up Record Mapping first (same source sys_id, preferring the entry's `table` when set, then any table). If that misses and `business_key` is set, apply queries the target table with the keys captured in payload `ref_keys`. A miss nulls the field and writes a DLQ note.
+4. Any other reference field (and glide_list) is remapped when a Record Mapping exists. A miss keeps the source sys_id. `sys_user` and `sys_user_group` stay on the user/group strategies so department head and group fields are left alone. `alm_hardware.ci` (reference `cmdb_ci`) and `item_option_new.cat_item` (reference `sc_cat_item`) follow this path with no ref_map entry required.
+
+Example ref_map when a business-key fallback is wanted:
+
+```json
+{
+  "ci": { "strategy": "xref", "table": "cmdb_ci_computer", "business_key": "name" },
+  "cat_item": { "strategy": "xref", "table": "sc_cat_item", "business_key": "name" }
+}
+```
+
+Apply the referenced table first (CI before hardware, catalog item before variables) so the mapping exists. Re-applying hardware or variables after the mapping exists rewrites `ci` and `cat_item`.
+
+**Case 1 smoke.** Department capture, the integration-user echo skip, drain, and `/apply` are the same path. `ack_required` on configuration `0c74f48953e78b50a88275e0a0490e03` stays false. Re-execute that movement as `sbridge.worker` and confirm each `SBMOVE` department updates the existing target row (receipt, then Record Mapping) instead of inserting a duplicate. Reference fields on `cmn_department` change on that re-apply only when a Record Mapping exists for the source sys_id and **Reference handling** is Resolve (the default). User and group references are unchanged by the xref path. A configuration set to Preserve keeps source sys_ids.
+
+## Empty Data Execution hygiene (0.4.2)
+
+Kept on 0.4.3. These guards are in this build, so installing it on a 0.4.2 instance does not remove them.
+
+0.4.2 stopped empty Data Execution rows. It did not change the 0.4.1 Record Mapping xref.
+
+`BridgeTransport.drain` opens a new sync run on every poll. Dual-write treated that run like a movement and inserted `x_33764_sbridge_data_execution` with `legacy_key` `run:<drain run>`. A drain run has no seed policy, so **Configuration** stayed empty. Closing the run then set **State** = Completed and **Result** = Successful, often with the same selected count as the real execution a second earlier. The next poll inserted another shell. `continueQueued` does not insert a Data Execution; it only pages controller rows that already have a configuration.
+
+Rules in this version:
+
+- A Data Execution is inserted only when `configuration` is set. There is no `internal_probe` type.
+- Completed / Successful is set only on that configured row, after a real source read or apply (or an explicit dry run). A drain poll does not complete a shell.
+- `continueQueued` and `drain` update the existing controller execution or no-op. They do not insert a DEX per call.
+- **Data Executions** and **Overview** use the list filter `configurationISNOTEMPTY`. A before-query rule applies the same hide when the list is opened without that module. Loading one row by `sys_id` still works.
+- Admins see an info message on the configuration and data execution forms while any orphan remains, and **Data Movement → Orphan executions** (role `x_33764_sbridge.admin`) opens the review list.
+
+**Orphan cleanup (review, do not auto-delete).** Existing empty rows are left in place. There is no fix script and no production job that deletes them. On a lab instance, an admin may delete after review:
+
+| | |
+|---|---|
+| Table | `x_33764_sbridge_data_execution` |
+| Encoded query | `configurationISEMPTY` |
+
+That is the same filter as **Orphan executions**. Clear the default `configurationISNOTEMPTY` filter only by opening that module (or by pasting `configurationISEMPTY`). Do not run that delete on a customer production instance from this app.
+
 ## Operator runbook (stub)
 
 1. **Install** on both peers (PDI lab first): `npm run build && npm run deploy -a <auth-alias>`
-2. **Integration user** — the shipped default is `sbridge.worker`. Blank still fail-closes capture at runtime if an admin clears the property.
+2. **Integration user** — the shipped default is `sbridge.worker`, with roles `x_33764_sbridge.operator` (contains `x_33764_sbridge.worker`) and `x_33764_sbridge.reader`. Install assigns `x_33764_sbridge.worker` directly when that user already exists and logs whether `x_33764_sbridge.operator` is present. It does not grant operator or `admin`. Metadata apply uses the worker allow rules first, then `global.SyncBridgeMetadataWrite` for `sys_script`, `sc_cat_item`, `item_option_new`, and `sys_user_group` when a security refusal remains. Blank still fail-closes capture at runtime if an admin clears the property. Do not substitute admin for this user when proving apply.
 3. **Instances** — create a row for *this* instance (`base_url` contains `instance_name`) and one for the remote instance. Keep remote `active=true` only when ready. The physical table is still `x_33764_sbridge_peer`.
 4. **Credentials** — set the instance `connection_alias` or OAuth profile (never commit secrets).
 5. **Policy** — outbound on source (owner_peer = local), inbound on target. Saving a policy links a Data Movement Configuration and, for outbound, auto-ensures a capture Business Rule. Capture still follows the policy, not the configuration row.
 6. **Seed** — `POST /api/x_33764_sbridge/sync/seed` with `{ "policy": "<sys_id>" }` as the integration user. Repeat with `run_id` until `done: true`. Does **not** update source rows. A Data Execution shadow is written when dual-write is on.
-7. **Monitor** — Data Executions, Transfers, Failed Transfers, and Audit. Legacy queue and technical logs are under Developer / Diagnostics. Watch `last_error` on the instance and lag on sync runs.
+7. **Monitor** — Data Executions (default filter `configurationISNOTEMPTY`), Transfers, Failed Transfers, and Audit. Legacy queue and technical logs are under Developer / Diagnostics. Watch `last_error` on the instance and lag on sync runs. Empty-configuration orphans, if any remain from older builds, are under **Orphan executions** (`configurationISEMPTY`). Review them there; this app does not delete them.
 
 ## Scripts
 
