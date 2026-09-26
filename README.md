@@ -1,4 +1,32 @@
-# Sync Bridge (Fluent / now-sdk)
+# Sync Bridge — ServiceNow Data Movement Platform
+
+A ServiceNow Fluent / now-sdk implementation of a controlled, observable cross-instance data movement pattern.
+
+This repository is the engineering source of truth for the Sync Bridge prototype: capture, queueing, transport, apply, execution tracking, monitoring, acknowledgements, and operator-facing controls are developed as a scoped application and validated in non-production ServiceNow instances.
+
+## At a glance
+
+| Area | Approach |
+| --- | --- |
+| Platform | ServiceNow |
+| Development | Fluent / ServiceNow SDK |
+| Scope | `x_33764_sbridge` |
+| Pattern | Outbox + scheduled drain + peer apply API |
+| Reliability | Correlation, receipts, DLQ, execution tracking, staged acknowledgement |
+| Safety | PDI-first; no secrets in Git; no production deployment from this repo |
+
+## Engineering goals
+
+- Keep remote I/O out of source-record transactions.
+- Make movement observable through executions, transfers, audit, and failure records.
+- Support resumable bulk seeding as well as normal capture.
+- Keep transport and execution control separated from operator UI logic.
+- Maintain an explicit upgrade path from basic delivery to acknowledgement-aware delivery.
+- Preserve a Git-first development workflow for SDK-managed application metadata.
+
+---
+
+## Detailed implementation notes
 
 Enhanced rebuild of the kkrdev **Sync Bridge** outbox pattern as a scoped Fluent app for Ali Qaiser.
 
