@@ -11,6 +11,8 @@ import {
 
 /**
  * Data Execution (DEX…) — one run of a configuration.
+ * 0.4.2 does not insert a row, and does not mark it Completed/Successful, unless
+ * configuration is set. The default list filter is configurationISNOTEMPTY.
  * config_snapshot is written once at start and not revised when the configuration changes.
  * State and Result stay separate. Case 1 still closes from the current /apply contract.
  *

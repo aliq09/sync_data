@@ -718,6 +718,7 @@ BridgeTransport.prototype = {
         gr.setValue('peer', peerId)
         gr.setValue('started', new GlideDateTime().getValue())
         var id = gr.insert()
+        // 0.4.2: BridgeDualWrite ignores type=drain, so this poll does not insert a DEX.
         this._shadowDual('open run', function (dw) {
             dw.onRunOpened(id)
         })
@@ -746,6 +747,7 @@ BridgeTransport.prototype = {
         }
 
         gr.update()
+        // 0.4.2: closing a drain run must not complete a shell Data Execution.
         this._shadowDual('close run', function (dw) {
             dw.onRunClosed(runId, summary)
         })

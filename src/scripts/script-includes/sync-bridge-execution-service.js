@@ -357,7 +357,8 @@ SyncBridgeExecutionService.prototype = {
 
     /**
      * One page of queued controller work. Called by the continue job, not by UI actions.
-     * Does not call BridgeTransport.
+     * Does not call BridgeTransport and does not insert a Data Execution.
+     * Rows with an empty configuration are skipped so a poll cannot revive an orphan.
      */
     continueQueued: function () {
         try {
@@ -367,6 +368,7 @@ SyncBridgeExecutionService.prototype = {
         }
         var dex = new GlideRecord(BridgeConfig.TABLE.dataExecution)
         dex.addQuery('legacy_key', 'STARTSWITH', 'ctrl:')
+        dex.addNotNullQuery('configuration')
         dex.addQuery('execution_state', 'IN', 'queued,validating,preparing,reading_source,sending')
         dex.orderBy('queued_at')
         dex.setLimit(20)
@@ -692,6 +694,10 @@ SyncBridgeExecutionService.prototype = {
                 dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
             }
             if (total === 0) {
+                if (!dex.getValue('configuration')) {
+                    gs.warn('[bridge] not completing a data execution that has no configuration')
+                    return
+                }
                 dex.setValue('execution_result', 'successful')
                 dex.setValue('execution_completed_at', new GlideDateTime().getValue())
                 dex.setValue('execution_state', 'completed')
@@ -761,6 +767,10 @@ SyncBridgeExecutionService.prototype = {
             dex.setValue('source_read_completed_at', new GlideDateTime().getValue())
         }
         if (done) {
+            if (!dex.getValue('configuration')) {
+                gs.warn('[bridge] not completing a dry run that has no configuration')
+                return
+            }
             var deletes = parseInt(run.getValue('failed'), 10) || 0
             dex.setValue('execution_result', 'successful')
             dex.setValue('execution_state', 'completed')
@@ -1309,6 +1319,10 @@ SyncBridgeExecutionService.prototype = {
     },
 
     _failDex: function (dex, reason) {
+        if (!dex.getValue('configuration')) {
+            gs.warn('[bridge] not completing a data execution that has no configuration: ' + reason)
+            return
+        }
         dex.setValue('execution_result', 'failed')
         dex.setValue('execution_state', 'completed')
         dex.setValue('execution_completed_at', new GlideDateTime().getValue())
